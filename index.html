@@ -1398,24 +1398,19 @@ function updateCronograma(cron) {
     }
     plan = Math.min(1, Math.max(0, plan));
 
-    // Real progress at cutoff
+    // Real progress at cutoff — no time weighting
     let real = 0;
     if (fim) {
+      // Task is completed
       if (fim <= cutoffDate) real = 1;
       else {
+        // Cutoff is before actual completion — interpolate linearly over actual duration
         const durReal = (fim - start) / (1000*60*60*24);
         real = durReal > 0 ? Math.min(1, (cutoffDate - start) / (1000*60*60*24) / durReal) : pctNow;
       }
     } else {
-      const todayVal = new Date();
-      if (cutoffDate >= todayVal) {
-        real = pctNow;
-      } else {
-        const elapsedNow = Math.max(1, (todayVal - start) / (1000*60*60*24));
-        const elapsedCut = Math.max(0, (cutoffDate - start) / (1000*60*60*24));
-        const fracCut = Math.min(1, elapsedCut / elapsedNow);
-        real = pctNow * fracCut;
-      }
+      // Task still open — use current % Progress directly (no weighting)
+      real = pctNow;
     }
     real = Math.min(1, Math.max(0, real));
     return { real, plan };
@@ -1433,7 +1428,9 @@ function updateCronograma(cron) {
 
   const progValEl = document.getElementById('prog-val');
   if (progValEl) progValEl.innerHTML = progPct + '<span style="font-size:24px;">%</span>';
-  set('prog-pill', progPct + '%');
+  // SPI = Real / Planejado (cutoff-aware)
+  const spiCutoff = avgPlan > 0 ? avgReal / avgPlan : (avgReal > 0 ? 999 : 0);
+  set('prog-pill', 'SPI ' + spiCutoff.toFixed(2));
   set('prog-real', 'Real ' + progPct + '%');
   set('prog-plan', 'Plan. ' + pvProgClamped + '%');
 
@@ -1444,9 +1441,10 @@ function updateCronograma(cron) {
 
   const progPill = document.getElementById('prog-pill');
   if (progPill) {
-    if (progPct >= pvProgClamped) { progPill.style.background = '#d1fae5'; progPill.style.color = '#065f46'; }
-    else if (progPct >= pvProgClamped - 10) { progPill.style.background = '#dbeafe'; progPill.style.color = '#1e40af'; }
-    else { progPill.style.background = '#fff3cd'; progPill.style.color = '#92400e'; }
+    // RAG pattern: green > 1.02, blue 0.95-1.02, orange < 0.95
+    if (spiCutoff > 1.02)       { progPill.style.background = '#d1fae5'; progPill.style.color = '#065f46'; }
+    else if (spiCutoff >= 0.95) { progPill.style.background = '#dbeafe'; progPill.style.color = '#1e40af'; }
+    else                        { progPill.style.background = '#fff3cd'; progPill.style.color = '#92400e'; }
   }
 
   // Atraso until cutoff
