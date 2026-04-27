@@ -669,9 +669,9 @@
 
   /* Timeline */
   .tl{
-    position:relative;padding:10px 4px 18px;
+    position:relative;padding:10px 4px 30px;
   }
-  .tl-axis{position:relative;height:4px;background:#eef2f7;border-radius:2px;margin:36px 8px 44px}
+  .tl-axis{position:relative;height:4px;background:#eef2f7;border-radius:2px;margin:36px 8px 56px}
   .tl-progress{position:absolute;left:0;top:0;bottom:0;background:var(--blue-700);border-radius:2px}
   .tl-today{
     position:absolute;top:-14px;bottom:-14px;width:0;border-left:2px dashed var(--ink-700);
@@ -693,7 +693,24 @@
     text-align:center;width:150px;font-size:10.5px;color:var(--ink-700);font-weight:500;
   }
   .tl-label.top{bottom:calc(100% + 8px)}
-  .tl-label.bot{top:calc(100% + 8px)}
+  .tl-label.bot{top:calc(100% + 14px)}
+  .tl-label.top2{bottom:calc(100% + 34px)}
+  .tl-label.bot2{top:calc(100% + 40px)}
+  .tl-label.top2::before,
+  .tl-label.bot2::before{
+    content:"";position:absolute;left:50%;transform:translateX(-50%);
+    width:1px;background:#94a3b8;
+  }
+  .tl-label.top2::after,
+  .tl-label.bot2::after{
+    content:"";position:absolute;left:50%;width:6px;height:6px;
+    border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8;
+    background:#fff;
+  }
+  .tl-label.top2::before{bottom:-35px;height:34px}
+  .tl-label.top2::after{bottom:-38px;transform:translateX(-50%) rotate(45deg)}
+  .tl-label.bot2::before{top:-35px;height:34px}
+  .tl-label.bot2::after{top:-38px;transform:translateX(-50%) rotate(225deg)}
   .tl-label strong{display:block;font-size:11px;color:var(--ink-900);font-weight:700}
   .tl-label span{color:var(--ink-400);font-size:10px}
 
@@ -766,7 +783,7 @@
 <style>
   .rag-cell.active.b{background:#dbeafe !important;border-color:#93c5fd !important;}
   .rag-cell.active.b .rag-label,.rag-cell.active.b .rag-note{color:#1e40af !important;}
-  .tl-months-bar{display:grid;gap:2px;margin-top:18px;padding:0 4px;}
+  .tl-months-bar{display:grid;gap:2px;margin-top:42px;padding:0 4px;}
   .tl-month-col{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:10px;color:var(--ink-500);}
   .tl-month-label{font-weight:600;color:var(--ink-700);margin-bottom:4px;font-size:10.5px;}
   .tl-month-year{font-size:9px;color:var(--ink-400);margin-bottom:6px;}
@@ -944,13 +961,13 @@
       </div>
 
       <!-- FULL YEAR -->
-      <div class="kpi" id="card-fy" style="grid-area:fy;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div class="kpi" id="card-fy" style="grid-area:fy;position:relative;padding-top:18px;padding-bottom:38px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
           <div class="kpi-label" style="font-size:13px;">Full Year</div>
-          <span id="fy-badge" style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:#eef2f7;color:#8797ad;">—</span>
         </div>
         <div class="kpi-value" id="fy-budget" style="font-size:34px;">—</div>
-        <div id="fy-eac" style="margin-top:8px;font-size:14px;color:var(--ink-500);"></div>
+        <div id="fy-eac" style="margin-top:12px;font-size:14px;color:var(--ink-500);"></div>
+        <span id="fy-badge" style="position:absolute;left:16px;bottom:30px;display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:#eef2f7;color:#8797ad;white-space:nowrap;">—</span>
       </div>
 
       <!-- CONSUMO FINANCEIRO (spans cols 2-3, rows 3-4) -->
@@ -975,13 +992,13 @@
       
 
       <!-- YEAR TO DATE -->
-      <div class="kpi" id="card-ytd" style="grid-area:ytd;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div class="kpi" id="card-ytd" style="grid-area:ytd;position:relative;padding-top:18px;padding-bottom:38px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
           <div class="kpi-label" style="font-size:13px;">Year to Date</div>
-          <span id="ytd-badge" style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:#eef2f7;color:#8797ad;">—</span>
         </div>
         <div class="kpi-value" id="ytd-pv" style="font-size:34px;">—</div>
-        <div id="ytd-ac" style="margin-top:8px;font-size:14px;color:var(--ink-500);"></div>
+        <div id="ytd-ac" style="margin-top:12px;font-size:14px;color:var(--ink-500);"></div>
+        <span id="ytd-badge" style="position:absolute;left:16px;bottom:30px;display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:#eef2f7;color:#8797ad;white-space:nowrap;">—</span>
       </div>
 
       <!-- hidden stubs -->
@@ -1711,86 +1728,153 @@ function updateRAG(cron, risco) {
 // ─── TIMELINE ───
 function updateTimeline(cron) {
   if (!cron || !cron.length) return;
-  const months12 = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const monthsAbbr = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const readDate = (row, names) => {
+    const wanted = names.map(n => normKey(n));
+    for (const key of Object.keys(row || {})) {
+      if (wanted.includes(normKey(key))) return excelDate(row[key]);
+    }
+    return null;
+  };
 
-  const finMonths = [];
-  if (typeof _allFinData !== 'undefined' && _allFinData.length) {
-    _allFinData.forEach(r => {
-      const m = r['Mês'] || r['Mes'];
-      const y = r['Ano'];
-      if (m && y) {
-        const monthIdx = typeof m === 'string'
-          ? months12.findIndex(x => x.toLowerCase() === m.toLowerCase().trim())
-          : (typeof m === 'number' ? (excelDate(m) ? excelDate(m).getMonth() : -1) : -1);
-        if (monthIdx >= 0) {
-          const yearVal = (typeof y === 'number' && y > 2000) ? y : new Date().getFullYear();
-          const key = yearVal + '-' + monthIdx;
-          if (!finMonths.find(f => f.key === key)) finMonths.push({ key, monthIdx, year: yearVal, label: monthsAbbr[monthIdx], date: new Date(yearVal, monthIdx, 1), endDate: new Date(yearVal, monthIdx + 1, 0) });
-        }
-      }
-    });
-  }
-  finMonths.sort((a, b) => a.date - b.date);
-  if (!finMonths.length) return;
-
-  const projStart = finMonths[0].date;
-  const projEnd = finMonths[finMonths.length - 1].endDate;
-  const totalMs = projEnd - projStart;
-
-  const marcosRaw = cron.filter(r => r['Milestone'] === 'Marco' || r['Milestone'] === 'marco').filter(r => r['Data de Início']).map(r => ({...r, _start: excelDate(r['Data de Início'])})).filter(r => r._start).sort((a, b) => a._start - b._start);
+  const marcosRaw = cron
+    .filter(r => r['Milestone'] === 'Marco' || r['Milestone'] === 'marco')
+    .map(r => ({ ...r, _start: readDate(r, ['Data de Inicio']) }))
+    .filter(r => r._start)
+    .sort((a, b) => a._start - b._start);
 
   function getEapNum(eap) {
     if (eap == null) return 999;
     const n = parseFloat(String(eap).replace(',', '.'));
     return isFinite(n) ? n : 999;
   }
-  const activities = cron.filter(r => !(r['Milestone'] === 'Marco' || r['Milestone'] === 'marco')).filter(r => r['Pacote'] && r['Data de Início']).map(r => ({
-    pacote: String(r['Pacote'] || ''),
-    eap: r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '',
-    eapNum: getEapNum(r['Codigo EAP']),
-    start: excelDate(r['Data de Início'])
-  })).filter(r => r.start);
 
-  function activitiesForMonth(m) {
-    const monthEnd = new Date(m.year, m.monthIdx + 1, 0);
-    return activities.filter(a => a.start >= m.date && a.start <= monthEnd).sort((a, b) => a.eapNum - b.eapNum).slice(0, 2);
+  const activities = cron
+    .filter(r => !(r['Milestone'] === 'Marco' || r['Milestone'] === 'marco'))
+    .filter(r => r['Pacote'])
+    .map(r => ({
+      pacote: String(r['Pacote'] || ''),
+      eap: r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '',
+      eapNum: getEapNum(r['Codigo EAP']),
+      start: readDate(r, ['Data de Inicio'])
+    }))
+    .filter(r => r.start);
+
+  const allCronDates = cron.flatMap(r => [
+    readDate(r, ['Data de Inicio']),
+    readDate(r, ['Data de Vencimento']),
+    readDate(r, ['Data Fim Real'])
+  ].filter(Boolean)).sort((a, b) => a - b);
+
+  if (!allCronDates.length) return;
+
+  const projStart = new Date(allCronDates[0].getFullYear(), allCronDates[0].getMonth(), 1);
+  const lastDate = allCronDates[allCronDates.length - 1];
+  const projEnd = new Date(lastDate.getFullYear(), lastDate.getMonth() + 1, 0);
+  const totalMs = Math.max(1, projEnd - projStart);
+
+  const timelineMonths = [];
+  for (let d = new Date(projStart.getFullYear(), projStart.getMonth(), 1); d <= projEnd; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+    timelineMonths.push({
+      monthIdx: d.getMonth(),
+      year: d.getFullYear(),
+      label: monthsAbbr[d.getMonth()],
+      date: new Date(d.getFullYear(), d.getMonth(), 1),
+      endDate: new Date(d.getFullYear(), d.getMonth() + 1, 0)
+    });
   }
 
-  const today = (typeof window._cronCutoff !== "undefined") ? window._cronCutoff : new Date();
+  function activitiesForMonth(m) {
+    return activities
+      .filter(a => a.start >= m.date && a.start <= m.endDate)
+      .sort((a, b) => a.eapNum - b.eapNum)
+      .slice(0, 2);
+  }
+
+  const today = (typeof window._cronCutoff !== 'undefined') ? window._cronCutoff : new Date();
   let todayPct = 0;
   if (today >= projStart && today <= projEnd) todayPct = ((today - projStart) / totalMs) * 100;
   else if (today > projEnd) todayPct = 100;
 
-  // Use the same progPct computed in updateCronograma (cutoff-aware)
-  const progPct = (typeof window._cronProgPct !== "undefined") ? window._cronProgPct : (marcosRaw.length ? marcosRaw.reduce((s, r) => s + (r['% Progresso'] || 0), 0) / marcosRaw.length * 100 : 0);
+  const progPct = (typeof window._cronProgPct !== 'undefined')
+    ? window._cronProgPct
+    : (marcosRaw.length ? marcosRaw.reduce((sum, r) => sum + (r['% Progresso'] || 0), 0) / marcosRaw.length * 100 : 0);
 
   const tl = document.getElementById('tl-axis');
   if (!tl) return;
 
-  let html = `<div class="tl-progress" style="width:${progPct.toFixed(1)}%"></div><div class="tl-today" style="left:${todayPct.toFixed(1)}%"></div>`;
+  let html = '<div class="tl-progress" style="width:' + progPct.toFixed(1) + '%"></div>' +
+             '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
 
-  let leftStaggerCount = 0;
-  const marcoPositions = marcosRaw.map(m => {
-    let pos;
-    if (m._start < projStart) {
-      pos = 0.5 + leftStaggerCount * 1.5;
-      leftStaggerCount++;
-    } else if (m._start > projEnd) {
-      pos = 99;
-    } else {
-      pos = ((m._start - projStart) / totalMs) * 100;
-      const minInRangePos = 0.5 + leftStaggerCount * 1.5 + 2;
-      if (pos < minInRangePos) pos = minInRangePos;
-    }
-    return Math.min(98, Math.max(0.5, pos));
+  const monthIndexByKey = new Map(
+    timelineMonths.map((m, idx) => [m.year + '-' + m.monthIdx, idx])
+  );
+  const marcosByMonth = new Map();
+  marcosRaw.forEach(m => {
+    const key = m._start.getFullYear() + '-' + m._start.getMonth();
+    if (!marcosByMonth.has(key)) marcosByMonth.set(key, []);
+    marcosByMonth.get(key).push(m);
   });
 
-  const sides = marcoPositions.map(() => 'top');
-  for (let i = 1; i < marcoPositions.length; i++) {
-    const dist = marcoPositions[i] - marcoPositions[i - 1];
-    if (dist < 12) sides[i] = sides[i - 1] === 'top' ? 'bot' : 'top';
-    else sides[i] = 'top';
+  const marcoPositions = marcosRaw.map(m => {
+    if (m._start < projStart) return 0.5;
+    if (m._start > projEnd) return 99;
+
+    const key = m._start.getFullYear() + '-' + m._start.getMonth();
+    const monthIdx = monthIndexByKey.get(key);
+    if (monthIdx == null) return 0.5;
+
+    const monthCenter = ((monthIdx + 0.5) / timelineMonths.length) * 100;
+    const siblings = marcosByMonth.get(key) || [m];
+    const siblingIdx = siblings.indexOf(m);
+    const monthWidth = 100 / timelineMonths.length;
+    const maxSpread = Math.min(monthWidth * 0.28, 2.4);
+    const spreadStep = siblings.length > 1 ? (maxSpread * 2) / (siblings.length - 1) : 0;
+    const offset = siblings.length > 1 ? (-maxSpread + siblingIdx * spreadStep) : 0;
+
+    return Math.min(98, Math.max(0.5, monthCenter + offset));
+  });
+
+  const tlWidthPx = tl.getBoundingClientRect().width || 1200;
+  const labelWidthPct = (150 / tlWidthPx) * 100;
+  const labelGapPct = 0.8;
+  const lanes = ['top', 'bot', 'top2', 'bot2'];
+  const laneEnds = { top: -Infinity, bot: -Infinity, top2: -Infinity, bot2: -Infinity };
+  const sides = marcoPositions.map(pos => {
+    let leftEdge = pos - (labelWidthPct / 2);
+    let rightEdge = pos + (labelWidthPct / 2);
+    if (pos < 5) {
+      leftEdge = pos;
+      rightEdge = pos + labelWidthPct;
+    } else if (pos > 95) {
+      leftEdge = pos - labelWidthPct;
+      rightEdge = pos;
+    }
+
+    let chosen = lanes.find(lane => leftEdge > laneEnds[lane] + labelGapPct);
+    if (!chosen) {
+      chosen = lanes.reduce((best, lane) => laneEnds[lane] < laneEnds[best] ? lane : best, lanes[0]);
+    }
+    laneEnds[chosen] = rightEdge;
+    return chosen;
+  });
+
+  const neighborDistances = marcoPositions.map((pos, i) => {
+    const prev = i > 0 ? pos - marcoPositions[i - 1] : Infinity;
+    const next = i < marcoPositions.length - 1 ? marcoPositions[i + 1] - pos : Infinity;
+    return Math.min(prev, next);
+  });
+
+  function compactLabel(nome, minDist) {
+    const clean = String(nome || '-').trim();
+    const words = clean.split(/\s+/).filter(Boolean);
+    if (minDist < 6 && words.length > 1) {
+      return words[0] + ' ' + words[1].slice(0, 4) + '...';
+    }
+    if (minDist < 9 && words.length > 1) {
+      return words[0] + ' ' + words[1].slice(0, 6) + '...';
+    }
+    return clean.length > 22 ? clean.substring(0, 22) + '...' : clean;
   }
 
   marcosRaw.forEach((m, i) => {
@@ -1798,30 +1882,35 @@ function updateTimeline(cron) {
     const status = (m['Status'] || '').toLowerCase();
     const cls = status.includes('conclu') ? 'done' : status.includes('atraso') || status.includes('atrasad') ? 'late' : status.includes('andamento') ? 'active' : 'upcoming';
     const side = sides[i];
-    const dateStr = m._start.toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'2-digit'});
-    const nome = m['Pacote'] || '—';
-    const nomeCurto = nome.length > 22 ? nome.substring(0, 22) + '…' : nome;
-    const labelStyle = pos < 5 ? `left:${pos.toFixed(1)}%;transform:none;text-align:left;` : pos > 95 ? `left:${pos.toFixed(1)}%;transform:translateX(-100%);text-align:right;` : `left:${pos.toFixed(1)}%`;
-    html += `<div class="tl-milestone ${cls}" style="left:${pos.toFixed(1)}%"></div><div class="tl-label ${side}" style="${labelStyle}"><strong>${nomeCurto}</strong><span${cls === 'late' ? ' style="color:var(--r);font-weight:600"' : ''}>${cls === 'late' ? 'Atrasado · ' : ''}${dateStr}</span></div>`;
+    const nome = m['Pacote'] || '-';
+    const nomeCurto = compactLabel(nome, neighborDistances[i]);
+    const safePos = Math.max((labelWidthPct / 2) + 0.8, Math.min(100 - (labelWidthPct / 2) - 0.8, pos));
+    const labelStyle = 'left:' + safePos.toFixed(1) + '%';
+    html += '<div class="tl-milestone ' + cls + '" style="left:' + pos.toFixed(1) + '%"></div>' +
+      '<div class="tl-label ' + side + '" style="' + labelStyle + '"><strong' +
+      (cls === 'late' ? ' style="color:var(--r)"' : '') + '>' + nomeCurto + '</strong></div>';
   });
   tl.innerHTML = html;
 
   const phasesEl = document.getElementById('tl-phases');
   if (!phasesEl) return;
   phasesEl.className = 'tl-months-bar';
-  phasesEl.style.gridTemplateColumns = 'repeat(' + finMonths.length + ', 1fr)';
-  const monthsHtml = finMonths.map(m => {
+  phasesEl.style.gridTemplateColumns = 'repeat(' + timelineMonths.length + ', 1fr)';
+  phasesEl.innerHTML = timelineMonths.map(m => {
     const acts = activitiesForMonth(m);
     const actsHtml = acts.map(a => {
-      const txt = a.pacote.length > 18 ? a.pacote.substring(0, 18) + '…' : a.pacote;
-      return `<div class="tl-activity" title="${a.eap ? a.eap + ' · ' : ''}${a.pacote.replace(/"/g, '&quot;')}">${txt}</div>`;
+      const txt = a.pacote.length > 18 ? a.pacote.substring(0, 18) + '...' : a.pacote;
+      const title = (a.eap ? a.eap + ' - ' : '') + a.pacote.replace(/"/g, '&quot;');
+      return '<div class="tl-activity" title="' + title + '">' + txt + '</div>';
     }).join('');
-    return `<div class="tl-month-col"><div class="tl-month-label">${m.label}</div><div class="tl-month-year">${m.year}</div><div class="tl-month-activities">${actsHtml}</div></div>`;
+    return '<div class="tl-month-col"><div class="tl-month-label">' + m.label + '</div><div class="tl-month-year">' + m.year + '</div><div class="tl-month-activities">' + actsHtml + '</div></div>';
   }).join('');
-  phasesEl.innerHTML = monthsHtml;
+
+  const tlSub = document.querySelector('[style*="grid-area:tl"] .card-sub');
+  if (tlSub) tlSub.textContent = 'Linha de base vs. real - ' + timelineMonths.length + ' meses';
 }
 
-// ─── TEAM ───
+// ??? TEAM ???
 function updateTeam(recursos) {
   if (!recursos || !recursos.length) return;
   const valid = recursos.filter(r => r['Nome']);
