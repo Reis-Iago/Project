@@ -900,7 +900,7 @@
         <div id="obj-text" style="font-size:11px;color:var(--ink-700);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;">—</div>
       </div>
 
-      <!-- CONCLUSÃO -->
+      <!-- CONCLUS?O -->
       <div class="kpi progress-card" style="grid-area:conc;padding:16px 20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="kpi-label" style="font-size:11px;">Conclusão do Projeto</div>
@@ -978,9 +978,9 @@
             <div class="card-sub" id="chart-sub">BP vs. Realizado Mensal · R$</div>
           </div>
           <div class="legend">
-            <span><i style="background:#dc2626"></i>Realizado</span>
+            <span><i style="background:#16a34a"></i>Realizado</span>
             <span><i style="background:#1f5aa8"></i>BP</span>
-            <span><i style="background:oklch(62% 0.15 80)" class="dashed"></i>EAC</span>
+            <span><i style="background:#16a34a;color:#16a34a" class="dashed"></i>Forecast</span>
           </div>
         </div>
         <div class="chart-wrap" style="height:340px;">
@@ -1061,9 +1061,11 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
+// ================================================
 //  HELPERS
-// ═══════════════════════════════════════════════
+// ================================================
+const _dashboardOpenedAt = new Date();
+
 function excelDate(serial) {
   if (!serial || isNaN(serial)) return null;
   return new Date(Math.round((serial - 25569) * 86400 * 1000));
@@ -1140,28 +1142,28 @@ window.addEventListener('beforeprint', syncSidebarHeights);
 function ragColor(rag) {
   const r = (rag == null ? '' : String(rag)).toLowerCase();
   if (r.includes('verde') || r.includes('prazo') || r === 'g') return 'var(--g)';
-  if (r.includes('ambar') || r.includes('âmbar') || r.includes('aten') || r === 'a') return 'var(--a)';
+  if (r.includes('ambar') || r.includes('?mbar') || r.includes('aten') || r === 'a') return 'var(--a)';
   if (r.includes('vermelho') || r.includes('crít') || r.includes('atras') || r === 'r') return 'var(--r)';
   return '#8797ad';
 }
 function ragLabel(rag) {
   const r = (rag == null ? '' : String(rag)).toLowerCase();
   if (r.includes('verde') || r.includes('prazo') || r === 'g') return 'Verde';
-  if (r.includes('ambar') || r.includes('âmbar') || r.includes('aten') || r === 'a') return 'Âmbar';
+  if (r.includes('ambar') || r.includes('?mbar') || r.includes('aten') || r === 'a') return '?mbar';
   if (r.includes('vermelho') || r.includes('crít') || r.includes('atras') || r === 'r') return 'Vermelho';
   return rag ? String(rag) : '—';
 }
 function ragClass(rag) {
   const r = (rag == null ? '' : String(rag)).toLowerCase();
   if (r.includes('verde') || r.includes('prazo') || r === 'g') return 'g';
-  if (r.includes('ambar') || r.includes('âmbar') || r.includes('aten') || r === 'a') return 'a';
+  if (r.includes('ambar') || r.includes('?mbar') || r.includes('aten') || r === 'a') return 'a';
   if (r.includes('vermelho') || r.includes('crít') || r.includes('atras') || r === 'r') return 'r';
   return '';
 }
 
-// ═══════════════════════════════════════════════
+// ================================================
 //  UPLOAD OVERLAY
-// ═══════════════════════════════════════════════
+// ================================================
 (function buildOverlay() {
   const overlay = document.createElement('div');
   overlay.id = 'upload-overlay';
@@ -1205,9 +1207,9 @@ function ragClass(rag) {
   }
 })();
 
-// ═══════════════════════════════════════════════
+// ================================================
 //  FILE HANDLER
-// ═══════════════════════════════════════════════
+// ================================================
 function handleFile(input) {
   const file = input.files[0];
   if (!file) return;
@@ -1248,9 +1250,9 @@ function sheetToObjects(wb, name) {
   );
 }
 
-// ═══════════════════════════════════════════════
+// ================================================
 //  DASHBOARD UPDATE ORCHESTRATOR
-// ═══════════════════════════════════════════════
+// ================================================
 function updateDashboard(s) {
   _cronData = s.cronograma || [];
   _riscoData = s.risco || [];
@@ -1446,6 +1448,11 @@ function renderFinanceiro(fin, proj) {
     return v == null ? colAt(row, 8) : v;
   }
 
+  function forecastMensal(row) {
+    const v = col(row, 'Forecast');
+    return v == null ? colAt(row, 9) : v;
+  }
+
   // ── All rows sorted by position ──
   const months12 = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const monthsAbbr = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -1481,10 +1488,7 @@ function renderFinanceiro(fin, proj) {
     filterMonthIdx = periodItems.findIndex(p => p.row['__label'] === _selectedMonth);
   }
   if (filterMonthIdx < 0) {
-    for (let i = periodItems.length - 1; i >= 0; i--) {
-      const rl = realizadoMensal(periodItems[i].row);
-      if (rl != null && rl > 0) { filterMonthIdx = i; break; }
-    }
+    filterMonthIdx = periodItems.findIndex(p => p.idx === _dashboardOpenedAt.getMonth() && p.yr === _dashboardOpenedAt.getFullYear());
   }
   if (filterMonthIdx < 0) filterMonthIdx = periodItems.length - 1;
   const refRow = periodItems[filterMonthIdx].row;
@@ -1520,9 +1524,18 @@ function renderFinanceiro(fin, proj) {
 
   const axisLabels = periodItems.map(p => monthsAbbr[p.idx] + '/' + String(p.yr).slice(-2));
   const bpMonthly = periodItems.map(p => bpMensal(p.row) || 0);
-  const realMonthly = periodItems.map((p, i) => i <= filterMonthIdx ? (realizadoMensal(p.row) || 0) : null);
+  const realMonthly = periodItems.map((p, i) => {
+    const real = realizadoMensal(p.row);
+    const forecast = forecastMensal(p.row);
+    if (i > filterMonthIdx) return null;
+    return real == null ? (forecast == null ? 0 : forecast) : real;
+  });
+  const forecastMonthly = periodItems.map(p => {
+    const forecast = forecastMensal(p.row);
+    return forecast == null ? null : forecast;
+  });
 
-  drawFinChart(axisLabels, bpMonthly, realMonthly, filterMonthIdx);
+  drawFinChart(axisLabels, bpMonthly, realMonthly, forecastMonthly, filterMonthIdx);
 }
 
 function fmtM(v) {
@@ -1654,7 +1667,7 @@ function updateCronograma(cron) {
   if (atrasoEl) {
     if (atrasoDias > 0) atrasoEl.innerHTML = '<span style="color:#b45309;font-weight:600;">▼ ' + atrasoDias + ' dias atraso</span>';
     else if (progPct > pvProgClamped) atrasoEl.innerHTML = '<span style="color:#059669;font-weight:600;">▲ Adiantado</span>';
-    else atrasoEl.innerHTML = '<span style="color:#1e40af;font-weight:600;">● No prazo</span>';
+    else atrasoEl.innerHTML = '<span style="color:#1e40af;font-weight:600;">? No prazo</span>';
   }
 
   const spiRows = cron.filter(r => r['SPI '] != null && isFinite(r['SPI ']) && r['SPI '] > 0 && r['SPI '] < 10);
@@ -1736,10 +1749,25 @@ function updateTimeline(cron) {
     }
     return null;
   };
+  const readFirstDate = (row, groups) => {
+    for (const names of groups) {
+      const d = readDate(row, names);
+      if (d) return d;
+    }
+    return null;
+  };
 
   const marcosRaw = cron
     .filter(r => r['Milestone'] === 'Marco' || r['Milestone'] === 'marco')
-    .map(r => ({ ...r, _start: readDate(r, ['Data de Inicio']) }))
+    .map(r => ({
+      ...r,
+      _start: readFirstDate(r, [
+        ['Data de Inicio'],
+        ['Data de Vencimento'],
+        ['Data Fim Planejada Projetada'],
+        ['Data Fim Real']
+      ])
+    }))
     .filter(r => r._start)
     .sort((a, b) => a._start - b._start);
 
@@ -1763,6 +1791,7 @@ function updateTimeline(cron) {
   const allCronDates = cron.flatMap(r => [
     readDate(r, ['Data de Inicio']),
     readDate(r, ['Data de Vencimento']),
+    readDate(r, ['Data Fim Planejada Projetada']),
     readDate(r, ['Data Fim Real'])
   ].filter(Boolean)).sort((a, b) => a - b);
 
@@ -1885,7 +1914,11 @@ function updateTimeline(cron) {
     const nome = m['Pacote'] || '-';
     const nomeCurto = compactLabel(nome, neighborDistances[i]);
     const safePos = Math.max((labelWidthPct / 2) + 0.8, Math.min(100 - (labelWidthPct / 2) - 0.8, pos));
-    const labelStyle = 'left:' + safePos.toFixed(1) + '%';
+    const labelStyle = pos < (labelWidthPct / 2) + 1
+      ? 'left:' + Math.max(0.8, pos - 0.2).toFixed(1) + '%;transform:none;text-align:left;'
+      : pos > 100 - ((labelWidthPct / 2) + 1)
+        ? 'left:' + Math.min(99.2, pos + 0.2).toFixed(1) + '%;transform:translateX(-100%);text-align:right;'
+        : 'left:' + safePos.toFixed(1) + '%';
     html += '<div class="tl-milestone ' + cls + '" style="left:' + pos.toFixed(1) + '%"></div>' +
       '<div class="tl-label ' + side + '" style="' + labelStyle + '"><strong' +
       (cls === 'late' ? ' style="color:var(--r)"' : '') + '>' + nomeCurto + '</strong></div>';
@@ -2036,10 +2069,10 @@ function updateNextp(passos) {
 
 
 
-// ═══════════════════════════════════════════════
+// ================================================
 //  CHART: BP vs Realizado + EAC
-// ═══════════════════════════════════════════════
-function drawFinChart(months, planArr, realArr, filterIdx) {
+// ================================================
+function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   const svg = document.getElementById('lineChart');
   if (!svg) return;
 
@@ -2047,7 +2080,7 @@ function drawFinChart(months, planArr, realArr, filterIdx) {
   const chartW = W - PL - PR;
   const chartH = H - PT - PB;
   const fmtY = v => v >= 1e6 ? (v/1e6).toFixed(1).replace('.',',') + 'M' : v >= 1e3 ? (v/1e3).toFixed(1).replace('.',',') + 'k' : v.toFixed(0);
-  const allVals = [...planArr, ...realArr].filter(v => v != null && isFinite(v));
+  const allVals = [...planArr, ...realArr, ...forecastArr].filter(v => v != null && isFinite(v));
   const yMaxRaw = allVals.length ? Math.max(...allVals) : 0;
   const yMax = yMaxRaw > 0 ? yMaxRaw * 1.12 : 1000;
 
@@ -2064,14 +2097,36 @@ function drawFinChart(months, planArr, realArr, filterIdx) {
     }
     return d;
   };
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+  const overlaps = (a, b) => !(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y);
+  const buildLabel = (p, text, theme, prefs, placed) => {
+    const w = Math.max(46, text.length * 7 + 18);
+    const h = 20;
+    const candidates = {
+      above:    () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 28, PT + 2, H - PB - h - 2) }),
+      below:    () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 10, PT + 2, H - PB - h - 2) }),
+      right:    () => ({ x: clamp(p.x + 10, PL + 2, W - PR - w - 2), y: clamp(p.y - 12, PT + 2, H - PB - h - 2) }),
+      left:     () => ({ x: clamp(p.x - w - 10, PL + 2, W - PR - w - 2), y: clamp(p.y - 12, PT + 2, H - PB - h - 2) }),
+      aboveFar: () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 44, PT + 2, H - PB - h - 2) }),
+      belowFar: () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 24, PT + 2, H - PB - h - 2) })
+    };
+    for (const pref of prefs) {
+      const pos = (candidates[pref] || candidates.above)();
+      const box = { x: pos.x, y: pos.y, w, h };
+      if (!placed.some(prev => overlaps(box, prev))) return box;
+    }
+    const fallback = candidates.above();
+    return { x: fallback.x, y: fallback.y, w, h };
+  };
+  const renderLabel = (box, text, theme) => {
+    return `<rect x="${box.x.toFixed(1)}" y="${box.y.toFixed(1)}" width="${box.w.toFixed(1)}" height="${box.h}" rx="3" fill="${theme.fill}" stroke="${theme.stroke}" stroke-width="0.8"/><text x="${(box.x + box.w/2).toFixed(1)}" y="${(box.y + 14).toFixed(1)}" font-size="11" fill="${theme.text}" text-anchor="middle" font-family="Inter" font-weight="700">${text}</text>`;
+  };
 
   let out = '';
 
   for (let i = 0; i <= 4; i++) {
     const y = PT + chartH * (i / 4);
-    const v = yMax * (1 - i / 4);
     out += `<line x1="${PL}" y1="${y.toFixed(1)}" x2="${W-PR}" y2="${y.toFixed(1)}" stroke="#eef2f7" stroke-width="1"/>`;
-    out += `<text x="${PL-8}" y="${(y+4).toFixed(1)}" font-size="13" fill="#a0aec0" text-anchor="end" font-family="Inter">R$${fmtY(v)}</text>`;
   }
 
   const labelStep = months.length > 18 ? Math.ceil(months.length / 12) : 1;
@@ -2088,52 +2143,69 @@ function drawFinChart(months, planArr, realArr, filterIdx) {
 
   const planPts = planArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
   const realPts = realArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
+  const forecastPts = forecastArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
   const planPastPts = planPts.filter(p => p.i <= filterIdx);
   const planFuturePts = planPts.filter(p => p.i >= filterIdx);
+  const forecastFuturePts = [];
+  if (filterIdx >= 0 && filterIdx < months.length) {
+    for (let i = filterIdx; i < months.length; i++) {
+      const v = i === filterIdx ? (realArr[i] != null ? realArr[i] : forecastArr[i]) : forecastArr[i];
+      if (v == null) continue;
+      forecastFuturePts.push({ x: X(i), y: Y(v), v, i });
+    }
+  }
 
-  // Explicit zero baseline so BP=0 remains visually readable.
   const zeroY = Y(0);
   out += `<line x1="${PL}" y1="${zeroY.toFixed(1)}" x2="${W-PR}" y2="${zeroY.toFixed(1)}" stroke="#cbd5e1" stroke-width="1.2"/>`;
 
   if (planPastPts.length >= 2) out += `<path d="${pathFrom(planPastPts)}" fill="none" stroke="#2563eb" stroke-width="2.4"/>`;
   if (planFuturePts.length >= 2) out += `<path d="${pathFrom(planFuturePts)}" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-dasharray="6 5"/>`;
-  if (realPts.length >= 2) out += `<path d="${pathFrom(realPts)}" fill="none" stroke="#dc2626" stroke-width="2.8"/>`;
+  if (realPts.length >= 2) out += `<path d="${pathFrom(realPts)}" fill="none" stroke="#16a34a" stroke-width="2.8"/>`;
+  if (forecastFuturePts.length >= 2) out += `<path d="${pathFrom(forecastFuturePts)}" fill="none" stroke="#16a34a" stroke-width="2.8" stroke-dasharray="6 5"/>`;
 
   planPts.forEach((p, i) => {
     const current = i === planPts.length - 1;
     out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${current ? 4.4 : 3.4}" fill="#fff" stroke="#2563eb" stroke-width="${current ? 2.2 : 1.8}"/>`;
   });
-
   realPts.forEach((p, i) => {
     const current = i === realPts.length - 1;
-    out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${current ? 4.6 : 3.6}" fill="#fff" stroke="#dc2626" stroke-width="${current ? 2.6 : 2}"/>`;
+    out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${current ? 4.6 : 3.6}" fill="#fff" stroke="#16a34a" stroke-width="${current ? 2.6 : 2}"/>`;
+  });
+  forecastFuturePts.filter(p => p.i > filterIdx).forEach((p, i, arr) => {
+    const current = i === arr.length - 1;
+    out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${current ? 4.4 : 3.4}" fill="#f0fdf4" stroke="#16a34a" stroke-width="${current ? 2.4 : 1.8}"/>`;
   });
 
-  const lastPlan = planPts.length ? planPts[planPts.length - 1] : null;
-  if (lastPlan) {
-    const lbl = 'BP R$ ' + fmtY(lastPlan.v);
-    const bw = lbl.length * 7 + 18;
-    const bx = Math.min(W - PR - bw/2 - 2, Math.max(PL + bw/2 + 2, lastPlan.x));
-    out += `<rect x="${(bx-bw/2).toFixed(1)}" y="${(lastPlan.y+8).toFixed(1)}" width="${bw.toFixed(1)}" height="20" rx="3" fill="#dbeafe" stroke="#2563eb" stroke-width="0.6"/>`;
-    out += `<text x="${bx.toFixed(1)}" y="${(lastPlan.y+22).toFixed(1)}" font-size="11" fill="#1d4ed8" text-anchor="middle" font-family="Inter" font-weight="700">${lbl}</text>`;
-  }
+  const placed = [];
+  const labelsByMonth = new Map();
+  const addLabel = (pts, order, textFn, theme, prefs) => {
+    pts.forEach(p => {
+      if (p.i > filterIdx || !p.v) return;
+      if (!labelsByMonth.has(p.i)) labelsByMonth.set(p.i, []);
+      labelsByMonth.get(p.i).push({ p, order, text: textFn(p.v), theme, prefs });
+    });
+  };
 
-  const lastReal = realPts.length ? realPts[realPts.length - 1] : null;
-  if (lastReal) {
-    const lbl = 'R$ ' + fmtY(lastReal.v);
-    const bw = lbl.length * 7 + 18;
-    const bx = Math.min(W - PR - bw/2 - 2, Math.max(PL + bw/2 + 2, lastReal.x + 34));
-    out += `<rect x="${(bx-bw/2).toFixed(1)}" y="${(lastReal.y-14).toFixed(1)}" width="${bw.toFixed(1)}" height="22" rx="3" fill="#dc2626"/>`;
-    out += `<text x="${bx.toFixed(1)}" y="${(lastReal.y+1).toFixed(1)}" font-size="12" fill="#fff" text-anchor="middle" font-family="Inter" font-weight="700">${lbl}</text>`;
+  addLabel(planPts, 2, v => fmtM(v), { fill: '#dbeafe', stroke: '#2563eb', text: '#1d4ed8' }, ['below', 'right', 'left', 'above', 'belowFar', 'aboveFar']);
+  addLabel(realPts, 0, v => fmtM(v), { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }, ['above', 'right', 'left', 'below', 'aboveFar', 'belowFar']);
+
+  for (let i = 0; i <= filterIdx; i++) {
+    const items = labelsByMonth.get(i) || [];
+    items.sort((a, b) => a.order - b.order);
+    items.forEach(item => {
+      const box = buildLabel(item.p, item.text, item.theme, item.prefs, placed);
+      placed.push(box);
+      out += renderLabel(box, item.text, item.theme);
+    });
   }
 
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.innerHTML = out;
 
   const legend = document.querySelectorAll('.legend span');
-  if (legend[0]) { legend[0].style.display = ''; legend[0].childNodes[legend[0].childNodes.length-1].textContent = 'Realizado'; legend[0].querySelector('i').style.background = '#dc2626'; }
+  if (legend[0]) { legend[0].style.display = ''; legend[0].childNodes[legend[0].childNodes.length-1].textContent = 'Realizado'; const icon = legend[0].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
   if (legend[1]) { legend[1].style.display = ''; legend[1].childNodes[legend[1].childNodes.length-1].textContent = 'BP'; legend[1].querySelector('i').style.background = '#2563eb'; }
-  if (legend[2]) legend[2].style.display = 'none';
+  if (legend[2]) { legend[2].style.display = ''; legend[2].childNodes[legend[2].childNodes.length-1].textContent = 'Forecast'; const icon = legend[2].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
 
   const sub = document.getElementById('chart-sub');
   if (sub) sub.textContent = 'Valores mensais em R$ - ' + months[0] + ' - ' + months[Math.min(filterIdx, months.length - 1)];
@@ -2143,10 +2215,11 @@ function drawFinChart(months, planArr, realArr, filterIdx) {
 function drawDonut() {}
 
 // Init empty chart on load
-drawFinChart(['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], new Array(12).fill(0), new Array(12).fill(null), 11);
+drawFinChart(['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], new Array(12).fill(0), new Array(12).fill(null), new Array(12).fill(null), 11);
 window.addEventListener('resize', () => requestAnimationFrame(syncSidebarHeights));
 </script>
 
 
 
 </body></html>
+
