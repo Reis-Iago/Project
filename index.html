@@ -1667,7 +1667,7 @@ function updateCronograma(cron) {
   if (atrasoEl) {
     if (atrasoDias > 0) atrasoEl.innerHTML = '<span style="color:#b45309;font-weight:600;">▼ ' + atrasoDias + ' dias atraso</span>';
     else if (progPct > pvProgClamped) atrasoEl.innerHTML = '<span style="color:#059669;font-weight:600;">▲ Adiantado</span>';
-    else atrasoEl.innerHTML = '<span style="color:#1e40af;font-weight:600;">? No prazo</span>';
+    else atrasoEl.innerHTML = '<span style="color:#1e40af;font-weight:600;">No prazo</span>';
   }
 
   const spiRows = cron.filter(r => r['SPI '] != null && isFinite(r['SPI ']) && r['SPI '] > 0 && r['SPI '] < 10);
