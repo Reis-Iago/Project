@@ -1694,6 +1694,7 @@ function updateRAG(cron, risco) {
   const spiRows = cron.filter(r => r['SPI '] != null && isFinite(r['SPI ']) && r['SPI '] > 0 && r['SPI '] < 10);
   const spiAvg = spiRows.length ? spiRows.reduce((s, r) => s + r['SPI '], 0) / spiRows.length : null;
   const cronRag = ragByRatio(spiAvg);
+  if (cronRag.cls === 'b') cronRag.label = 'No prazo';
   applyRagCell('rag-cron-cell', 'rag-cron', cronRag);
 
   let cpiVal = null;
@@ -1703,6 +1704,7 @@ function updateRAG(cron, risco) {
     if (refRow) cpiVal = refRow['CPI '] || refRow['CPI'];
   } catch(e) {}
   const finRag = ragByRatio(cpiVal);
+  if (finRag.cls === 'b') finRag.label = 'Otimo';
   applyRagCell('rag-fin-cell', 'rag-fin', finRag);
 
   let riskRag = { cls: 'g', label: 'Baixo', color: '#059669' };
