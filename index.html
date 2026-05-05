@@ -1685,9 +1685,23 @@ function updateRAG(cron, risco) {
 
   let cpiVal = null;
   try {
-    const finRows = (typeof _allFinData !== 'undefined' ? _allFinData : []).filter(r => (r['AC (Acumulado Realizado) '] || 0) > 0 || (r['Realizado Mensal'] || 0) > 0);
-    const refRow = finRows[finRows.length - 1];
-    if (refRow) cpiVal = refRow['CPI '] || refRow['CPI'];
+    const finRows = (typeof _allFinData !== 'undefined' ? _allFinData : []).filter(r => {
+      const ac = Number(r['AC (Acumulado Realizado) '] ?? r['AC (Acumulado Realizado)'] ?? 0);
+      const real = Number(r['Realizado Mensal'] ?? 0);
+      const cpi = Number(r['CPI '] ?? r['CPI']);
+      return (ac > 0 || real > 0 || isFinite(cpi));
+    });
+    let refRow = null;
+    if (typeof _selectedMonth !== 'undefined' && _selectedMonth) {
+      refRow = finRows.find(r => r['__label'] === _selectedMonth) || null;
+    }
+    if (!refRow) {
+      refRow = [...finRows].reverse().find(r => isFinite(Number(r['CPI '] ?? r['CPI']))) || finRows[finRows.length - 1] || null;
+    }
+    if (refRow) {
+      const cpiNum = Number(refRow['CPI '] ?? refRow['CPI']);
+      cpiVal = isFinite(cpiNum) ? cpiNum : null;
+    }
   } catch(e) {}
   const finRag = ragByRatio(cpiVal);
   if (finRag.cls === 'b') finRag.label = 'Otimo';
@@ -1990,12 +2004,19 @@ function updateRiscos(risco) {
     const status = r['Status do Evento'] || '';
     const score = Number(r['Score']) || 0;
     const resp = r['Responsável Execução'] || '';
-    // Color by score: high=red, mid=orange, low=green
     let dot, scoreColor;
-    if (score >= 15)      { dot = '#dc2626'; scoreColor = '#991b1b'; }
-    else if (score >= 8)  { dot = '#f59e0b'; scoreColor = '#92400e'; }
-    else if (score > 0)   { dot = '#10b981'; scoreColor = '#065f46'; }
-    else                  { dot = '#cbd5e1'; scoreColor = '#64748b'; }
+    const statusNorm = String(status || '').trim().toLowerCase();
+    if (statusNorm.includes('materializado')) dot = '#dc2626';
+    else if (statusNorm.includes('monitor')) dot = '#f59e0b';
+    else if (statusNorm.includes('mitig')) dot = '#10b981';
+    else if (score >= 15)      dot = '#dc2626';
+    else if (score >= 8)       dot = '#f59e0b';
+    else if (score > 0)        dot = '#10b981';
+    else                       dot = '#cbd5e1';
+    if (score >= 15)      scoreColor = '#991b1b';
+    else if (score >= 8)  scoreColor = '#92400e';
+    else if (score > 0)   scoreColor = '#065f46';
+    else                  scoreColor = '#64748b';
     const nomeCurto = String(nome).length > 50 ? String(nome).substring(0, 50) + '…' : nome;
     return `<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);">
       <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};margin-top:5px;flex-shrink:0;"></span>
