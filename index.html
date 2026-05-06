@@ -906,10 +906,8 @@
           <div id="prog-fill" style="position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#10b981,#059669);border-radius:6px;transition:width .3s;"></div>
           <div id="prog-marker" style="position:absolute;top:-4px;left:0%;width:3px;height:20px;background:#0f172a;border-radius:1px;transition:left .3s;" title="Planejado"></div>
         </div>
-        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;color:var(--ink-500);">
-          <span id="prog-real" style="text-align:left;">Real —%</span>
-          <span id="prog-plan" style="text-align:center;">Plan. —%</span>
-          <span style="text-align:right;">Meta 100%</span>
+        <div id="prog-plan-wrap" style="position:relative;height:18px;margin-top:8px;font-size:10.5px;color:var(--ink-500);overflow:visible;">
+          <span id="prog-plan" style="position:absolute;left:0;top:0;color:#000;font-weight:700;font-size:11.5px;white-space:nowrap;">Plan. ?%</span>
         </div>
       </div>
 
@@ -1487,22 +1485,20 @@ function renderFinanceiro(fin, proj) {
   const ac  = col(refRow, 'AC (Acumulado Realizado)') || col(refRow, 'AC (Acumulado Realizado) ') || 0;
 
   // ── FULL YEAR card ──
-  const fyPct = bac > 0 ? (eac - bac) / bac * 100 : 0;
-  const fyB   = ragBadge(fyPct, 'Real + Forecast x BP');
+  const fyPct = bac > 0 ? (eac / bac) * 100 : 0;
   const fyBadge = document.getElementById('fy-badge');
-  if (fyBadge) { fyBadge.textContent = fyB.txt; fyBadge.style.background = fyB.bg; fyBadge.style.color = fyB.color; }
-  setHtml('fy-budget', '<span>' + fmtM(bac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">BP</span>');
+  if (fyBadge) { fyBadge.textContent = fyPct.toFixed(1).replace('.', ',') + '% Real + Forecast x BP'; fyBadge.style.background = '#d1fae5'; fyBadge.style.color = '#065f46'; fyBadge.style.display = 'inline-block'; }
+  setHtml('fy-budget', '<span>' + fmtM(eac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Real + Forecast</span>');
   const fyEacEl = document.getElementById('fy-eac');
-  if (fyEacEl) fyEacEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(eac) + '</strong> <span style="font-size:11px;color:#333">Real + Forecast</span>';
+  if (fyEacEl) fyEacEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(bac) + '</strong> <span style="font-size:11px;color:#333">BP</span>';
 
   // ── YEAR TO DATE card ──
-  const ytdPct = pv > 0 ? (ac - pv) / pv * 100 : (ac > 0 ? 100 : 0);
-  const ytdB   = ragBadge(ac > pv ? ytdPct : -(Math.abs(ytdPct)), 'Planejado x Realizado');
+  const ytdPct = pv > 0 ? (ac / pv) * 100 : (ac > 0 ? 100 : 0);
   const ytdBadge = document.getElementById('ytd-badge');
-  if (ytdBadge) { ytdBadge.textContent = ytdB.txt; ytdBadge.style.background = ytdB.bg; ytdBadge.style.color = ytdB.color; }
-  setHtml('ytd-pv', '<span>' + fmtM(pv) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">BP</span>');
+  if (ytdBadge) { ytdBadge.textContent = ytdPct.toFixed(1).replace('.', ',') + '% Planejado x Realizado'; ytdBadge.style.background = '#d1fae5'; ytdBadge.style.color = '#065f46'; ytdBadge.style.display = 'inline-block'; }
+  setHtml('ytd-pv', '<span>' + fmtM(ac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Realizado</span>');
   const ytdAcEl = document.getElementById('ytd-ac');
-  if (ytdAcEl) ytdAcEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(ac) + '</strong> <span style="font-size:11px;color:#333">Realizado</span>';
+  if (ytdAcEl) ytdAcEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(pv) + '</strong> <span style="font-size:11px;color:#333">BP</span>';
 
   // ── Período subheader ──
   const periodLabels = periodItems.map(p => months12[p.idx] + ' ' + p.yr);
@@ -1623,12 +1619,23 @@ function updateCronograma(cron) {
   set('prog-pill', 'SPI ' + spiCutoff.toFixed(2));
   set('prog-real', 'Real ' + progPct + '%');
   set('prog-plan', 'Plan. ' + pvProgClamped + '%');
-
   const fill = document.getElementById('prog-fill');
   if (fill) fill.style.width = progPct + '%';
   const marker = document.getElementById('prog-marker');
   if (marker) { marker.style.left = 'calc(' + pvProgClamped + '% - 1.5px)'; marker.title = 'Planejado ' + pvProgClamped + '%'; }
-
+  const planEl = document.getElementById('prog-plan');
+  const planWrap = document.getElementById('prog-plan-wrap');
+  if (planEl && planWrap) {
+    planEl.textContent = 'Plan. ' + pvProgClamped + '%';
+    const wrapW = planWrap.clientWidth || 0;
+    const labelW = planEl.offsetWidth || 0;
+    const markerX = wrapW * (pvProgClamped / 100);
+    let leftPx = markerX - (labelW / 2);
+    if (pvProgClamped <= 0) leftPx = 0;
+    else if (pvProgClamped >= 100) leftPx = Math.max(0, wrapW - labelW);
+    else leftPx = Math.max(0, Math.min(leftPx, wrapW - labelW));
+    planEl.style.left = leftPx + 'px';
+  }
   const progPill = document.getElementById('prog-pill');
   if (progPill) {
     // RAG pattern: green > 1.02, blue 0.95-1.02, orange < 0.95
