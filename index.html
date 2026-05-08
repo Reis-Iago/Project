@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8">
 <title>One Page Report — Executivo</title>
@@ -431,11 +431,11 @@
 </style>
 <style>
   :root{
-    --blue-900:#0b3d7a;
-    --blue-800:#144b8f;
-    --blue-700:#1f5aa8;
-    --blue-600:#2a6bbd;
-    --blue-50:#eef4fb;
+    --blue-900:#00558C;
+    --blue-800:#005F96;
+    --blue-700:#0075A9;
+    --blue-600:#13AFD4;
+    --blue-50:#E6F5FA;
     --ink-900:#0f1b2d;
     --ink-700:#29384d;
     --ink-500:#5b6b82;
@@ -443,12 +443,12 @@
     --line:#e3e9f1;
     --bg:#f3f5f8;
     --card:#ffffff;
-    --g:oklch(62% 0.14 150);
-    --a:oklch(75% 0.15 80);
-    --r:oklch(60% 0.18 28);
-    --g-soft:oklch(94% 0.05 150);
-    --a-soft:oklch(95% 0.06 80);
-    --r-soft:oklch(94% 0.05 28);
+    --g:#78BE00;
+    --a:#FFCD00;
+    --r:#FF9E18;
+    --g-soft:#EAF7D0;
+    --a-soft:#FFF4C7;
+    --r-soft:#FFE6BF;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:#dfe4ec;font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--ink-900);-webkit-font-smoothing:antialiased}
@@ -540,9 +540,10 @@
   .content{display:grid;gap:14px}
   .rsidebar{display:flex;flex-direction:column;gap:12px;min-width:0}
   .team-top{display:grid;grid-template-columns:minmax(116px,130px) minmax(0,1fr);gap:10px}
-  .side-card,.risk-card,.nextp-card{min-width:0}
+  .side-card,.delivery-card,.risk-card,.nextp-card{min-width:0}
   .team-top .card{height:100%}
-  .risk-card .card,.nextp-card .card{height:100%}
+  .delivery-card .card,.risk-card .card,.nextp-card .card{height:100%}
+  .bottom-stack{display:flex;flex-direction:column;gap:12px;min-width:0}
   .team-roles{display:flex;flex-direction:column;gap:2px;min-width:0}
 
   .card{
@@ -720,7 +721,7 @@
     padding:6px 10px;font-size:10.5px;font-weight:600;border-radius:4px;
     display:flex;justify-content:space-between;align-items:center;
   }
-  .phase.done{background:#e2ebf7;color:var(--blue-800)}
+  .phase.done{background:#E6F5FA;color:var(--blue-800)}
   .phase.active{background:var(--blue-700);color:#fff}
   .phase.future{background:#f6f8fb;color:var(--ink-400)}
   .phase em{font-style:normal;opacity:.7;font-size:9.5px;font-weight:500}
@@ -769,18 +770,18 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 <style>
   #upload-overlay{position:fixed;inset:0;background:rgba(15,25,45,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:9999;}
-  .pill-b{background:#dbeafe;color:#1f5aa8}
+  .pill-b{background:#E6F5FA;color:#0075A9}
   .pill-r{background:oklch(97% 0.03 20);color:oklch(42% 0.18 20)}
 </style>
 <style>
-  .rag-cell.active.b{background:#dbeafe !important;border-color:#93c5fd !important;}
-  .rag-cell.active.b .rag-label,.rag-cell.active.b .rag-note{color:#1e40af !important;}
+  .rag-cell.active.b{background:#E6F5FA !important;border-color:#13AFD4 !important;}
+  .rag-cell.active.b .rag-label,.rag-cell.active.b .rag-note{color:#005F96 !important;}
   .tl-months-bar{display:grid;gap:2px;margin-top:42px;padding:0 4px;}
   .tl-month-col{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:10px;color:var(--ink-500);}
   .tl-month-label{font-weight:600;color:var(--ink-700);margin-bottom:4px;font-size:10.5px;}
   .tl-month-year{font-size:9px;color:var(--ink-400);margin-bottom:6px;}
   .tl-month-activities{display:flex;flex-direction:column;gap:2px;font-size:9px;color:var(--ink-500);line-height:1.3;width:100%;overflow:hidden;}
-  .tl-activity{padding:3px 6px;background:#1f5aa8;color:#fff;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;font-size:9.5px;}
+  .tl-activity{padding:3px 6px;background:#0075A9;color:#fff;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;font-size:9.5px;}
   .tl-activity .eap{color:#cfe2ff;font-weight:700;margin-right:3px;}
 </style>
 <style>
@@ -876,7 +877,7 @@
       <div style="font-size:15px;font-weight:700;color:#1a2740;margin-bottom:20px;">Filtrar por Mês de Referência</div>
       <div id="filter-options" style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;"></div>
       <div style="display:flex;gap:8px;margin-top:20px;">
-        <button onclick="applyFilter()" style="flex:1;background:#1f5aa8;color:#fff;border:none;border-radius:6px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;">Aplicar</button>
+        <button onclick="applyFilter()" style="flex:1;background:#0075A9;color:#fff;border:none;border-radius:6px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;">Aplicar</button>
         <button onclick="closeFilter()" style="flex:1;background:#f4f6f9;color:#29384d;border:none;border-radius:6px;padding:9px;font-size:13px;cursor:pointer;">Cancelar</button>
       </div>
     </div>
@@ -896,14 +897,13 @@
       <div class="kpi progress-card" style="grid-area:conc;padding:16px 20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="kpi-label" style="font-size:11px;">Conclusão do Projeto</div>
-          <span id="prog-pill" class="kpi-pill" style="background:#d1fae5;color:#065f46;">—%</span>
         </div>
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
           <div id="prog-val" style="font-size:38px;font-weight:800;color:#1a2740;line-height:1;">—<span style="font-size:24px;">%</span></div>
           <div id="prog-atraso" style="font-size:12px;color:var(--ink-500);font-weight:500;">—</div>
         </div>
         <div style="position:relative;height:12px;background:#eef2f7;border-radius:6px;overflow:visible;">
-          <div id="prog-fill" style="position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#10b981,#059669);border-radius:6px;transition:width .3s;"></div>
+          <div id="prog-fill" style="position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#00B8B0,#78BE00);border-radius:6px;transition:width .3s;"></div>
           <div id="prog-marker" style="position:absolute;top:-4px;left:0%;width:3px;height:20px;background:#0f172a;border-radius:1px;transition:left .3s;" title="Planejado"></div>
         </div>
         <div id="prog-plan-wrap" style="position:relative;height:18px;margin-top:8px;font-size:10.5px;color:var(--ink-500);overflow:visible;">
@@ -914,7 +914,7 @@
       <!-- RAG -->
       <div class="card" style="grid-area:rag;">
         <div class="card-head">
-          <div><div class="card-title">RAG · Status Geral</div><div class="card-sub">Avaliação por dimensão</div></div>
+          <div><div class="card-title">Saude Geral do Projeto</div><div class="card-sub">Avaliação por dimensão</div></div>
           <div class="rag-dot" id="rag-global" style="font-size:11px;font-weight:700"><i></i>—</div>
         </div>
         <div class="rag" id="rag-cells">
@@ -969,7 +969,7 @@
           </div>
           <div class="legend">
             <span><i style="background:#16a34a"></i>Realizado</span>
-            <span><i style="background:#1f5aa8"></i>BP</span>
+            <span><i style="background:#0075A9"></i>BP</span>
             <span><i style="background:#16a34a;color:#16a34a" class="dashed"></i>Forecast</span>
           </div>
         </div>
@@ -1018,22 +1018,33 @@
           <div id="team-roles" class="team-roles"></div>
         </div>
     </div>
-    <!-- Riscos e Bloqueios -->
-    <div class="risk-card" style="min-height:280px;">
+    <!-- Entregas do Mes -->
+    <div class="delivery-card" style="min-height:280px;">
       <div class="card" >
         <div class="card-head">
-          <div><div class="card-title">Riscos e Bloqueios</div><div class="card-sub" id="risk-summary"></div></div>
+          <div><div class="card-title">Entregas do Mes</div><div class="card-sub">Entregas previstas no mes</div></div>
         </div>
-        <div id="risk-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os riscos.</div>
+        <div id="delivery-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as entregas.</div>
       </div>
     </div>
-    <!-- Próximos Passos -->
-    <div class="nextp-card" style="min-height:240px;">
-      <div class="card" >
-        <div class="card-head">
-          <div><div class="card-title">Próximos Passos</div><div class="card-sub">Ações e responsáveis</div></div>
+    <div class="bottom-stack">
+      <!-- Proximos Passos -->
+      <div class="nextp-card" style="min-height:114px;">
+        <div class="card" >
+          <div class="card-head">
+            <div><div class="card-title">Proximos Passos</div><div class="card-sub">Acoes e responsaveis</div></div>
+          </div>
+          <div id="nextp-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as acoes.</div>
         </div>
-        <div id="nextp-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as ações.</div>
+      </div>
+      <!-- Riscos e Bloqueios -->
+      <div class="risk-card" style="min-height:114px;">
+        <div class="card" >
+          <div class="card-head">
+            <div><div class="card-title">Riscos e Bloqueios</div><div class="card-sub" id="risk-summary"></div></div>
+          </div>
+          <div id="risk-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os riscos.</div>
+        </div>
       </div>
     </div>
   </aside>
@@ -1092,9 +1103,11 @@ function normalizeYear(v) {
 function syncSidebarHeights() {
   const content = document.querySelector('.content');
   const team = document.querySelector('.team-top');
+  const delivery = document.querySelector('.delivery-card');
+  const stack = document.querySelector('.bottom-stack');
   const risk = document.querySelector('.risk-card');
   const next = document.querySelector('.nextp-card');
-  if (!content || !team || !risk || !next) return;
+  if (!content || !team || !delivery || !stack || !risk || !next) return;
 
   const children = Array.from(content.children);
   const topEls = children.filter(el => ['obj', 'conc', 'rag'].includes((el.style.gridArea || '').trim()));
@@ -1104,12 +1117,17 @@ function syncSidebarHeights() {
   const topH = Math.max(...topEls.map(el => el.offsetHeight).filter(Boolean));
   if (topH) team.style.minHeight = topH + 'px';
   if (timeline && timeline.offsetHeight) {
-    risk.style.height = timeline.offsetHeight + 'px';
-    risk.style.minHeight = timeline.offsetHeight + 'px';
+    delivery.style.height = timeline.offsetHeight + 'px';
+    delivery.style.minHeight = timeline.offsetHeight + 'px';
   }
   if (chart && chart.offsetHeight) {
-    next.style.height = chart.offsetHeight + 'px';
-    next.style.minHeight = chart.offsetHeight + 'px';
+    stack.style.height = chart.offsetHeight + 'px';
+    stack.style.minHeight = chart.offsetHeight + 'px';
+    const half = Math.max(110, Math.floor((chart.offsetHeight - 12) / 2));
+    next.style.height = half + 'px';
+    risk.style.height = half + 'px';
+    next.style.minHeight = half + 'px';
+    risk.style.minHeight = half + 'px';
   }
 }
 
@@ -1157,7 +1175,7 @@ function ragClass(rag) {
   `;
   overlay.innerHTML = `
     <div style="background:#fff;border-radius:16px;padding:48px 56px;text-align:center;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.3);">
-      <div style="width:64px;height:64px;background:#1f5aa8;border-radius:16px;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:64px;height:64px;background:#0075A9;border-radius:16px;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
@@ -1171,10 +1189,10 @@ function ragClass(rag) {
         Os dados são processados localmente — nenhum arquivo é enviado.
       </div>
       <label id="upload-btn" style="
-        display:inline-block;background:#1f5aa8;color:#fff;padding:12px 28px;
+        display:inline-block;background:#0075A9;color:#fff;padding:12px 28px;
         border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;
         transition:background 0.2s;
-      " onmouseover="this.style.background='#163f7a'" onmouseout="this.style.background='#1f5aa8'">
+      " onmouseover="this.style.background='#00558C'" onmouseout="this.style.background='#0075A9'">
         Selecionar arquivo
         <input type="file" accept=".xlsx,.xls" style="display:none" onchange="handleFile(this)">
       </label>
@@ -1209,6 +1227,7 @@ function handleFile(input) {
         risco:          sheetToObjects(wb, 'Risco'),
         recursos:       sheetToObjects(wb, 'Recursos'),
         proximosPassos: sheetToObjects(wb, 'Próximos Passos'),
+        entregasMes:    sheetToObjects(wb, 'Entregas do Mes'),
       };
       document.getElementById('upload-status').textContent = 'Atualizando dashboard...';
       updateDashboard(sheets);
@@ -1248,6 +1267,7 @@ function updateDashboard(s) {
   updateTeam(s.recursos);
   updateRiscos(s.risco);
   updateNextp(s.proximosPassos);
+  updateEntregas(s.entregasMes);
   requestAnimationFrame(syncSidebarHeights);
 }
 
@@ -1257,8 +1277,7 @@ function updateHeader(proj) {
   const p = proj[0];
   const nome = p['Projeto'] || p['Nome'] || '—';
   const cod  = p['Codigo Projeto'] || '';
-  const portfolio = p['Portfolio Estratégico'] || '';
-  set('proj-subtitle', portfolio ? 'Portfólio ' + portfolio + ' Cadastro e PPD' : (cod || '—'));
+  set('proj-subtitle', 'Portfolio Cadastro e PPD');
   set('sh-projeto',   nome);
   set('sh-negocio',   p['Responsável Negócio'] || p['Responsavel Negocio'] || '—');
   set('sh-gerente',   p['Responsável Execução'] || p['Responsavel Execucao'] || '—');
@@ -1311,12 +1330,12 @@ function openFilter() {
   const months = [...new Set(_allFinData.map(r => r['__label']).filter(Boolean))];
   opts.innerHTML = `
     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:4px 0;">
-      <input type="radio" name="fmonth" value="" ${!_selectedMonth ? 'checked' : ''} style="accent-color:#1f5aa8">
+      <input type="radio" name="fmonth" value="" ${!_selectedMonth ? 'checked' : ''} style="accent-color:#0075A9">
       Todos os meses
     </label>` +
     months.map(m => `
     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:4px 0;">
-      <input type="radio" name="fmonth" value="${m}" ${_selectedMonth === m ? 'checked' : ''} style="accent-color:#1f5aa8">
+      <input type="radio" name="fmonth" value="${m}" ${_selectedMonth === m ? 'checked' : ''} style="accent-color:#0075A9">
       ${m}
     </label>`).join('');
   modal.style.display = 'flex';
@@ -1376,9 +1395,9 @@ function renderFinanceiro(fin, proj) {
   // ── RAG badge ──
   function ragBadge(pct, text) {
     const abs = Math.abs(pct).toFixed(1);
-    if (Math.abs(pct) < 0.5) return { bg:'#dbeafe', color:'#1e40af', txt:'0% ' + text };
-    if (pct > 0)             return { bg:'#fff3cd', color:'#92400e', txt:'+' + abs + '% ' + text };
-    return                          { bg:'#d1fae5', color:'#065f46', txt:'-' + abs + '% ' + text };
+    if (Math.abs(pct) < 0.5) return { bg:'#E6F5FA', color:'#005F96', txt:'0% ' + text };
+    if (pct > 0)             return { bg:'#FFF4C7', color:'#B86400', txt:'+' + abs + '% ' + text };
+    return                          { bg:'#EAF7D0', color:'#4B7F00', txt:'-' + abs + '% ' + text };
   }
 
   // ── Column reader — handles trailing spaces, skips formula strings ──
@@ -1487,7 +1506,7 @@ function renderFinanceiro(fin, proj) {
   // ── FULL YEAR card ──
   const fyPct = bac > 0 ? (eac / bac) * 100 : 0;
   const fyBadge = document.getElementById('fy-badge');
-  if (fyBadge) { fyBadge.textContent = fyPct.toFixed(1).replace('.', ',') + '% Real + Forecast x BP'; fyBadge.style.background = '#d1fae5'; fyBadge.style.color = '#065f46'; fyBadge.style.display = 'inline-block'; }
+  if (fyBadge) { fyBadge.textContent = fyPct.toFixed(1).replace('.', ',') + '% Real + Forecast x BP'; fyBadge.style.background = '#EAF7D0'; fyBadge.style.color = '#4B7F00'; fyBadge.style.display = 'inline-block'; }
   setHtml('fy-budget', '<span>' + fmtM(eac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Real + Forecast</span>');
   const fyEacEl = document.getElementById('fy-eac');
   if (fyEacEl) fyEacEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(bac) + '</strong> <span style="font-size:11px;color:#333">BP</span>';
@@ -1495,7 +1514,7 @@ function renderFinanceiro(fin, proj) {
   // ── YEAR TO DATE card ──
   const ytdPct = pv > 0 ? (ac / pv) * 100 : (ac > 0 ? 100 : 0);
   const ytdBadge = document.getElementById('ytd-badge');
-  if (ytdBadge) { ytdBadge.textContent = ytdPct.toFixed(1).replace('.', ',') + '% Planejado x Realizado'; ytdBadge.style.background = '#d1fae5'; ytdBadge.style.color = '#065f46'; ytdBadge.style.display = 'inline-block'; }
+  if (ytdBadge) { ytdBadge.textContent = ytdPct.toFixed(1).replace('.', ',') + '% Planejado x Realizado'; ytdBadge.style.background = '#EAF7D0'; ytdBadge.style.color = '#4B7F00'; ytdBadge.style.display = 'inline-block'; }
   setHtml('ytd-pv', '<span>' + fmtM(ac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Realizado</span>');
   const ytdAcEl = document.getElementById('ytd-ac');
   if (ytdAcEl) ytdAcEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(pv) + '</strong> <span style="font-size:11px;color:#333">BP</span>';
@@ -1616,7 +1635,6 @@ function updateCronograma(cron) {
   if (progValEl) progValEl.innerHTML = progPct + '<span style="font-size:24px;">%</span>';
   // SPI = Real / Planejado (cutoff-aware)
   const spiCutoff = avgPlan > 0 ? avgReal / avgPlan : (avgReal > 0 ? 999 : 0);
-  set('prog-pill', 'SPI ' + spiCutoff.toFixed(2));
   set('prog-real', 'Real ' + progPct + '%');
   set('prog-plan', 'Plan. ' + pvProgClamped + '%');
   const fill = document.getElementById('prog-fill');
@@ -1636,14 +1654,6 @@ function updateCronograma(cron) {
     else leftPx = Math.max(0, Math.min(leftPx, wrapW - labelW));
     planEl.style.left = leftPx + 'px';
   }
-  const progPill = document.getElementById('prog-pill');
-  if (progPill) {
-    // RAG pattern: green > 1.02, blue 0.95-1.02, orange < 0.95
-    if (spiCutoff > 1.02)       { progPill.style.background = '#d1fae5'; progPill.style.color = '#065f46'; }
-    else if (spiCutoff >= 0.95) { progPill.style.background = '#dbeafe'; progPill.style.color = '#1e40af'; }
-    else                        { progPill.style.background = '#fff3cd'; progPill.style.color = '#92400e'; }
-  }
-
   // Atraso until cutoff
   let atrasoDias = 0;
   cron.forEach(r => {
@@ -1658,9 +1668,9 @@ function updateCronograma(cron) {
 
   const atrasoEl = document.getElementById('prog-atraso');
   if (atrasoEl) {
-    if (atrasoDias > 0) atrasoEl.innerHTML = '<span style="color:#b45309;font-weight:600;">▼ ' + atrasoDias + ' dias atraso</span>';
-    else if (progPct > pvProgClamped) atrasoEl.innerHTML = '<span style="color:#059669;font-weight:600;">▲ Adiantado</span>';
-    else atrasoEl.innerHTML = '<span style="color:#1e40af;font-weight:600;">No prazo</span>';
+    if (atrasoDias > 0) atrasoEl.innerHTML = '<span style="color:#FF9E18;font-weight:600;">▼ ' + atrasoDias + ' dias atraso</span>';
+    else if (progPct > pvProgClamped) atrasoEl.innerHTML = '<span style="color:#78BE00;font-weight:600;">▲ Adiantado</span>';
+    else atrasoEl.innerHTML = '<span style="color:#005F96;font-weight:600;">No prazo</span>';
   }
 
   const spiRows = cron.filter(r => r['SPI '] != null && isFinite(r['SPI ']) && r['SPI '] > 0 && r['SPI '] < 10);
@@ -1674,9 +1684,9 @@ function updateRAG(cron, risco) {
   if (!cron || !cron.length) return;
   function ragByRatio(ratio) {
     if (ratio == null) return { cls: '', label: '—', color: '#8797ad' };
-    if (ratio > 1.02)  return { cls: 'g', label: 'Verde',  color: '#059669' };
-    if (ratio >= 0.95) return { cls: 'b', label: 'Azul',   color: '#1e40af' };
-    return                    { cls: 'a', label: 'Atenção', color: '#b45309' };
+    if (ratio > 1.02)  return { cls: 'g', label: 'Verde',  color: '#78BE00' };
+    if (ratio >= 0.95) return { cls: 'b', label: 'Azul',   color: '#005F96' };
+    return                    { cls: 'a', label: 'Atenção', color: '#FF9E18' };
   }
   function applyRagCell(cellId, noteId, rag) {
     const cell = document.getElementById(cellId);
@@ -1714,13 +1724,13 @@ function updateRAG(cron, risco) {
   if (finRag.cls === 'b') finRag.label = 'Otimo';
   applyRagCell('rag-fin-cell', 'rag-fin', finRag);
 
-  let riskRag = { cls: 'g', label: 'Baixo', color: '#059669' };
+  let riskRag = { cls: 'g', label: 'Baixo', color: '#78BE00' };
   if (risco && risco.length) {
     const scores = risco.map(r => r['Score']).filter(s => s != null && isFinite(s));
     const maxScore = scores.length ? Math.max(...scores) : 0;
-    if (maxScore >= 15) riskRag = { cls: 'a', label: 'Alto', color: '#b45309' };
-    else if (maxScore >= 8) riskRag = { cls: 'b', label: 'Médio', color: '#1e40af' };
-    else riskRag = { cls: 'g', label: 'Baixo', color: '#059669' };
+    if (maxScore >= 15) riskRag = { cls: 'a', label: 'Alto', color: '#FF9E18' };
+    else if (maxScore >= 8) riskRag = { cls: 'b', label: 'Médio', color: '#005F96' };
+    else riskRag = { cls: 'g', label: 'Baixo', color: '#78BE00' };
   }
   applyRagCell('rag-risk-cell', 'rag-risk', riskRag);
 
@@ -1742,7 +1752,7 @@ function updateRAG(cron, risco) {
   });
   atrasados.slice(0, 2).forEach(r => {
     const nome = r['Pacote'] || r['Atividade'] || '—';
-    items.push(`<div class="rag-item"><span class="rag-dotmini" style="background:#b45309"></span><span class="rag-label2"><b>${nome}</b></span><span class="rag-dim">Atrasado</span></div>`);
+    items.push(`<div class="rag-item"><span class="rag-dotmini" style="background:#FF9E18"></span><span class="rag-label2"><b>${nome}</b></span><span class="rag-dim">Atrasado</span></div>`);
   });
   setHtml('rag-items', items.join('') || '');
 }
@@ -1874,8 +1884,8 @@ function updateTimeline(cron) {
   });
 
   const tlWidthPx = tl.getBoundingClientRect().width || 1200;
-  const labelWidthPct = (150 / tlWidthPx) * 100;
-  const labelGapPct = 0.8;
+  const labelWidthPct = (190 / tlWidthPx) * 100;
+  const labelGapPct = 1.4;
   const lanes = ['top', 'bot', 'top2', 'bot2'];
   const laneEnds = { top: -Infinity, bot: -Infinity, top2: -Infinity, bot2: -Infinity };
   const sides = marcoPositions.map(pos => {
@@ -1897,10 +1907,13 @@ function updateTimeline(cron) {
     return chosen;
   });
 
-  const neighborDistances = marcoPositions.map((pos, i) => {
-    const prev = i > 0 ? pos - marcoPositions[i - 1] : Infinity;
-    const next = i < marcoPositions.length - 1 ? marcoPositions[i + 1] - pos : Infinity;
-    return Math.min(prev, next);
+  const laneDistances = marcoPositions.map((pos, i) => {
+    let minDist = Infinity;
+    marcoPositions.forEach((otherPos, j) => {
+      if (i === j || sides[i] !== sides[j]) return;
+      minDist = Math.min(minDist, Math.abs(pos - otherPos));
+    });
+    return minDist;
   });
 
   function compactLabel(nome, minDist) {
@@ -1912,7 +1925,7 @@ function updateTimeline(cron) {
     if (minDist < 9 && words.length > 1) {
       return words[0] + ' ' + words[1].slice(0, 6) + '...';
     }
-    return clean.length > 22 ? clean.substring(0, 22) + '...' : clean;
+    return clean;
   }
 
   marcosRaw.forEach((m, i) => {
@@ -1921,7 +1934,7 @@ function updateTimeline(cron) {
     const cls = status.includes('conclu') ? 'done' : status.includes('atraso') || status.includes('atrasad') ? 'late' : status.includes('andamento') ? 'active' : 'upcoming';
     const side = sides[i];
     const nome = m['Pacote'] || '-';
-    const nomeCurto = compactLabel(nome, neighborDistances[i]);
+    const nomeCurto = compactLabel(nome, laneDistances[i]);
     const safePos = Math.max((labelWidthPct / 2) + 0.8, Math.min(100 - (labelWidthPct / 2) - 0.8, pos));
     const labelStyle = pos < (labelWidthPct / 2) + 1
       ? 'left:' + Math.max(0.8, pos - 0.2).toFixed(1) + '%;transform:none;text-align:left;'
@@ -1981,7 +1994,7 @@ function updateTeam(recursos) {
     const roleShort = role.length > 22 ? role.substring(0, 22) + '…' : role;
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--line);font-size:10.5px;line-height:1.2;">
       <span style="color:var(--ink-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${role.replace(/"/g, '&quot;')}">${roleShort}</span>
-      <span style="font-weight:700;color:#1f5aa8;flex-shrink:0;margin-left:6px;">${qty}</span>
+      <span style="font-weight:700;color:#0075A9;flex-shrink:0;margin-left:6px;">${qty}</span>
     </div>`;
   }).join('');
   setHtml('team-roles', rolesHtml);
@@ -2014,15 +2027,15 @@ function updateRiscos(risco) {
     let dot, scoreColor;
     const statusNorm = String(status || '').trim().toLowerCase();
     if (statusNorm.includes('materializado')) dot = '#dc2626';
-    else if (statusNorm.includes('monitor')) dot = '#f59e0b';
-    else if (statusNorm.includes('mitig')) dot = '#10b981';
+    else if (statusNorm.includes('monitor')) dot = '#FFCD00';
+    else if (statusNorm.includes('mitig')) dot = '#00B8B0';
     else if (score >= 15)      dot = '#dc2626';
-    else if (score >= 8)       dot = '#f59e0b';
-    else if (score > 0)        dot = '#10b981';
+    else if (score >= 8)       dot = '#FFCD00';
+    else if (score > 0)        dot = '#00B8B0';
     else                       dot = '#cbd5e1';
     if (score >= 15)      scoreColor = '#991b1b';
-    else if (score >= 8)  scoreColor = '#92400e';
-    else if (score > 0)   scoreColor = '#065f46';
+    else if (score >= 8)  scoreColor = '#B86400';
+    else if (score > 0)   scoreColor = '#4B7F00';
     else                  scoreColor = '#64748b';
     const nomeCurto = String(nome).length > 50 ? String(nome).substring(0, 50) + '…' : nome;
     return `<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);">
@@ -2031,13 +2044,50 @@ function updateRiscos(risco) {
         <div style="font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.3;">${nomeCurto}</div>
         <div style="font-size:9.5px;color:var(--ink-400);margin-top:1px;">${[cat, status, resp].filter(Boolean).join(' · ')}</div>
       </div>
-      ${score > 0 ? `<span style="font-size:10px;font-weight:700;color:${scoreColor};flex-shrink:0;">${score}</span>` : ''}
+
     </div>`;
   }).join('');
   el.innerHTML = html;
 }
 
 // ─── PRÓXIMOS PASSOS ───
+// Entregas do mes
+function updateEntregas(entregas) {
+  const el = document.getElementById('delivery-list');
+  if (!el) return;
+  if (!entregas || !entregas.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
+    return;
+  }
+  const rows = entregas.filter(r =>
+    (r['Entrega Prevista'] && String(r['Entrega Prevista']).trim()) ||
+    (r['Status da Entrega'] && String(r['Status da Entrega']).trim())
+  ).slice(0, 5);
+  if (!rows.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
+    return;
+  }
+  const html = rows.map(r => {
+    const entrega = r['Entrega Prevista'] || 'Entrega sem descricao';
+    const status = r['Status da Entrega'] || '';
+    const statusLow = String(status).toLowerCase();
+    let dot = '#0075A9';
+    if (statusLow.includes('entreg')) dot = '#78BE00';
+    else if (statusLow.includes('andamento')) dot = '#FFCD00';
+    else if (statusLow.includes('atras')) dot = '#FF9E18';
+    else if (statusLow.includes('reprogram')) dot = '#13AFD4';
+    const entregaCurta = String(entrega).length > 52 ? String(entrega).substring(0, 52) + '...' : entrega;
+    return `<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};margin-top:5px;flex-shrink:0;"></span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.3;">${entregaCurta}</div>
+        <div style="font-size:9.5px;color:var(--ink-400);margin-top:1px;">${status}</div>
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML = html;
+}
+
 function updateNextp(passos) {
   const el = document.getElementById('nextp-list');
   if (!el) return;
@@ -2063,9 +2113,9 @@ function updateNextp(passos) {
     const statusLow = String(status).toLowerCase();
     const prioLow = String(prio).toLowerCase();
     if (prioLow.includes('alta') || prioLow.includes('crítica') || statusLow.includes('atras')) dot = '#dc2626';
-    else if (prioLow.includes('média') || prioLow.includes('media') || statusLow.includes('andamento')) dot = '#f59e0b';
-    else if (statusLow.includes('conclu') || statusLow.includes('feito')) dot = '#10b981';
-    else dot = '#1f5aa8';
+    else if (prioLow.includes('média') || prioLow.includes('media') || statusLow.includes('andamento')) dot = '#FFCD00';
+    else if (statusLow.includes('conclu') || statusLow.includes('feito')) dot = '#00B8B0';
+    else dot = '#0075A9';
     const acaoCurta = String(acao).length > 50 ? String(acao).substring(0, 50) + '…' : acao;
     let dataStr = '';
     if (data) {
@@ -2092,7 +2142,7 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   const svg = document.getElementById('lineChart');
   if (!svg) return;
 
-  const W = 1100, H = 340, PL = 78, PR = 28, PT = 34, PB = 44;
+  const W = Math.max(900, Math.round(svg.clientWidth || 1100)), H = Math.max(300, Math.round(svg.clientHeight || 340)), PL = 22, PR = 22, PT = 34, PB = 44;
   const chartW = W - PL - PR;
   const chartH = H - PT - PB;
   const fmtY = v => v >= 1e6 ? (v/1e6).toFixed(1).replace('.',',') + 'M' : v >= 1e3 ? (v/1e3).toFixed(1).replace('.',',') + 'k' : v.toFixed(0);
@@ -2118,13 +2168,17 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   const buildLabel = (p, text, theme, prefs, placed) => {
     const w = Math.max(46, text.length * 7 + 18);
     const h = 20;
+    const minY = PT + 2;
+    const maxY = zeroY - h - 10;
     const candidates = {
-      above:    () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 28, PT + 2, H - PB - h - 2) }),
-      below:    () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 10, PT + 2, H - PB - h - 2) }),
-      right:    () => ({ x: clamp(p.x + 10, PL + 2, W - PR - w - 2), y: clamp(p.y - 12, PT + 2, H - PB - h - 2) }),
-      left:     () => ({ x: clamp(p.x - w - 10, PL + 2, W - PR - w - 2), y: clamp(p.y - 12, PT + 2, H - PB - h - 2) }),
-      aboveFar: () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 44, PT + 2, H - PB - h - 2) }),
-      belowFar: () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 24, PT + 2, H - PB - h - 2) })
+      above:      () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 36, minY, maxY) }),
+      below:      () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 26, minY, maxY) }),
+      right:      () => ({ x: clamp(p.x + 16, PL + 2, W - PR - w - 2), y: clamp(p.y - 36, minY, maxY) }),
+      left:       () => ({ x: clamp(p.x - w - 16, PL + 2, W - PR - w - 2), y: clamp(p.y - 36, minY, maxY) }),
+      aboveFar:   () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 58, minY, maxY) }),
+      belowFar:   () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 52, minY, maxY) }),
+      rightFar:   () => ({ x: clamp(p.x + 18, PL + 2, W - PR - w - 2), y: clamp(p.y - 44, minY, maxY) }),
+      leftFar:    () => ({ x: clamp(p.x - w - 18, PL + 2, W - PR - w - 2), y: clamp(p.y - 44, minY, maxY) })
     };
     for (const pref of prefs) {
       const pos = (candidates[pref] || candidates.above)();
@@ -2136,6 +2190,19 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   };
   const renderLabel = (box, text, theme) => {
     return `<rect x="${box.x.toFixed(1)}" y="${box.y.toFixed(1)}" width="${box.w.toFixed(1)}" height="${box.h}" rx="3" fill="${theme.fill}" stroke="${theme.stroke}" stroke-width="0.8"/><text x="${(box.x + box.w/2).toFixed(1)}" y="${(box.y + 14).toFixed(1)}" font-size="11" fill="${theme.text}" text-anchor="middle" font-family="Inter" font-weight="700">${text}</text>`;
+  };
+  const buildColumnLabel = (item, monthItems) => {
+    const w = Math.max(46, item.text.length * 7 + 18);
+    const h = 20;
+    const col = monthItems.filter(x => x.flatColumn).sort((a, b) => a.order - b.order);
+    const level = Math.max(0, col.findIndex(x => x === item));
+    const topY = Math.min(...monthItems.map(x => x.p.y)) - 26 - (col.length - 1 - level) * 22;
+    return {
+      x: clamp(item.p.x - w / 2, PL + 2, W - PR - w - 2),
+      y: clamp(topY, PT + 2, zeroY - h - 12),
+      w,
+      h
+    };
   };
 
   let out = '';
@@ -2171,17 +2238,27 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     }
   }
 
+  const isFlatSeries = pts => {
+    const vals = pts.map(p => Number(p.v)).filter(v => isFinite(v) && v > 0);
+    if (vals.length < 4) return false;
+    const avg = vals.reduce((s, v) => s + v, 0) / vals.length;
+    const maxDelta = Math.max(...vals.map(v => Math.abs(v - avg)));
+    return avg > 0 && maxDelta / avg < 0.03;
+  };
+  const flatPlan = isFlatSeries(planPts.filter(p => p.i <= filterIdx));
+  const flatReal = isFlatSeries(realPts.filter(p => p.i <= filterIdx));
+
   const zeroY = Y(0);
   out += `<line x1="${PL}" y1="${zeroY.toFixed(1)}" x2="${W-PR}" y2="${zeroY.toFixed(1)}" stroke="#cbd5e1" stroke-width="1.2"/>`;
 
-  if (planPastPts.length >= 2) out += `<path d="${pathFrom(planPastPts)}" fill="none" stroke="#2563eb" stroke-width="2.4"/>`;
-  if (planFuturePts.length >= 2) out += `<path d="${pathFrom(planFuturePts)}" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-dasharray="6 5"/>`;
+  if (planPastPts.length >= 2) out += `<path d="${pathFrom(planPastPts)}" fill="none" stroke="#0075A9" stroke-width="2.4"/>`;
+  if (planFuturePts.length >= 2) out += `<path d="${pathFrom(planFuturePts)}" fill="none" stroke="#0075A9" stroke-width="2.4" stroke-dasharray="6 5"/>`;
   if (realPts.length >= 2) out += `<path d="${pathFrom(realPts)}" fill="none" stroke="#16a34a" stroke-width="2.8"/>`;
   if (forecastFuturePts.length >= 2) out += `<path d="${pathFrom(forecastFuturePts)}" fill="none" stroke="#16a34a" stroke-width="2.8" stroke-dasharray="6 5"/>`;
 
   planPts.forEach((p, i) => {
     const current = i === planPts.length - 1;
-    out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${current ? 4.4 : 3.4}" fill="#fff" stroke="#2563eb" stroke-width="${current ? 2.2 : 1.8}"/>`;
+    out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${current ? 4.4 : 3.4}" fill="#fff" stroke="#0075A9" stroke-width="${current ? 2.2 : 1.8}"/>`;
   });
   realPts.forEach((p, i) => {
     const current = i === realPts.length - 1;
@@ -2192,24 +2269,30 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${current ? 4.4 : 3.4}" fill="#f0fdf4" stroke="#16a34a" stroke-width="${current ? 2.4 : 1.8}"/>`;
   });
 
-  const placed = [];
+  const placed = [
+    { x: PL, y: zeroY - 18, w: chartW, h: 36 },
+    { x: PL, y: H - PB - 12, w: chartW, h: 44 },
+    ...[...planPts, ...realPts, ...forecastFuturePts].map(p => ({ x: p.x - 16, y: p.y - 16, w: 32, h: 32 }))
+  ];
   const labelsByMonth = new Map();
-  const addLabel = (pts, order, textFn, theme, prefs) => {
+  const addLabel = (pts, order, textFn, theme, prefs, flatColumn = false) => {
     pts.forEach(p => {
       if (p.i > filterIdx || !p.v) return;
       if (!labelsByMonth.has(p.i)) labelsByMonth.set(p.i, []);
-      labelsByMonth.get(p.i).push({ p, order, text: textFn(p.v), theme, prefs });
+      labelsByMonth.get(p.i).push({ p, order, text: textFn(p.v), theme, prefs, flatColumn });
     });
   };
 
-  addLabel(planPts, 2, v => fmtM(v), { fill: '#dbeafe', stroke: '#2563eb', text: '#1d4ed8' }, ['below', 'right', 'left', 'above', 'belowFar', 'aboveFar']);
-  addLabel(realPts, 0, v => fmtM(v), { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }, ['above', 'right', 'left', 'below', 'aboveFar', 'belowFar']);
+  addLabel(planPts, 2, v => fmtM(v), { fill: '#E6F5FA', stroke: '#0075A9', text: '#005F96' }, ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar', 'rightFar', 'leftFar'], flatPlan);
+  addLabel(realPts, 0, v => fmtM(v), { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }, ['above', 'aboveFar', 'right', 'left', 'below', 'belowFar', 'rightFar', 'leftFar'], flatReal);
 
   for (let i = 0; i <= filterIdx; i++) {
     const items = labelsByMonth.get(i) || [];
     items.sort((a, b) => a.order - b.order);
     items.forEach(item => {
-      const box = buildLabel(item.p, item.text, item.theme, item.prefs, placed);
+      const box = item.flatColumn
+        ? buildColumnLabel(item, items)
+        : buildLabel(item.p, item.text, item.theme, item.prefs, placed);
       placed.push(box);
       out += renderLabel(box, item.text, item.theme);
     });
@@ -2220,7 +2303,7 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
 
   const legend = document.querySelectorAll('.legend span');
   if (legend[0]) { legend[0].style.display = ''; legend[0].childNodes[legend[0].childNodes.length-1].textContent = 'Realizado'; const icon = legend[0].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
-  if (legend[1]) { legend[1].style.display = ''; legend[1].childNodes[legend[1].childNodes.length-1].textContent = 'BP'; legend[1].querySelector('i').style.background = '#2563eb'; }
+  if (legend[1]) { legend[1].style.display = ''; legend[1].childNodes[legend[1].childNodes.length-1].textContent = 'BP'; legend[1].querySelector('i').style.background = '#0075A9'; }
   if (legend[2]) { legend[2].style.display = ''; legend[2].childNodes[legend[2].childNodes.length-1].textContent = 'Forecast'; const icon = legend[2].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
 
   const sub = document.getElementById('chart-sub');
@@ -2238,4 +2321,8 @@ window.addEventListener('resize', () => requestAnimationFrame(syncSidebarHeights
 
 
 </body></html>
+
+
+
+
 
