@@ -2059,30 +2059,23 @@ function updateEntregas(entregas) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
     return;
   }
-  const rows = entregas.filter(r =>
-    (r['Entrega Prevista'] && String(r['Entrega Prevista']).trim()) ||
-    (r['Status da Entrega'] && String(r['Status da Entrega']).trim())
-  ).slice(0, 5);
+  const rows = entregas.filter(r => r['Entrega Prevista'] && String(r['Entrega Prevista']).trim()).slice(0, 5);
   if (!rows.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
     return;
   }
+  const fmtEntregaData = v => {
+    const d = excelDate(v);
+    if (!d) return '';
+    return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' });
+  };
   const html = rows.map(r => {
-    const entrega = r['Entrega Prevista'] || 'Entrega sem descricao';
-    const status = r['Status da Entrega'] || '';
-    const statusLow = String(status).toLowerCase();
-    let dot = '#0075A9';
-    if (statusLow.includes('entreg')) dot = '#78BE00';
-    else if (statusLow.includes('andamento')) dot = '#FFCD00';
-    else if (statusLow.includes('atras')) dot = '#FF9E18';
-    else if (statusLow.includes('reprogram')) dot = '#13AFD4';
-    const entregaCurta = String(entrega).length > 52 ? String(entrega).substring(0, 52) + '...' : entrega;
-    return `<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);">
-      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};margin-top:5px;flex-shrink:0;"></span>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.3;">${entregaCurta}</div>
-        <div style="font-size:9.5px;color:var(--ink-400);margin-top:1px;">${status}</div>
-      </div>
+    const entrega = String(r['Entrega Prevista'] || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const data = fmtEntregaData(r['M?s de Referencia'] || r['Mes de Referencia'] || r['Data']);
+    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--g);flex-shrink:0;"></span>
+      <div title="${entrega}" style="flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${entrega}</div>
+      <div style="font-size:10px;color:var(--ink-400);white-space:nowrap;flex-shrink:0;">${data}</div>
     </div>`;
   }).join('');
   el.innerHTML = html;
