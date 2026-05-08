@@ -865,6 +865,8 @@
     <div class="sh-item"><span class="sh-label">Budget</span><span class="sh-value" id="sh-budget">—</span></div>
     <div class="sh-sep"></div>
     <div class="sh-item"><span class="sh-label">Tipo</span><span class="sh-value" id="sh-tipo">—</span></div>
+    <div class="sh-sep"></div>
+    <div class="sh-item"><span class="sh-label">Business Plan</span><span class="sh-value" id="sh-bp-tipo">-</span></div>
     <div class="sh-spacer"></div>
     <button class="filter-btn" id="filter-btn" onclick="openFilter()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"></polygon></svg>
@@ -1222,6 +1224,7 @@ function handleFile(input) {
       const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:false});
       const sheets = {
         projeto:        sheetToObjects(wb, 'Projeto'),
+        pmo:            sheetToObjects(wb, 'PMO'),
         cronograma:     sheetToObjects(wb, 'Cronograma'),
         financeiro:     sheetToObjects(wb, 'Financeiro'),
         risco:          sheetToObjects(wb, 'Risco'),
@@ -1259,7 +1262,7 @@ function sheetToObjects(wb, name) {
 function updateDashboard(s) {
   _cronData = s.cronograma || [];
   _riscoData = s.risco || [];
-  updateHeader(s.projeto);
+  updateHeader(s.projeto, s.pmo);
   updateFinanceiro(s.financeiro, s.projeto);
   updateCronograma(s.cronograma);
   updateRAG(s.cronograma, s.risco);
@@ -1272,7 +1275,7 @@ function updateDashboard(s) {
 }
 
 // ─── HEADER ───
-function updateHeader(proj) {
+function updateHeader(proj, pmo) {
   if (!proj || !proj.length) return;
   const p = proj[0];
   const nome = p['Projeto'] || p['Nome'] || '—';
@@ -1304,6 +1307,9 @@ function updateHeader(proj) {
     if (kn === 'budget' && p[k] != null) budget = p[k];
     else if ((kn === 'opex/capex' || kn === 'capex/opex' || kn === 'tipo') && p[k] != null) tipo = p[k];
   }
+  const pmoRow = (pmo || []).find(r => r && Object.values(r).some(v => v != null && String(v).trim())) || {};
+  const bpTipo = pick(pmoRow, ['Business Plan', 'BP', 'Tipo BP', 'BusinessPlan']) || pick(p, ['Business Plan', 'BP', 'Tipo BP', 'BusinessPlan']) || '';
+  set('sh-bp-tipo', bpTipo ? String(bpTipo) : '-');
   if (budget != null && isFinite(budget)) {
     const v = Number(budget);
     let budgetStr;
@@ -1577,9 +1583,8 @@ function updateCronograma(cron) {
   // Expose cutoff for timeline
   window._cronCutoff = cutoffDate;
 
-  // Use TASKS (non-marcos) as base — each task contributes equally
-  const tasks = cron.filter(r => !(r['Milestone'] === 'Marco' || r['Milestone'] === 'marco'));
-  const items = tasks.length ? tasks : cron.filter(r => r['% Progresso'] != null);
+  // Use only milestone rows for project completion.
+  const items = cron.filter(r => String(r['Milestone'] || '').trim().toLowerCase() === 'marco' && r['% Progresso'] != null);
 
   function progressAtCutoff(r) {
     const start = excelDate(r['Data de Início']);
