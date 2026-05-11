@@ -714,6 +714,12 @@
   .tl-label strong{display:block;font-size:11px;color:var(--ink-900);font-weight:700}
   .tl-label span{color:var(--ink-400);font-size:10px}
 
+  .tl-legend{display:flex;align-items:center;gap:12px;font-size:10px;color:var(--ink-500);font-weight:600;white-space:nowrap;}
+  .tl-legend-item{display:flex;align-items:center;gap:5px;}
+  .tl-legend-dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--blue-700);background:#fff;box-sizing:border-box;}
+  .tl-legend-dot.done{background:var(--blue-700);}
+  .tl-legend-today{width:0;height:16px;border-left:2px dashed var(--ink-700);}
+
   /* Phases bar under timeline */
   .phases{display:grid;grid-template-columns:1fr 1.2fr 1.4fr 1fr;gap:4px;margin-top:10px}
   .phase{
@@ -938,6 +944,11 @@
             <div>
               <div class="card-title">Timeline do Projeto · Marcos principais</div>
               <div class="card-sub">Linha de base vs. real · 12 meses</div>
+            </div>
+            <div class="tl-legend">
+              <span class="tl-legend-item"><i class="tl-legend-dot"></i>Marco em andamento</span>
+              <span class="tl-legend-item"><i class="tl-legend-dot done"></i>Marco entregue</span>
+              <span class="tl-legend-item"><i class="tl-legend-today"></i>Hoje</span>
             </div>
           </div>
 
@@ -1285,8 +1296,7 @@ function updateHeader(proj, pmo) {
   set('sh-gerente',   p['Responsável Execução'] || p['Responsavel Execucao'] || '—');
   set('sh-sponsor',   p['Sponsor'] || '—');
   // Data de corte: mês/ano atual
-  const now = new Date();
-  set('sh-corte', now.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}));
+  set('sh-corte', _selectedMonth || 'Todos os meses');
 
   // Objetivo do Projeto — scan all keys
   let obj = '';
@@ -1329,6 +1339,19 @@ let _cronData = [];
 let _riscoData = [];
 let _selectedMonth = null; // null = all
 
+function getCutoffDateFromFilter() {
+  if (!_selectedMonth || !_allFinData || !_allFinData.length) return new Date(_dashboardOpenedAt);
+  const months12 = ['Janeiro','Fevereiro','Mar?o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const selRow = _allFinData.find(r => r['__label'] === _selectedMonth);
+  if (!selRow) return new Date(_dashboardOpenedAt);
+  const m = selRow['M?s'] || selRow['Mes'];
+  const y = Number(selRow['Ano']);
+  const monthIdx = typeof m === 'string' ? months12.findIndex(x => x.toLowerCase() === m.toLowerCase().trim()) : -1;
+  if (monthIdx < 0 || !y) return new Date(_dashboardOpenedAt);
+  if (monthIdx === _dashboardOpenedAt.getMonth() && y === _dashboardOpenedAt.getFullYear()) return new Date(_dashboardOpenedAt);
+  return new Date(y, monthIdx + 1, 0);
+}
+
 function openFilter() {
   const modal = document.getElementById('filter-modal');
   const opts  = document.getElementById('filter-options');
@@ -1350,6 +1373,7 @@ function applyFilter() {
   const sel = document.querySelector('input[name="fmonth"]:checked');
   _selectedMonth = sel ? sel.value || null : null;
   set('filter-label', _selectedMonth || 'Todos os meses');
+  set('sh-corte', _selectedMonth || 'Todos os meses');
   closeFilter();
   reapplyFilter();
 }
@@ -1555,29 +1579,8 @@ function fmtM(v) {
 function updateCronograma(cron) {
   if (!cron || !cron.length) return;
 
-  // Determine cutoff date
-  let cutoffDate = new Date();
-  try {
-    if (typeof _selectedMonth !== 'undefined' && _selectedMonth && typeof _allFinData !== 'undefined') {
-      const months12 = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-      const selRow = _allFinData.find(r => r['__label'] === _selectedMonth);
-      if (selRow) {
-        const m = selRow['Mês'] || selRow['Mes'];
-        const y = selRow['Ano'];
-        const monthIdx = typeof m === 'string' ? months12.findIndex(x => x.toLowerCase() === m.toLowerCase().trim()) : -1;
-        if (monthIdx >= 0 && y) cutoffDate = new Date(y, monthIdx + 1, 0);
-      }
-    } else if (typeof _allFinData !== 'undefined') {
-      const months12 = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-      const lastRealRow = [..._allFinData].reverse().find(r => (r['Realizado Mensal'] || 0) > 0 || (r['AC (Acumulado Realizado) '] || 0) > 0);
-      if (lastRealRow) {
-        const m = lastRealRow['Mês'] || lastRealRow['Mes'];
-        const y = lastRealRow['Ano'];
-        const monthIdx = typeof m === 'string' ? months12.findIndex(x => x.toLowerCase() === m.toLowerCase().trim()) : -1;
-        if (monthIdx >= 0 && y) cutoffDate = new Date(y, monthIdx + 1, 0);
-      }
-    }
-  } catch(e) {}
+  // Backend cutoff: selected current month uses dashboard open date; other months use month end.
+  const cutoffDate = getCutoffDateFromFilter();
 
   // Expose cutoff for timeline
   window._cronCutoff = cutoffDate;
@@ -1789,7 +1792,7 @@ function updateTimeline(cron) {
         ['Data Fim Real']
       ])
     }))
-    .filter(r => r._start)
+    .filter(r => r._start && r._start.getFullYear() === 2026)
     .sort((a, b) => a._start - b._start);
 
   function getEapNum(eap) {
@@ -1807,24 +1810,14 @@ function updateTimeline(cron) {
       eapNum: getEapNum(r['Codigo EAP']),
       start: readDate(r, ['Data de Inicio'])
     }))
-    .filter(r => r.start);
+    .filter(r => r.start && r.start.getFullYear() === 2026);
 
-  const allCronDates = cron.flatMap(r => [
-    readDate(r, ['Data de Inicio']),
-    readDate(r, ['Data de Vencimento']),
-    readDate(r, ['Data Fim Planejada Projetada']),
-    readDate(r, ['Data Fim Real'])
-  ].filter(Boolean)).sort((a, b) => a - b);
-
-  if (!allCronDates.length) return;
-
-  const projStart = new Date(allCronDates[0].getFullYear(), allCronDates[0].getMonth(), 1);
-  const lastDate = allCronDates[allCronDates.length - 1];
-  const projEnd = new Date(lastDate.getFullYear(), lastDate.getMonth() + 1, 0);
+  const projStart = new Date(2026, 0, 1);
+  const projEnd = new Date(2026, 11, 31);
   const totalMs = Math.max(1, projEnd - projStart);
 
   const timelineMonths = [];
-  for (let d = new Date(projStart.getFullYear(), projStart.getMonth(), 1); d <= projEnd; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+  for (let d = new Date(2026, 0, 1); d <= projEnd; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
     timelineMonths.push({
       monthIdx: d.getMonth(),
       year: d.getFullYear(),
@@ -2206,6 +2199,12 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   const planPts = planArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
   const realPts = realArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
   const forecastPts = forecastArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
+  const actualForecastLabelPts = months.map((_, i) => {
+    const real = realArr[i];
+    const forecast = forecastArr[i];
+    const v = real != null ? real : forecast;
+    return v != null ? ({ x: X(i), y: Y(v), v, i }) : null;
+  }).filter(Boolean);
   const planPastPts = planPts.filter(p => p.i <= filterIdx);
   const planFuturePts = planPts.filter(p => p.i >= filterIdx);
   const forecastFuturePts = [];
@@ -2225,7 +2224,7 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     return avg > 0 && maxDelta / avg < 0.03;
   };
   const flatPlan = isFlatSeries(planPts.filter(p => p.i <= filterIdx));
-  const flatReal = isFlatSeries(realPts.filter(p => p.i <= filterIdx));
+  const flatReal = isFlatSeries(actualForecastLabelPts);
 
   const zeroY = Y(0);
   out += `<line x1="${PL}" y1="${zeroY.toFixed(1)}" x2="${W-PR}" y2="${zeroY.toFixed(1)}" stroke="#cbd5e1" stroke-width="1.2"/>`;
@@ -2256,16 +2255,16 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   const labelsByMonth = new Map();
   const addLabel = (pts, order, textFn, theme, prefs, flatColumn = false) => {
     pts.forEach(p => {
-      if (p.i > filterIdx || !p.v) return;
+      if (!p.v) return;
       if (!labelsByMonth.has(p.i)) labelsByMonth.set(p.i, []);
       labelsByMonth.get(p.i).push({ p, order, text: textFn(p.v), theme, prefs, flatColumn });
     });
   };
 
   addLabel(planPts, 2, v => fmtM(v), { fill: '#E6F5FA', stroke: '#0075A9', text: '#005F96' }, ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar', 'rightFar', 'leftFar'], flatPlan);
-  addLabel(realPts, 0, v => fmtM(v), { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }, ['above', 'aboveFar', 'right', 'left', 'below', 'belowFar', 'rightFar', 'leftFar'], flatReal);
+  addLabel(actualForecastLabelPts, 0, v => fmtM(v), { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }, ['above', 'aboveFar', 'right', 'left', 'below', 'belowFar', 'rightFar', 'leftFar'], flatReal);
 
-  for (let i = 0; i <= filterIdx; i++) {
+  for (let i = 0; i < months.length; i++) {
     const items = labelsByMonth.get(i) || [];
     items.sort((a, b) => (b.p.v || 0) - (a.p.v || 0));
     items.forEach((item, idx) => {
