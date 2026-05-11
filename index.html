@@ -2092,18 +2092,18 @@ function updateNextp(passos) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma acao cadastrada.</div>';
     return;
   }
-  const rows = passos.filter(r => r['A??o'] && String(r['A??o']).trim());
+  const rows = passos.filter(r => { const acao = pick(r, ['Acao', 'Acoes', 'Acao Prevista']); return acao && String(acao).trim(); });
   if (!rows.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma acao cadastrada.</div>';
     return;
   }
   const html = rows.slice(0, 5).map(r => {
-    const acao = String(r['A??o'] || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const acao = String(pick(r, ['Acao', 'Acoes', 'Acao Prevista']) || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const statusLow = String(r['Status'] || '').toLowerCase();
     const prioLow = String(r['Prioridade'] || '').toLowerCase();
     let dot;
-    if (prioLow.includes('alta') || prioLow.includes('cr?tica') || statusLow.includes('atras')) dot = '#dc2626';
-    else if (prioLow.includes('m?dia') || prioLow.includes('media') || statusLow.includes('andamento')) dot = '#FFCD00';
+    if (prioLow.includes('alta') || prioLow.includes('critica') || statusLow.includes('atras')) dot = '#dc2626';
+    else if (prioLow.includes('media') || prioLow.includes('media') || statusLow.includes('andamento')) dot = '#FFCD00';
     else if (statusLow.includes('conclu') || statusLow.includes('feito')) dot = '#00B8B0';
     else dot = '#0075A9';
     return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;">
