@@ -1341,15 +1341,18 @@ let _selectedMonth = null; // null = all
 
 function getCutoffDateFromFilter() {
   if (!_selectedMonth || !_allFinData || !_allFinData.length) return new Date(_dashboardOpenedAt);
-  const months12 = ['Janeiro','Fevereiro','Mar?o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const months12 = ['janeiro','fevereiro','marco','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
   const selRow = _allFinData.find(r => r['__label'] === _selectedMonth);
   if (!selRow) return new Date(_dashboardOpenedAt);
-  const m = selRow['M?s'] || selRow['Mes'];
-  const y = Number(selRow['Ano']);
-  const monthIdx = typeof m === 'string' ? months12.findIndex(x => x.toLowerCase() === m.toLowerCase().trim()) : -1;
+  const m = pickMonthValue(selRow);
+  const y = Number(pickYearValue(selRow));
+  const monthIdx = typeof m === 'string' ? months12.findIndex(x => x === normKey(m)) : -1;
   if (monthIdx < 0 || !y) return new Date(_dashboardOpenedAt);
-  if (monthIdx === _dashboardOpenedAt.getMonth() && y === _dashboardOpenedAt.getFullYear()) return new Date(_dashboardOpenedAt);
-  return new Date(y, monthIdx + 1, 0);
+  const selectedKey = y * 12 + monthIdx;
+  const currentKey = _dashboardOpenedAt.getFullYear() * 12 + _dashboardOpenedAt.getMonth();
+  if (selectedKey < currentKey) return new Date(y, monthIdx + 1, 0);
+  if (selectedKey === currentKey) return new Date(_dashboardOpenedAt);
+  return new Date(y, monthIdx, 1);
 }
 
 function openFilter() {
@@ -1786,10 +1789,10 @@ function updateTimeline(cron) {
     .map(r => ({
       ...r,
       _start: readFirstDate(r, [
-        ['Data de Inicio'],
         ['Data de Vencimento'],
         ['Data Fim Planejada Projetada'],
-        ['Data Fim Real']
+        ['Data Fim Real'],
+        ['Data de Inicio']
       ])
     }))
     .filter(r => r._start && r._start.getFullYear() === 2026)
@@ -1808,7 +1811,7 @@ function updateTimeline(cron) {
       pacote: String(r['Pacote'] || ''),
       eap: r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '',
       eapNum: getEapNum(r['Codigo EAP']),
-      start: readDate(r, ['Data de Inicio'])
+      start: readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']])
     }))
     .filter(r => r.start && r.start.getFullYear() === 2026);
 
