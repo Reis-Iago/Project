@@ -655,6 +655,7 @@
   .rag-dot i{width:10px;height:10px;border-radius:50%}
   .rag-dot.g i{background:var(--g)}
   .rag-dot.a i{background:var(--a)}
+  .rag-dot.b i{background:#005F96}
   .rag-dot.r i{background:var(--r)}
   .rag-note{font-size:11px;font-weight:500;color:inherit;opacity:.9}
 
@@ -1687,8 +1688,8 @@ function updateRAG(cron, risco) {
   if (!cron || !cron.length) return;
   function ragByRatio(ratio) {
     if (ratio == null) return { cls: '', label: '—', color: '#8797ad' };
-    if (ratio > 1.02)  return { cls: 'g', label: 'Verde',  color: '#78BE00' };
-    if (ratio >= 0.95) return { cls: 'b', label: 'Azul',   color: '#005F96' };
+    if (ratio > 1.02)  return { cls: 'g', label: 'Bom',  color: '#78BE00' };
+    if (ratio >= 0.95) return { cls: 'b', label: 'No prazo',   color: '#005F96' };
     return                    { cls: 'a', label: 'Atenção', color: '#FF9E18' };
   }
   function applyRagCell(cellId, noteId, rag) {
@@ -1700,7 +1701,6 @@ function updateRAG(cron, risco) {
   const spiRows = cron.filter(r => r['SPI '] != null && isFinite(r['SPI ']) && r['SPI '] > 0 && r['SPI '] < 10);
   const spiAvg = spiRows.length ? spiRows.reduce((s, r) => s + r['SPI '], 0) / spiRows.length : null;
   const cronRag = ragByRatio(spiAvg);
-  if (cronRag.cls === 'b') cronRag.label = 'No prazo';
   applyRagCell('rag-cron-cell', 'rag-cron', cronRag);
 
   let cpiVal = null;
@@ -1724,7 +1724,6 @@ function updateRAG(cron, risco) {
     }
   } catch(e) {}
   const finRag = ragByRatio(cpiVal);
-  if (finRag.cls === 'b') finRag.label = 'Otimo';
   applyRagCell('rag-fin-cell', 'rag-fin', finRag);
 
   let riskRag = { cls: 'g', label: 'Baixo', color: '#78BE00' };
