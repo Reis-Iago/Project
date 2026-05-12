@@ -559,6 +559,10 @@
   }
   .card-sub{font-size:10px;color:var(--ink-400);font-weight:500}
 
+  .mini-legend{display:flex;align-items:center;gap:8px;font-size:9px;color:var(--ink-400);font-weight:600;white-space:nowrap;}
+  .mini-legend span{display:flex;align-items:center;gap:4px;}
+  .mini-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;}
+
   /* ---- KPI ROW ---- */
   .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
   .kpi{
@@ -671,10 +675,10 @@
 
   /* Timeline */
   .tl{
-    position:relative;padding:10px 4px 30px;
+    position:relative;padding:10px 4px 38px;
   }
-  .tl-axis{position:relative;height:4px;background:#eef2f7;border-radius:2px;margin:36px 8px 56px}
-  .tl-progress{position:absolute;left:0;top:0;bottom:0;background:var(--blue-700);border-radius:2px}
+  .tl-axis{position:relative;height:4px;background:transparent;border-radius:2px;margin:18px 8px 58px}
+  .tl-progress{position:absolute;left:0;top:0;bottom:0;background:var(--blue-700);border-radius:2px;z-index:0}
   .tl-today{
     position:absolute;top:-14px;bottom:-14px;width:0;border-left:2px dashed var(--ink-700);
   }
@@ -685,11 +689,20 @@
   }
   .tl-milestone{
     position:absolute;top:50%;transform:translate(-50%,-50%);
-    width:14px;height:14px;border-radius:50%;background:#fff;border:2.5px solid var(--blue-700);
+    width:14px;height:14px;border-radius:50%;background:#fff;border:2.5px solid var(--blue-700);z-index:3;
   }
+  .tl-interval{position:absolute;top:50%;height:0;border-top:2px dashed var(--blue-700);transform:translateY(-50%);opacity:.55;z-index:1}
+  .tl-start{position:absolute;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:10px;height:10px;background:#fff;border:2px solid var(--blue-700);box-shadow:0 0 0 2px #fff;z-index:2;box-sizing:border-box}
   .tl-milestone.done{background:var(--blue-700)}
   .tl-milestone.late{border-color:var(--r);background:var(--r)}
   .tl-milestone.upcoming{border-color:var(--ink-400);background:#fff}
+  .tl-segment{position:absolute;height:4px;transform:translateY(-50%);border-radius:3px;z-index:1;background:#dbe7f2}
+  .tl-seg-done{position:absolute;left:0;top:0;bottom:0;background:var(--tl-color,var(--blue-700));border-radius:3px}
+  .tl-seg-pending{position:absolute;top:0;bottom:0;border-top:2px dashed var(--tl-color,var(--blue-700));transform:translateY(1px);opacity:.72}
+  .tl-start-diamond{position:absolute;transform:translate(-50%,-50%) rotate(45deg);width:10px;height:10px;background:#fff;border:2px solid var(--tl-color,var(--blue-700));box-shadow:0 0 0 2px #fff;z-index:4;box-sizing:border-box}
+  .tl-seg-label{position:absolute;transform:translateX(-50%);text-align:center;max-width:260px;padding:3px 7px;border-radius:5px;background:var(--tl-color,var(--blue-700));border:1px solid var(--tl-color,var(--blue-700));font-size:10.5px;color:#fff;font-weight:700;z-index:5;white-space:nowrap;overflow:visible;text-overflow:clip;box-shadow:0 1px 2px rgba(15,23,42,.14)}
+  .tl-seg-label.shift::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;background:var(--ink-400)}
+  .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:11px;font-weight:800;color:var(--tl-color,var(--blue-700));white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
   .tl-label{
     position:absolute;left:50%;transform:translateX(-50%);
     text-align:center;width:150px;font-size:10.5px;color:var(--ink-700);font-weight:500;
@@ -718,6 +731,7 @@
   .tl-legend-item{display:flex;align-items:center;gap:5px;}
   .tl-legend-dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--blue-700);background:#fff;box-sizing:border-box;}
   .tl-legend-dot.done{background:var(--blue-700);}
+  .tl-legend-start{width:9px;height:9px;border:2px solid var(--blue-700);background:#fff;display:inline-block;box-sizing:border-box;transform:rotate(45deg);}
   .tl-legend-today{width:0;height:16px;border-left:2px dashed var(--ink-700);}
 
   /* Phases bar under timeline */
@@ -946,6 +960,7 @@
               <div class="card-sub">Linha de base vs. real · 12 meses</div>
             </div>
             <div class="tl-legend">
+              <span class="tl-legend-item"><i class="tl-legend-start"></i>Inicio do marco</span>
               <span class="tl-legend-item"><i class="tl-legend-dot"></i>Marco em andamento</span>
               <span class="tl-legend-item"><i class="tl-legend-dot done"></i>Marco entregue</span>
               <span class="tl-legend-item"><i class="tl-legend-today"></i>Hoje</span>
@@ -1035,6 +1050,7 @@
       <div class="card" >
         <div class="card-head">
           <div><div class="card-title">Entregas do Mes</div><div class="card-sub">Entregas previstas no mes</div></div>
+          <div class="mini-legend"><span><i style="background:#78BE00"></i>Entregue</span><span><i style="background:#FFCD00"></i>Em andamento</span><span><i style="background:#FF9E18"></i>Atrasada</span></div>
         </div>
         <div id="delivery-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as entregas.</div>
       </div>
@@ -1045,6 +1061,7 @@
         <div class="card" >
           <div class="card-head">
             <div><div class="card-title">Proximos Passos</div><div class="card-sub">Acoes e responsaveis</div></div>
+            <div class="mini-legend"><span><i style="background:#dc2626"></i>Alta</span><span><i style="background:#FFCD00"></i>Media</span><span><i style="background:#0075A9"></i>Baixa</span></div>
           </div>
           <div id="nextp-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as acoes.</div>
         </div>
@@ -1054,6 +1071,7 @@
         <div class="card" >
           <div class="card-head">
             <div><div class="card-title">Riscos e Bloqueios</div><div class="card-sub" id="risk-summary"></div></div>
+            <div class="mini-legend"><span><i style="background:#dc2626"></i>Alto</span><span><i style="background:#FFCD00"></i>Medio</span><span><i style="background:#00B8B0"></i>Baixo</span></div>
           </div>
           <div id="risk-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os riscos.</div>
         </div>
@@ -1766,7 +1784,13 @@ function updateRAG(cron, risco) {
 }
 
 // ─── TIMELINE ───
+const TIMELINE_VERSION = 'v2';
 function updateTimeline(cron) {
+  if (TIMELINE_VERSION === 'v2') return updateTimelineV2(cron);
+  return updateTimelineV1(cron);
+}
+
+function updateTimelineV1(cron) {
   if (!cron || !cron.length) return;
   const monthsAbbr = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const readDate = (row, names) => {
@@ -1785,9 +1809,16 @@ function updateTimeline(cron) {
   };
 
   const marcosRaw = cron
-    .filter(r => r['Milestone'] === 'Marco' || r['Milestone'] === 'marco')
+    .filter(r => { const m = normKey(r['Milestone']); return m === 'marco' || m === 'refinar'; })
     .map(r => ({
       ...r,
+      _begin: readFirstDate(r, [
+        ['Data de Inicio'],
+        ['Data Inicio'],
+        ['Inicio'],
+        ['In?cio'],
+        ['Data de In?cio']
+      ]),
       _start: readFirstDate(r, [
         ['Data de Vencimento'],
         ['Data Fim Planejada Projetada'],
@@ -1805,7 +1836,7 @@ function updateTimeline(cron) {
   }
 
   const activities = cron
-    .filter(r => !(r['Milestone'] === 'Marco' || r['Milestone'] === 'marco'))
+    .filter(r => { const m = normKey(r['Milestone']); return m !== 'marco' && m !== 'refinar'; })
     .filter(r => r['Pacote'])
     .map(r => ({
       pacote: String(r['Pacote'] || ''),
@@ -1819,6 +1850,7 @@ function updateTimeline(cron) {
   const projEnd = new Date(2026, 11, 31);
   const totalMs = Math.max(1, projEnd - projStart);
 
+  const tlPalette = ['#00558C','#78BE20','#FF9E18','#00B2A9','#FFCD00','#0075A9','#00A9CE'];
   const timelineMonths = [];
   for (let d = new Date(2026, 0, 1); d <= projEnd; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
     timelineMonths.push({
@@ -1834,7 +1866,7 @@ function updateTimeline(cron) {
     return activities
       .filter(a => a.start >= m.date && a.start <= m.endDate)
       .sort((a, b) => a.eapNum - b.eapNum)
-      .slice(0, 2);
+      .slice(0, 3);
   }
 
   const today = (typeof window._cronCutoff !== 'undefined') ? window._cronCutoff : new Date();
@@ -1842,15 +1874,8 @@ function updateTimeline(cron) {
   if (today >= projStart && today <= projEnd) todayPct = ((today - projStart) / totalMs) * 100;
   else if (today > projEnd) todayPct = 100;
 
-  const progPct = (typeof window._cronProgPct !== 'undefined')
-    ? window._cronProgPct
-    : (marcosRaw.length ? marcosRaw.reduce((sum, r) => sum + (r['% Progresso'] || 0), 0) / marcosRaw.length * 100 : 0);
-
   const tl = document.getElementById('tl-axis');
   if (!tl) return;
-
-  let html = '<div class="tl-progress" style="width:' + progPct.toFixed(1) + '%"></div>' +
-             '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
 
   const monthIndexByKey = new Map(
     timelineMonths.map((m, idx) => [m.year + '-' + m.monthIdx, idx])
@@ -1880,6 +1905,39 @@ function updateTimeline(cron) {
 
     return Math.min(98, Math.max(0.5, monthCenter + offset));
   });
+
+  const dateToTimelinePct = d => {
+    if (!d) return null;
+    if (d < projStart) return 0.5;
+    if (d > projEnd) return 99;
+    const key = d.getFullYear() + '-' + d.getMonth();
+    const monthIdx = monthIndexByKey.get(key);
+    if (monthIdx == null) return null;
+    return Math.min(98, Math.max(0.5, ((monthIdx + 0.5) / timelineMonths.length) * 100));
+  };
+  const marcoStartPositions = marcosRaw.map(m => dateToTimelinePct(m._begin));
+
+  const marcoPct = m => {
+    const raw = Number(m['% Progresso'] || 0);
+    const pct = isFinite(raw) ? (raw > 1 ? raw / 100 : raw) : 0;
+    return Math.max(0, Math.min(1, pct));
+  };
+  let progPct = 0;
+  for (let i = 0; i < marcosRaw.length; i++) {
+    const status = String(marcosRaw[i]['Status'] || '').toLowerCase();
+    const pct = status.includes('conclu') ? 1 : marcoPct(marcosRaw[i]);
+    const prevPos = i > 0 ? marcoPositions[i - 1] : 0;
+    const pos = marcoPositions[i];
+    if (pct >= 1) {
+      progPct = pos;
+      continue;
+    }
+    progPct = prevPos + (pos - prevPos) * pct;
+    break;
+  }
+  progPct = Math.max(0, Math.min(100, progPct));
+  let html = '<div class="tl-progress" style="width:' + progPct.toFixed(1) + '%"></div>' +
+             '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
 
   const tlWidthPx = tl.getBoundingClientRect().width || 1200;
   const labelWidthPct = (190 / tlWidthPx) * 100;
@@ -1958,6 +2016,13 @@ function updateTimeline(cron) {
       : pos > 100 - ((labelWidthPct / 2) + 1)
         ? 'left:' + Math.min(99.2, pos + 0.2).toFixed(1) + '%;transform:translateX(-100%);text-align:right;'
         : 'left:' + safePos.toFixed(1) + '%';
+    const beginPos = marcoStartPositions[i];
+    if (beginPos != null && Math.abs(beginPos - pos) > 0.7) {
+      const left = Math.min(beginPos, pos);
+      const width = Math.abs(pos - beginPos);
+      html += '<div class="tl-interval" style="left:' + left.toFixed(1) + '%;width:' + width.toFixed(1) + '%"></div>' +
+        '<div class="tl-start" style="left:' + beginPos.toFixed(1) + '%" title="Inicio do marco"></div>';
+    }
     html += '<div class="tl-milestone ' + cls + '" style="left:' + pos.toFixed(1) + '%"></div>' +
       '<div class="tl-label ' + side + '" style="' + labelStyle + '"><strong' +
       (cls === 'late' ? ' style="color:var(--r)"' : '') + '>' + nomeCurto + '</strong></div>';
@@ -1973,11 +2038,204 @@ function updateTimeline(cron) {
     const actsHtml = acts.map(a => {
       const txt = a.pacote.length > 18 ? a.pacote.substring(0, 18) + '...' : a.pacote;
       const title = (a.eap ? a.eap + ' - ' : '') + a.pacote.replace(/"/g, '&quot;');
-      return '<div class="tl-activity" title="' + title + '">' + txt + '</div>';
+      const color = marcoColorForActivity(a);
+      return '<div class="tl-activity" style="background:' + color + '" title="' + title + '">' + txt + '</div>';
     }).join('');
     return '<div class="tl-month-col"><div class="tl-month-label">' + m.label + '</div><div class="tl-month-year">' + m.year + '</div><div class="tl-month-activities">' + actsHtml + '</div></div>';
   }).join('');
 
+  const tlSub = document.querySelector('[style*="grid-area:tl"] .card-sub');
+  if (tlSub) tlSub.textContent = 'Linha de base vs. real - ' + timelineMonths.length + ' meses';
+}
+
+
+function updateTimelineV2(cron) {
+  if (!cron || !cron.length) return updateTimelineV1(cron);
+  const monthsAbbr = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const readDate = (row, names) => {
+    const wanted = names.map(n => normKey(n));
+    for (const key of Object.keys(row || {})) {
+      if (wanted.includes(normKey(key))) return excelDate(row[key]);
+    }
+    return null;
+  };
+  const readFirstDate = (row, groups) => {
+    for (const names of groups) {
+      const d = readDate(row, names);
+      if (d) return d;
+    }
+    return null;
+  };
+  const getEapNum = eap => {
+    if (eap == null) return 999;
+    const n = parseFloat(String(eap).replace(',', '.'));
+    return isFinite(n) ? n : 999;
+  };
+  const projStart = new Date(2026, 0, 1);
+  const projEnd = new Date(2026, 11, 31);
+  const totalMs = Math.max(1, projEnd - projStart);
+  const tlPalette = ['#00558C','#78BE20','#FF9E18','#00B2A9','#FFCD00','#0075A9','#00A9CE'];
+  const timelineMonths = [];
+  for (let d = new Date(2026, 0, 1); d <= projEnd; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+    timelineMonths.push({ monthIdx:d.getMonth(), year:d.getFullYear(), label:monthsAbbr[d.getMonth()], date:new Date(d.getFullYear(), d.getMonth(), 1), endDate:new Date(d.getFullYear(), d.getMonth() + 1, 0) });
+  }
+  const pctDate = d => {
+    if (!d) return null;
+    if (d < projStart) return 0.5;
+    if (d > projEnd) return 99;
+    return Math.max(0.5, Math.min(99, ((d - projStart) / totalMs) * 100));
+  };
+  const marcoPct = m => {
+    const status = String(m['Status'] || '').toLowerCase();
+    if (status.includes('conclu')) return 1;
+    const raw = Number(m['% Progresso'] || 0);
+    const pct = isFinite(raw) ? (raw > 1 ? raw / 100 : raw) : 0;
+    return Math.max(0, Math.min(1, pct));
+  };
+  const marcos = cron
+    .filter(r => { const m = normKey(r['Milestone']); return m === 'marco' || m === 'refinar'; })
+    .map(r => {
+      const begin = readFirstDate(r, [['Data de Inicio'], ['Data Inicio'], ['Inicio'], ['In?cio'], ['Data de In?cio']]);
+      const end = readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]);
+      return { ...r, _begin: begin || end, _end: end || begin };
+    })
+    .filter(r => r._end && r._end.getFullYear() === 2026)
+    .sort((a,b) => a._end - b._end);
+
+  const activities = cron
+    .filter(r => { const m = normKey(r['Milestone']); return m !== 'marco' && m !== 'refinar'; })
+    .filter(r => r['Pacote'])
+    .map(r => ({ pacote:String(r['Pacote'] || ''), eap:r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '', eapNum:getEapNum(r['Codigo EAP']), start:readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]) }))
+    .filter(r => r.start && r.start.getFullYear() === 2026);
+
+  const tl = document.getElementById('tl-axis');
+  if (!tl) return;
+  const today = (typeof window._cronCutoff !== 'undefined') ? window._cronCutoff : new Date();
+  let todayPct = 0;
+  if (today >= projStart && today <= projEnd) todayPct = ((today - projStart) / totalMs) * 100;
+  else if (today > projEnd) todayPct = 100;
+
+  const compact = nome => String(nome || '-').trim();
+  const laneEnds = [];
+  const marcoLanes = marcos.map(m => {
+    const b = pctDate(m._begin);
+    const e = pctDate(m._end);
+    if (b == null || e == null) return 0;
+    const left = Math.min(b, e);
+    const right = Math.max(b, e);
+    let lane = laneEnds.findIndex(end => left > end + 1.2);
+    if (lane < 0) { lane = laneEnds.length; laneEnds.push(-Infinity); }
+    laneEnds[lane] = right;
+    return lane;
+  });
+  const labelH = 18;
+  const labelGap = 8;
+  const bandGap = 8;
+  const baseTop = 34;
+  const bandBottoms = [];
+  const laneTops = marcoLanes.map((lane) => {
+    const minTop = lane === 0 ? baseTop : (bandBottoms[lane - 1] || baseTop) + bandGap;
+    const lineTop = minTop + labelH + labelGap;
+    const bandBottom = lineTop + labelGap + labelH;
+    bandBottoms[lane] = Math.max(bandBottoms[lane] || 0, bandBottom);
+    return lineTop;
+  });
+  const axisHeight = Math.max(92, Math.max(...bandBottoms, baseTop + 52) + 10);
+  tl.style.height = axisHeight + 'px';
+  let html = '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
+  const endGroups = new Map();
+  marcos.forEach((m, idx) => {
+    const e = pctDate(m._end);
+    if (e == null) return;
+    const key = e.toFixed(1);
+    if (!endGroups.has(key)) endGroups.set(key, []);
+    endGroups.get(key).push(idx);
+  });
+  const labelEnd = [];
+  marcos.forEach((m, i) => {
+    const b = pctDate(m._begin);
+    const e = pctDate(m._end);
+    if (b == null || e == null) return;
+    const color = tlPalette[i % tlPalette.length];
+    const left = Math.min(b, e);
+    const right = Math.max(b, e);
+    const width = Math.max(1.2, right - left);
+    const progressPct = Math.round(marcoPct(m) * 1000) / 10;
+    const pendingPct = Math.max(0, 100 - progressPct);
+    const progressX = left + (width * progressPct / 100);
+    const prevEnd = i > 0 ? pctDate(marcos[i - 1]._end) : left;
+    const compressed = Math.abs(e - b) < 5.5;
+    let mid = compressed && prevEnd != null ? (Math.min(prevEnd, e) + Math.max(prevEnd, e)) / 2 : left + width / 2;
+    mid = Math.max(4, Math.min(96, mid));
+    const status = String(m['Status'] || '').toLowerCase();
+    const cls = status.includes('conclu') ? 'done' : status.includes('atraso') || status.includes('atrasad') ? 'late' : status.includes('andamento') ? 'active' : 'upcoming';
+    const lane = marcoLanes[i] || 0;
+    const laneTop = laneTops[i] || baseTop;
+    const sameEnd = endGroups.get(e.toFixed(1)) || [];
+    const sameIdx = sameEnd.indexOf(i);
+    let sideShift = 0;
+    if (sameEnd.length > 1) sideShift = (sameIdx - (sameEnd.length - 1) / 2) * 7;
+    mid = Math.max(4, Math.min(96, mid + sideShift));
+    const labelAbove = laneTop - labelGap - labelH;
+    const labelBelow = laneTop + labelGap;
+    const hitsLabel = top => labelEnd.some(l => Math.abs(mid - l.mid) < 9 && Math.abs(top - l.labelTop) < 20);
+    let labelTop = !hitsLabel(labelAbove) ? labelAbove : labelBelow;
+    if (hitsLabel(labelTop)) labelTop = labelTop < laneTop ? labelTop - 20 : labelTop + 20;
+    labelTop = Math.max(2, Math.min(labelTop, axisHeight - labelH - 2));
+    labelEnd.push({ mid, labelTop });
+    html += '<div class="tl-segment" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + left.toFixed(1) + '%;width:' + width.toFixed(1) + '%">' +
+      '<div class="tl-seg-done" style="width:' + progressPct.toFixed(1) + '%"></div>' +
+      (pendingPct > 0 ? '<div class="tl-seg-pending" style="left:' + progressPct.toFixed(1) + '%;width:' + pendingPct.toFixed(1) + '%"></div>' : '') +
+      '</div>' +
+      '<div class="tl-start-diamond" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + b.toFixed(1) + '%" title="Inicio do marco"></div>' +
+      '<div class="tl-milestone ' + cls + '" style="top:' + laneTop.toFixed(1) + 'px;border-color:' + color + ';' + (cls === 'done' ? 'background:' + color + ';' : '') + 'left:' + e.toFixed(1) + '%"></div>' +
+      '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + progressX.toFixed(1) + '%;top:' + (laneTop + 9).toFixed(1) + 'px">' + progressPct.toFixed(progressPct % 1 ? 1 : 0) + '%</div>' +
+      '<div class="tl-seg-label" style="--tl-color:' + color + ';left:' + mid.toFixed(1) + '%;top:' + labelTop.toFixed(1) + 'px" title="' + String(m['Pacote'] || '-').replace(/"/g, '&quot;') + '">' + compact(m['Pacote']) + '</div>';
+  });
+  tl.innerHTML = html;
+
+  const eapPrefix = eap => {
+    const parts = String(eap || '').split('.').filter(Boolean);
+    return parts.length ? parts[0] : '';
+  };
+  const marcoColorForActivity = a => {
+    if (!marcos.length) return tlPalette[0];
+    const ap = eapPrefix(a.eap);
+    if (ap) {
+      let bestIdx = -1;
+      let bestLen = -1;
+      marcos.forEach((m, i) => {
+        const mp = eapPrefix(m['Codigo EAP']);
+        if (!mp || mp !== ap) return;
+        const len = String(m['Codigo EAP'] || '').length;
+        if (len > bestLen) { bestLen = len; bestIdx = i; }
+      });
+      if (bestIdx >= 0) return tlPalette[bestIdx % tlPalette.length];
+    }
+    let nearestIdx = 0;
+    let nearestDist = Infinity;
+    marcos.forEach((m, i) => {
+      const ref = m._end || m._begin;
+      if (!ref || !a.start) return;
+      const dist = Math.abs(a.start - ref);
+      if (dist < nearestDist) { nearestDist = dist; nearestIdx = i; }
+    });
+    return tlPalette[nearestIdx % tlPalette.length];
+  };
+  const activitiesForMonth = m => activities.filter(a => a.start >= m.date && a.start <= m.endDate).sort((a,b) => a.eapNum - b.eapNum).slice(0, 3);
+  const phasesEl = document.getElementById('tl-phases');
+  if (!phasesEl) return;
+  phasesEl.className = 'tl-months-bar';
+  phasesEl.style.gridTemplateColumns = 'repeat(' + timelineMonths.length + ', 1fr)';
+  phasesEl.innerHTML = timelineMonths.map(m => {
+    const actsHtml = activitiesForMonth(m).map(a => {
+      const txt = a.pacote.length > 18 ? a.pacote.substring(0, 18) + '...' : a.pacote;
+      const title = (a.eap ? a.eap + ' - ' : '') + a.pacote.replace(/"/g, '&quot;');
+      const color = marcoColorForActivity(a);
+      return '<div class="tl-activity" style="background:' + color + '" title="' + title + '">' + txt + '</div>';
+    }).join('');
+    return '<div class="tl-month-col"><div class="tl-month-label">' + m.label + '</div><div class="tl-month-year">' + m.year + '</div><div class="tl-month-activities">' + actsHtml + '</div></div>';
+  }).join('');
   const tlSub = document.querySelector('[style*="grid-area:tl"] .card-sub');
   if (tlSub) tlSub.textContent = 'Linha de base vs. real - ' + timelineMonths.length + ' meses';
 }
@@ -2094,13 +2352,12 @@ function updateNextp(passos) {
   }
   const html = rows.slice(0, 5).map(r => {
     const acao = String(pick(r, ['Acao', 'Acoes', 'Acao Prevista']) || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    const statusLow = String(r['Status'] || '').toLowerCase();
-    const prioLow = String(r['Prioridade'] || '').toLowerCase();
+    const prioLow = normKey(r['Prioridade'] || '');
     let dot;
-    if (prioLow.includes('alta') || prioLow.includes('critica') || statusLow.includes('atras')) dot = '#dc2626';
-    else if (prioLow.includes('media') || prioLow.includes('media') || statusLow.includes('andamento')) dot = '#FFCD00';
-    else if (statusLow.includes('conclu') || statusLow.includes('feito')) dot = '#00B8B0';
-    else dot = '#0075A9';
+    if (prioLow.includes('alta') || prioLow.includes('critica')) dot = '#dc2626';
+    else if (prioLow.includes('media')) dot = '#FFCD00';
+    else if (prioLow.includes('baixa')) dot = '#0075A9';
+    else dot = '#cbd5e1';
     return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;">
       <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
       <div title="${acao}" style="flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${acao}</div>
