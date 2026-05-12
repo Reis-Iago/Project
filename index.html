@@ -1556,17 +1556,30 @@ function renderFinanceiro(fin, proj) {
   const ac  = col(refRow, 'AC (Acumulado Realizado)') || col(refRow, 'AC (Acumulado Realizado) ') || 0;
 
   // ── FULL YEAR card ──
-  const fyPct = bac > 0 ? (eac / bac) * 100 : 0;
+  const calcPct = (value, base) => ((base > 0 ? value / base : (value > 0 ? value / 1 : 1)) * 100);
+  const fyPct = calcPct(eac, bac);
+  const fyOver = fyPct > 100;
   const fyBadge = document.getElementById('fy-badge');
-  if (fyBadge) { fyBadge.textContent = fyPct.toFixed(1).replace('.', ',') + '% Real + Forecast x BP'; fyBadge.style.background = '#EAF7D0'; fyBadge.style.color = '#4B7F00'; fyBadge.style.display = 'inline-block'; }
+  if (fyBadge) {
+    fyBadge.textContent = (fyOver ? '+' + (fyPct - 100).toFixed(1) : fyPct.toFixed(1)).replace('.', ',') + '% Real + Forecast x BP';
+    fyBadge.style.background = fyOver ? '#E30613' : '#EAF7D0';
+    fyBadge.style.color = fyOver ? '#fff' : '#4B7F00';
+    fyBadge.style.display = 'inline-block';
+  }
   setHtml('fy-budget', '<span>' + fmtM(eac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Real + Forecast</span>');
   const fyEacEl = document.getElementById('fy-eac');
   if (fyEacEl) fyEacEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(bac) + '</strong> <span style="font-size:11px;color:#333">BP</span>';
 
   // ── YEAR TO DATE card ──
-  const ytdPct = pv > 0 ? (ac / pv) * 100 : (ac > 0 ? 100 : 0);
+  const ytdPct = calcPct(ac, pv);
+  const ytdOver = ytdPct > 100;
   const ytdBadge = document.getElementById('ytd-badge');
-  if (ytdBadge) { ytdBadge.textContent = ytdPct.toFixed(1).replace('.', ',') + '% Planejado x Realizado'; ytdBadge.style.background = '#EAF7D0'; ytdBadge.style.color = '#4B7F00'; ytdBadge.style.display = 'inline-block'; }
+  if (ytdBadge) {
+    ytdBadge.textContent = (ytdOver ? '+' + (ytdPct - 100).toFixed(1) : ytdPct.toFixed(1)).replace('.', ',') + '% Planejado x Realizado';
+    ytdBadge.style.background = ytdOver ? '#E30613' : '#EAF7D0';
+    ytdBadge.style.color = ytdOver ? '#fff' : '#4B7F00';
+    ytdBadge.style.display = 'inline-block';
+  }
   setHtml('ytd-pv', '<span>' + fmtM(ac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Realizado</span>');
   const ytdAcEl = document.getElementById('ytd-ac');
   if (ytdAcEl) ytdAcEl.innerHTML = '<strong style="font-size:17px;font-weight:800;color:#1a2740">' + fmtM(pv) + '</strong> <span style="font-size:11px;color:#333">BP</span>';
@@ -1729,41 +1742,69 @@ function updateRAG(cron, risco) {
   const cronRag = ragByRatio(spiAvg);
   applyRagCell('rag-cron-cell', 'rag-cron', cronRag);
 
-  let cpiVal = null;
+  function financeNumber(row, names) {
+    const wanted = names.map(n => normKey(n));
+    for (const key of Object.keys(row || {})) {
+      if (!wanted.includes(normKey(key))) continue;
+      const raw = row[key];
+      if (raw == null || raw === '' || String(raw).includes('#DIV')) return 0;
+      if (typeof raw === 'number') return isFinite(raw) ? raw : 0;
+      const n = Number(String(raw).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
+      return isFinite(n) ? n : 0;
+    }
+    return 0;
+  }
+  function financeRatio(value, base) {
+    if (base > 0) return value / base;
+    return value > 0 ? value / 1 : 1;
+  }
+  function financeRag(row) {
+    if (!row) return { cls: '', label: '?', color: '#8797ad' };
+    const budget = financeNumber(row, ['Budget', 'Budget ']);
+    const eac = financeNumber(row, ['EAC', 'EAC (Real + Forecast)', 'EAC (Real + Forecast) ']);
+    const pv = financeNumber(row, ['PV (Acumulado Planejado)', 'PV (Acumulado Planejado) ']);
+    const ac = financeNumber(row, ['AC (Acumulado Realizado)', 'AC (Acumulado Realizado) ']);
+    const bp = financeNumber(row, ['Business Plan (BP)']);
+    const real = financeNumber(row, ['Realizado Mensal']);
+    const forecast = financeNumber(row, ['Forecast']);
+    const ratios = [
+      financeRatio(eac || real + forecast, budget),
+      financeRatio(ac, pv),
+      financeRatio(real || forecast, bp)
+    ].filter(v => isFinite(v));
+    if (!ratios.length) return { cls: '', label: '?', color: '#8797ad' };
+    if (ratios.some(v => v > 1 || v < 0.95)) return { cls: 'a', label: 'Aten\u00e7\u00e3o', color: '#FF9E18' };
+    return { cls: 'b', label: 'Bom', color: '#005F96' };
+  }
+  let refFinRow = null;
   try {
-    const finRows = (typeof _allFinData !== 'undefined' ? _allFinData : []).filter(r => {
-      const ac = Number(r['AC (Acumulado Realizado) '] ?? r['AC (Acumulado Realizado)'] ?? 0);
-      const real = Number(r['Realizado Mensal'] ?? 0);
-      const cpi = Number(r['CPI '] ?? r['CPI']);
-      return (ac > 0 || real > 0 || isFinite(cpi));
-    });
-    let refRow = null;
+    const finRows = (typeof _allFinData !== 'undefined' ? _allFinData : []).filter(r =>
+      financeNumber(r, ['Budget', 'Budget ']) > 0 ||
+      financeNumber(r, ['Business Plan (BP)']) > 0 ||
+      financeNumber(r, ['Realizado Mensal']) > 0 ||
+      financeNumber(r, ['Forecast']) > 0 ||
+      financeNumber(r, ['EAC', 'EAC (Real + Forecast)', 'EAC (Real + Forecast) ']) > 0
+    );
     if (typeof _selectedMonth !== 'undefined' && _selectedMonth) {
-      refRow = finRows.find(r => r['__label'] === _selectedMonth) || null;
+      refFinRow = finRows.find(r => r['__label'] === _selectedMonth) || null;
     }
-    if (!refRow) {
-      refRow = [...finRows].reverse().find(r => isFinite(Number(r['CPI '] ?? r['CPI']))) || finRows[finRows.length - 1] || null;
-    }
-    if (refRow) {
-      const cpiNum = Number(refRow['CPI '] ?? refRow['CPI']);
-      cpiVal = isFinite(cpiNum) ? cpiNum : null;
-    }
+    if (!refFinRow) refFinRow = finRows[finRows.length - 1] || null;
   } catch(e) {}
-  const finRag = ragByRatio(cpiVal);
+  const finRag = financeRag(refFinRow);
   applyRagCell('rag-fin-cell', 'rag-fin', finRag);
 
-  let riskRag = { cls: 'g', label: 'Baixo', color: '#78BE00' };
+  let riskRag = { cls: 'b', label: 'Baixo', color: '#005F96' };
   if (risco && risco.length) {
     const scores = risco.map(r => r['Score']).filter(s => s != null && isFinite(s));
     const maxScore = scores.length ? Math.max(...scores) : 0;
-    if (maxScore >= 15) riskRag = { cls: 'a', label: 'Alto', color: '#FF9E18' };
-    else if (maxScore >= 8) riskRag = { cls: 'b', label: 'Médio', color: '#005F96' };
-    else riskRag = { cls: 'g', label: 'Baixo', color: '#78BE00' };
+    if (maxScore >= 15) riskRag = { cls: 'r', label: 'Alto', color: '#E30613' };
+    else if (maxScore >= 8) riskRag = { cls: 'a', label: 'Médio', color: '#FF9E18' };
+    else riskRag = { cls: 'b', label: 'Baixo', color: '#005F96' };
   }
   applyRagCell('rag-risk-cell', 'rag-risk', riskRag);
 
   const worst = [cronRag, finRag, riskRag].reduce((w, x) => {
-    const order = {'a':3,'b':2,'g':1,'':0};
+    const order = {'r':4,'a':3,'b':2,'g':1,'':0};
     return (order[x.cls] || 0) > (order[w.cls] || 0) ? x : w;
   }, { cls: '', label: '—', color: '#8797ad' });
   const globalRag = document.getElementById('rag-global');
