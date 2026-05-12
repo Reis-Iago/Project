@@ -1558,12 +1558,12 @@ function renderFinanceiro(fin, proj) {
   // ── FULL YEAR card ──
   const calcPct = (value, base) => ((base > 0 ? value / base : (value > 0 ? value / 1 : 1)) * 100);
   const fyPct = calcPct(eac, bac);
-  const fyOver = fyPct > 100;
+  const fyDelta = Math.abs(fyPct - 100) < 0.05 ? 0 : fyPct - 100;
   const fyBadge = document.getElementById('fy-badge');
   if (fyBadge) {
-    fyBadge.textContent = (fyOver ? '+' + (fyPct - 100).toFixed(1) : fyPct.toFixed(1)).replace('.', ',') + '% Real + Forecast x BP';
-    fyBadge.style.background = fyOver ? '#E30613' : '#EAF7D0';
-    fyBadge.style.color = fyOver ? '#fff' : '#4B7F00';
+    fyBadge.textContent = (fyDelta === 0 ? '100,0%' : (fyDelta > 0 ? '+' : '') + fyDelta.toFixed(1).replace('.', ',') + '%') + ' Real + Forecast x BP';
+    fyBadge.style.background = fyDelta > 0 ? '#E30613' : (fyDelta < 0 ? '#FFF4C7' : '#EAF7D0');
+    fyBadge.style.color = fyDelta > 0 ? '#fff' : (fyDelta < 0 ? '#B86400' : '#4B7F00');
     fyBadge.style.display = 'inline-block';
   }
   setHtml('fy-budget', '<span>' + fmtM(eac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Real + Forecast</span>');
@@ -1572,12 +1572,12 @@ function renderFinanceiro(fin, proj) {
 
   // ── YEAR TO DATE card ──
   const ytdPct = calcPct(ac, pv);
-  const ytdOver = ytdPct > 100;
+  const ytdDelta = Math.abs(ytdPct - 100) < 0.05 ? 0 : ytdPct - 100;
   const ytdBadge = document.getElementById('ytd-badge');
   if (ytdBadge) {
-    ytdBadge.textContent = (ytdOver ? '+' + (ytdPct - 100).toFixed(1) : ytdPct.toFixed(1)).replace('.', ',') + '% Planejado x Realizado';
-    ytdBadge.style.background = ytdOver ? '#E30613' : '#EAF7D0';
-    ytdBadge.style.color = ytdOver ? '#fff' : '#4B7F00';
+    ytdBadge.textContent = (ytdDelta === 0 ? '100,0%' : (ytdDelta > 0 ? '+' : '') + ytdDelta.toFixed(1).replace('.', ',') + '%') + ' Planejado x Realizado';
+    ytdBadge.style.background = ytdDelta > 0 ? '#E30613' : (ytdDelta < 0 ? '#FFF4C7' : '#EAF7D0');
+    ytdBadge.style.color = ytdDelta > 0 ? '#fff' : (ytdDelta < 0 ? '#B86400' : '#4B7F00');
     ytdBadge.style.display = 'inline-block';
   }
   setHtml('ytd-pv', '<span>' + fmtM(ac) + '</span><span style="font-size:11px;font-weight:500;color:#8797ad;vertical-align:baseline;margin-left:8px;">Realizado</span>');
