@@ -703,6 +703,8 @@
   .tl-seg-label{position:absolute;transform:translateX(-50%);text-align:center;max-width:260px;padding:3px 7px;border-radius:5px;background:var(--tl-color,var(--blue-700));border:1px solid var(--tl-color,var(--blue-700));font-size:10.5px;color:#fff;font-weight:700;z-index:5;white-space:nowrap;overflow:visible;text-overflow:clip;box-shadow:0 1px 2px rgba(15,23,42,.14)}
   .tl-seg-label.shift::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;background:var(--ink-400)}
   .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:11px;font-weight:800;color:var(--tl-color,var(--blue-700));white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
+  .tl-plan-marker{position:absolute;width:2px;height:16px;background:var(--ink-900);transform:translate(-50%,-50%);z-index:6;border-radius:2px}
+  .tl-plan-label{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:800;color:var(--ink-900);white-space:nowrap;z-index:6;background:#fff;padding:0 3px;border-radius:3px}
   .tl-label{
     position:absolute;left:50%;transform:translateX(-50%);
     text-align:center;width:150px;font-size:10.5px;color:var(--ink-700);font-weight:500;
@@ -2092,6 +2094,15 @@ function updateTimelineV2(cron) {
     const pct = isFinite(raw) ? (raw > 1 ? raw / 100 : raw) : 0;
     return Math.max(0, Math.min(1, pct));
   };
+  const planPct = m => {
+    const start = m._begin || m._end;
+    const end = m._end || m._begin;
+    const cut = (typeof window._cronCutoff !== 'undefined') ? window._cronCutoff : new Date();
+    if (!start || !end || end <= start) return cut >= end ? 1 : 0;
+    if (cut <= start) return 0;
+    if (cut >= end) return 1;
+    return Math.max(0, Math.min(1, (cut - start) / (end - start)));
+  };
   const marcos = cron
     .filter(r => { const m = normKey(r['Milestone']); return m === 'marco' || m === 'refinar'; })
     .map(r => {
@@ -2161,8 +2172,10 @@ function updateTimelineV2(cron) {
     const right = Math.max(b, e);
     const width = Math.max(1.2, right - left);
     const progressPct = Math.round(marcoPct(m) * 1000) / 10;
+    const plannedPct = Math.round(planPct(m) * 1000) / 10;
     const pendingPct = Math.max(0, 100 - progressPct);
     const progressX = left + (width * progressPct / 100);
+    const planX = left + (width * plannedPct / 100);
     const prevEnd = i > 0 ? pctDate(marcos[i - 1]._end) : left;
     const compressed = Math.abs(e - b) < 5.5;
     let mid = compressed && prevEnd != null ? (Math.min(prevEnd, e) + Math.max(prevEnd, e)) / 2 : left + width / 2;
@@ -2189,7 +2202,9 @@ function updateTimelineV2(cron) {
       '</div>' +
       '<div class="tl-start-diamond" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + b.toFixed(1) + '%" title="Inicio do marco"></div>' +
       '<div class="tl-milestone ' + cls + '" style="top:' + laneTop.toFixed(1) + 'px;border-color:' + color + ';' + (cls === 'done' ? 'background:' + color + ';' : '') + 'left:' + e.toFixed(1) + '%"></div>' +
-      '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + progressX.toFixed(1) + '%;top:' + (laneTop + 9).toFixed(1) + 'px">' + progressPct.toFixed(progressPct % 1 ? 1 : 0) + '%</div>' +
+      '<div class="tl-plan-marker" style="left:' + planX.toFixed(1) + '%;top:' + laneTop.toFixed(1) + 'px"></div>' +
+      '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + progressX.toFixed(1) + '%;top:' + (laneTop + 9).toFixed(1) + 'px">Real: ' + progressPct.toFixed(progressPct % 1 ? 1 : 0) + '%</div>' +
+      '<div class="tl-plan-label" style="left:' + planX.toFixed(1) + '%;top:' + (laneTop + 22).toFixed(1) + 'px">Plan: ' + plannedPct.toFixed(plannedPct % 1 ? 1 : 0) + '%</div>' +
       '<div class="tl-seg-label" style="--tl-color:' + color + ';left:' + mid.toFixed(1) + '%;top:' + labelTop.toFixed(1) + 'px" title="' + String(m['Pacote'] || '-').replace(/"/g, '&quot;') + '">' + compact(m['Pacote']) + '</div>';
   });
   tl.innerHTML = html;
