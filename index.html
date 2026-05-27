@@ -506,6 +506,30 @@
   }
   .icon-btn:hover{background:rgba(255,255,255,.22)}
   .icon-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:1.8}
+  .view-tabs{
+    background:
+      radial-gradient(circle at 90% 0%, rgba(255,255,255,.10), transparent 40%),
+      linear-gradient(90deg,var(--blue-800) 0%,var(--blue-700) 60%,var(--blue-800) 100%);
+    border-top:1px solid rgba(255,255,255,.08);
+    border-bottom:1px solid rgba(0,0,0,.18);
+    display:flex;align-items:flex-end;justify-content:center;gap:54px;
+    height:42px;padding:0 24px;
+  }
+  .view-tab{
+    position:relative;background:transparent;border:0;color:rgba(255,255,255,.68);
+    font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;
+    padding:0 2px 12px;min-width:92px;text-align:center;
+  }
+  .view-tab.active{color:#fff;font-weight:700}
+  .view-tab.active::after{
+    content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+    width:78px;height:4px;border-radius:4px 4px 0 0;background:#fff;
+  }
+  .view-tab .pill{
+    display:inline-flex;align-items:center;justify-content:center;margin-left:6px;
+    min-width:22px;height:16px;padding:0 6px;border-radius:999px;
+    background:rgba(255,255,255,.18);color:#dff2ff;font-size:10px;font-weight:800;
+  }
 
   /* ========== SUBHEADER ========== */
   .subheader{
@@ -545,6 +569,31 @@
   .delivery-card .card,.risk-card .card,.nextp-card .card{height:100%}
   .bottom-stack{display:flex;flex-direction:column;gap:12px;min-width:0}
   .team-roles{display:flex;flex-direction:column;gap:2px;min-width:0}
+  body.view-quinzenal .main{grid-template-columns:minmax(0,3fr) minmax(360px,2fr) !important}
+  body.view-quinzenal .content{
+    grid-template-columns:1fr !important;
+    grid-template-areas:'tl' !important;
+  }
+  body.view-quinzenal .rsidebar{padding-top:0;display:flex;flex-direction:column;align-items:stretch}
+  .health-strip-anchor{display:none;min-width:520px;flex:1}
+  body.view-quinzenal .health-strip-anchor{display:block}
+  body.view-quinzenal #rag-card{
+    margin:0;padding:8px 10px;border:0;box-shadow:none;background:transparent;
+  }
+  body.view-quinzenal #rag-card .card-head{display:none}
+  body.view-quinzenal #rag-card .card-title{font-size:9px}
+  body.view-quinzenal #rag-card .card-sub{display:none}
+  body.view-quinzenal #rag-card .rag{margin:0;gap:6px}
+  body.view-quinzenal #rag-card .rag-cell{padding:6px 8px}
+  body.view-quinzenal #rag-card .rag-label{font-size:8.5px}
+  body.view-quinzenal #rag-card .rag-note{font-size:9.5px}
+  body.view-quinzenal .delivery-card{min-height:0!important}
+  body.view-quinzenal .nextp-card,
+  body.view-quinzenal .risk-card{min-height:0!important}
+  body.view-quinzenal .delivery-card .card,
+  body.view-quinzenal .nextp-card .card,
+  body.view-quinzenal .risk-card .card{padding:14px 16px}
+  body.view-quinzenal .bottom-stack{height:auto!important;min-height:0!important}
 
   .card{
     background:var(--card);border:1px solid var(--line);border-radius:6px;
@@ -561,7 +610,9 @@
 
   .mini-legend{display:flex;align-items:center;gap:8px;font-size:9px;color:var(--ink-400);font-weight:600;white-space:nowrap;}
   .mini-legend span{display:flex;align-items:center;gap:4px;}
-  .mini-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .mini-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;flex:0 0 7px;}
+  .list-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:0 0 7px;box-sizing:border-box;align-self:center;}
+  .list-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;}
 
   /* ---- KPI ROW ---- */
   .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -677,6 +728,37 @@
   .tl{
     position:relative;padding:10px 4px 38px;
   }
+  .tl-card-body{display:block}
+  .tl-package-panel{display:none}
+  body.view-quinzenal .tl-card-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:stretch}
+  body.view-quinzenal .content > [style*="grid-area:tl"] > .card{min-height:0}
+  body.view-quinzenal .tl-package-panel{display:block;border-left:1px solid var(--line);padding-left:14px;padding-right:8px;min-width:0;overflow:visible}
+  body.view-quinzenal .tl{overflow:hidden;padding-top:0}
+  .tl-quarter-scale{display:none}
+  body.view-quinzenal .tl-quarter-scale{display:block;margin:0 16px 14px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#f8fafc}
+  .tl-quarter-row{display:grid;background:#f3f6fa;border-bottom:1px solid var(--line)}
+  .tl-quarter-cell{text-align:center;font-size:10px;font-weight:800;color:#003b5c;padding:6px 4px;border-right:1px solid var(--line)}
+  .tl-quarter-cell:last-child{border-right:0}
+  .tl-qmonth-row{display:grid}
+  .tl-qmonth-cell{text-align:center;font-size:9.5px;font-weight:800;color:var(--ink-500);padding:7px 4px;border-right:1px solid var(--line);text-transform:uppercase}
+  .tl-qmonth-cell:last-child{border-right:0}
+  body.view-quinzenal .tl-axis{margin:22px 16px 8px}
+  body.view-quinzenal .tl-today::after{top:2px;transform:translate(-50%,0)}
+  body.view-quinzenal .tl-months-bar{display:none}
+  .tl-package-title{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin-bottom:7px}
+  .tl-package-list{display:flex;flex-direction:column;gap:6px;max-height:none;overflow:visible}
+  .tl-package-group{border-bottom:1px solid var(--line);padding:4px 0 6px}
+  .tl-package-head{display:grid;grid-template-columns:8px 1fr;gap:8px;align-items:start}
+  .tl-package-head i{width:8px;height:8px;border-radius:50%;margin-top:4px;background:var(--tl-color,var(--blue-700))}
+  .tl-package-name{font-size:10.5px;font-weight:800;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tl-subtask-head{display:grid;grid-template-columns:minmax(0,1fr) 38px 58px 48px;gap:6px;margin:5px 0 0 16px;padding-left:9px;font-size:8.5px;font-weight:800;color:var(--ink-400);text-transform:uppercase;letter-spacing:.04em}
+  .tl-subtask-list{margin:3px 0 0 16px;border-left:1px solid #d7e0eb;padding-left:9px;display:flex;flex-direction:column;gap:2px}
+  .tl-subtask{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 38px 58px 48px;gap:6px;align-items:center;min-width:0}
+  .tl-subtask::before{content:"";position:absolute;left:-9px;top:8px;width:6px;border-top:1px solid #d7e0eb}
+  .tl-subtask-name{font-size:10px;font-weight:600;color:var(--ink-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tl-subtask-status{font-size:9px;font-weight:700;color:var(--tl-color,var(--ink-400));white-space:nowrap}
+  .tl-subtask-pct{font-size:9px;font-weight:700;color:var(--ink-500);white-space:nowrap;text-align:right}
+  .tl-subtask-date{font-size:9px;font-weight:700;color:var(--ink-500);white-space:nowrap;text-align:right}
   .tl-axis{position:relative;height:4px;background:transparent;border-radius:2px;margin:18px 8px 58px}
   .tl-progress{position:absolute;left:0;top:0;bottom:0;background:var(--blue-700);border-radius:2px;z-index:0}
   .tl-today{
@@ -696,15 +778,15 @@
   .tl-milestone.done{background:var(--blue-700)}
   .tl-milestone.late{border-color:var(--r);background:var(--r)}
   .tl-milestone.upcoming{border-color:var(--ink-400);background:#fff}
-  .tl-segment{position:absolute;height:4px;transform:translateY(-50%);border-radius:3px;z-index:1;background:#dbe7f2}
+  .tl-segment{position:absolute;height:3px;transform:translateY(-50%);border-radius:3px;z-index:1;background:#dbe7f2}
   .tl-seg-done{position:absolute;left:0;top:0;bottom:0;background:var(--tl-color,var(--blue-700));border-radius:3px}
-  .tl-seg-pending{position:absolute;top:0;bottom:0;border-top:2px dashed var(--tl-color,var(--blue-700));transform:translateY(1px);opacity:.72}
+  .tl-seg-pending{position:absolute;top:0;bottom:0;border-top:1.5px dashed var(--tl-color,var(--blue-700));transform:translateY(1px);opacity:.68}
   .tl-start-diamond{position:absolute;transform:translate(-50%,-50%) rotate(45deg);width:10px;height:10px;background:#fff;border:2px solid var(--tl-color,var(--blue-700));box-shadow:0 0 0 2px #fff;z-index:4;box-sizing:border-box}
-  .tl-seg-label{position:absolute;transform:translateX(-50%);text-align:center;max-width:260px;padding:3px 7px;border-radius:5px;background:var(--tl-color,var(--blue-700));border:1px solid var(--tl-color,var(--blue-700));font-size:10.5px;color:#fff;font-weight:700;z-index:5;white-space:nowrap;overflow:visible;text-overflow:clip;box-shadow:0 1px 2px rgba(15,23,42,.14)}
+  .tl-seg-label{position:absolute;transform:translateX(-50%);text-align:center;max-width:240px;padding:2px 6px;border-radius:5px;background:var(--tl-color,var(--blue-700));border:1px solid var(--tl-color,var(--blue-700));font-size:10px;color:#fff;font-weight:700;z-index:5;white-space:nowrap;overflow:visible;text-overflow:clip;box-shadow:0 1px 2px rgba(15,23,42,.14)}
   .tl-seg-label.shift::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;background:var(--ink-400)}
-  .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:11px;font-weight:800;color:var(--tl-color,var(--blue-700));white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
+  .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:800;color:var(--ink-900);white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
+  .tl-progress-label .real{color:var(--tl-color,var(--blue-700))}
   .tl-plan-marker{position:absolute;width:2px;height:16px;background:var(--ink-900);transform:translate(-50%,-50%);z-index:6;border-radius:2px}
-  .tl-plan-label{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:800;color:var(--ink-900);white-space:nowrap;z-index:6;background:#fff;padding:0 3px;border-radius:3px}
   .tl-label{
     position:absolute;left:50%;transform:translateX(-50%);
     text-align:center;width:150px;font-size:10.5px;color:var(--ink-700);font-weight:500;
@@ -869,6 +951,11 @@
     </div>
   </div>
 
+  <div class="view-tabs" role="tablist" aria-label="Visualização do relatório">
+    <button class="view-tab active" type="button" data-view="mensal" aria-selected="true" onclick="setDashboardView('mensal')">Mensal <span class="pill">P1</span></button>
+    <button class="view-tab" type="button" data-view="quinzenal" aria-selected="false" onclick="setDashboardView('quinzenal')">Quinzenal <span class="pill">P2</span></button>
+  </div>
+
   <!-- ============ SUBHEADER ============ -->
   <div class="subheader">
     <div class="sh-item"><span class="sh-label">Projeto</span><span class="sh-value" id="sh-projeto">—</span></div>
@@ -888,6 +975,7 @@
     <div class="sh-item"><span class="sh-label">Tipo</span><span class="sh-value" id="sh-tipo">—</span></div>
     <div class="sh-sep"></div>
     <div class="sh-item"><span class="sh-label">Business Plan</span><span class="sh-value" id="sh-bp-tipo">-</span></div>
+    <div class="health-strip-anchor" id="health-strip-anchor"></div>
     <div class="sh-spacer"></div>
     <button class="filter-btn" id="filter-btn" onclick="openFilter()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"></polygon></svg>
@@ -935,7 +1023,7 @@
       </div>
 
       <!-- RAG -->
-      <div class="card" style="grid-area:rag;">
+      <div class="card" id="rag-card" style="grid-area:rag;">
         <div class="card-head">
           <div><div class="card-title">Saude Geral do Projeto</div><div class="card-sub">Avaliação por dimensão</div></div>
           <div class="rag-dot" id="rag-global" style="font-size:11px;font-weight:700"><i></i>—</div>
@@ -969,12 +1057,19 @@
             </div>
           </div>
 
-          <div class="tl">
-            <div class="tl-axis" id="tl-axis">
-              <div class="tl-progress" id="tl-progress" style="width:0%"></div>
-              <div class="tl-today" id="tl-today" style="left:0%"></div>
+          <div class="tl-card-body">
+            <div class="tl">
+              <div class="tl-quarter-scale" id="tl-quarter-scale"></div>
+              <div class="tl-axis" id="tl-axis">
+                <div class="tl-progress" id="tl-progress" style="width:0%"></div>
+                <div class="tl-today" id="tl-today" style="left:0%"></div>
+              </div>
+              <div class="phases" id="tl-phases"></div>
             </div>
-            <div class="phases" id="tl-phases"></div>
+            <div class="tl-package-panel">
+              <div class="tl-package-title">Entregas do pacote</div>
+              <div class="tl-package-list" id="tl-package-panel">—</div>
+            </div>
           </div>
         </div>
       </div>
@@ -997,9 +1092,8 @@
             <div class="card-sub" id="chart-sub">BP vs. Realizado Mensal · R$</div>
           </div>
           <div class="legend">
-            <span><i style="background:#16a34a"></i>Realizado</span>
+            <span><i style="background:#16a34a"></i>Realizado + Forecast</span>
             <span><i style="background:#0075A9"></i>BP</span>
-            <span><i style="background:#16a34a;color:#16a34a" class="dashed"></i>Forecast</span>
           </div>
         </div>
         <div class="chart-wrap" style="height:340px;">
@@ -1021,7 +1115,7 @@
       </div>
 
       <!-- hidden stubs -->
-      <div style="display:none">
+      <div id="hidden-stubs" style="display:none">
         <svg id="donut"></svg><div id="donutLegend"></div><div id="donut-val"></div><div id="donut-label"></div>
         <div id="card-cpi"><span id="cpi-pill"></span><span id="cpi-val"></span><span id="cpi-delta"></span><span id="cpi-foot"></span></div>
         <div id="card-spi"><span id="spi-pill"></span><span id="spi-val"></span><span id="spi-delta"></span><span id="spi-foot"></span></div>
@@ -1051,7 +1145,7 @@
     <div class="delivery-card" style="min-height:280px;">
       <div class="card" >
         <div class="card-head">
-          <div><div class="card-title">Entregas do Mes</div><div class="card-sub">Entregas previstas no mes</div></div>
+          <div><div class="card-title" id="delivery-title">Entregas do Mes</div><div class="card-sub" id="delivery-subtitle">Entregas previstas no mes</div></div>
           <div class="mini-legend"><span><i style="background:#78BE00"></i>Entregue</span><span><i style="background:#FFCD00"></i>Em andamento</span><span><i style="background:#FF9E18"></i>Atrasada</span></div>
         </div>
         <div id="delivery-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as entregas.</div>
@@ -1062,7 +1156,7 @@
       <div class="nextp-card" style="min-height:114px;">
         <div class="card" >
           <div class="card-head">
-            <div><div class="card-title">Proximos Passos</div><div class="card-sub">Acoes e responsaveis</div></div>
+            <div><div class="card-title" id="nextp-title">Proximos Passos</div><div class="card-sub" id="nextp-subtitle">Acoes e responsaveis</div></div>
             <div class="mini-legend"><span><i style="background:#dc2626"></i>Alta</span><span><i style="background:#FFCD00"></i>Media</span><span><i style="background:#0075A9"></i>Baixa</span></div>
           </div>
           <div id="nextp-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as acoes.</div>
@@ -1072,8 +1166,8 @@
       <div class="risk-card" style="min-height:114px;">
         <div class="card" >
           <div class="card-head">
-            <div><div class="card-title">Riscos e Bloqueios</div><div class="card-sub" id="risk-summary"></div></div>
-            <div class="mini-legend"><span><i style="background:#dc2626"></i>Alto</span><span><i style="background:#FFCD00"></i>Medio</span><span><i style="background:#00B8B0"></i>Baixo</span></div>
+            <div><div class="card-title" id="risk-title">Riscos e Bloqueios</div><div class="card-sub" id="risk-summary"></div></div>
+            <div class="mini-legend"><span><i style="background:#dc2626"></i>Alto</span><span><i style="background:#FFCD00"></i>Medio</span><span><i style="background:#0075A9"></i>Baixo</span></div>
           </div>
           <div id="risk-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os riscos.</div>
         </div>
@@ -1140,6 +1234,51 @@ function syncSidebarHeights() {
   const risk = document.querySelector('.risk-card');
   const next = document.querySelector('.nextp-card');
   if (!content || !team || !delivery || !stack || !risk || !next) return;
+  if (_dashboardView === 'quinzenal') {
+    team.style.minHeight = '';
+    const timeline = Array.from(content.children).find(el => (el.style.gridArea || '').trim() === 'tl');
+    const timelineCard = timeline ? timeline.querySelector('.card') : null;
+    const side = document.querySelector('.rsidebar');
+    const sideCards = [delivery, next, risk];
+    [delivery, stack, next, risk].forEach(el => {
+      el.style.height = '';
+      el.style.minHeight = '';
+      const card = el.querySelector('.card');
+      if (card) card.style.height = '';
+    });
+    if (side) {
+      side.style.height = '';
+      side.style.minHeight = '';
+    }
+    if (timelineCard) {
+      timelineCard.style.minHeight = '';
+      timelineCard.style.height = '';
+      const timelineH = Math.ceil(timelineCard.getBoundingClientRect().height);
+      const gap = 12;
+      const natural = sideCards.map(el => Math.ceil((el.querySelector('.card') || el).getBoundingClientRect().height));
+      const sideNatural = natural.reduce((a,b) => a + b, 0) + gap * 2;
+      const targetH = Math.max(timelineH, sideNatural);
+      if (side && targetH) {
+        side.style.height = targetH + 'px';
+        const extra = Math.max(0, targetH - sideNatural);
+        const weights = [0.45, 0.28, 0.27];
+        sideCards.forEach((el, idx) => {
+          const h = Math.floor(natural[idx] + extra * weights[idx]);
+          el.style.height = h + 'px';
+          const card = el.querySelector('.card');
+          if (card) card.style.height = '100%';
+        });
+      }
+      if (targetH > timelineH) timelineCard.style.minHeight = targetH + 'px';
+    }
+    fitListToCard('delivery-list');
+    return;
+  }
+  const side = document.querySelector('.rsidebar');
+  if (side) {
+    side.style.height = '';
+    side.style.minHeight = '';
+  }
 
   const children = Array.from(content.children);
   const topEls = children.filter(el => ['obj', 'conc', 'rag'].includes((el.style.gridArea || '').trim()));
@@ -1161,6 +1300,26 @@ function syncSidebarHeights() {
     next.style.minHeight = half + 'px';
     risk.style.minHeight = half + 'px';
   }
+  fitListToCard('delivery-list');
+}
+
+function fitListToCard(listId) {
+  const list = document.getElementById(listId);
+  const card = list ? list.closest('.card') : null;
+  if (!list || !card) return;
+  const rows = Array.from(list.querySelectorAll('[data-fit-row]'));
+  if (!rows.length) return;
+  rows.forEach(row => row.style.display = 'flex');
+  const available = card.clientHeight - (list.offsetTop - card.offsetTop) - 8;
+  let used = 0;
+  rows.forEach(row => {
+    const h = row.offsetHeight;
+    if (used + h <= available) {
+      used += h;
+    } else {
+      row.style.display = 'none';
+    }
+  });
 }
 
 function exportPDF() {
@@ -1252,6 +1411,7 @@ function handleFile(input) {
   reader.onload = function(e) {
     try {
       const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:false});
+      ensureInternalSheets(wb);
       const sheets = {
         projeto:        sheetToObjects(wb, 'Projeto'),
         pmo:            sheetToObjects(wb, 'PMO'),
@@ -1261,8 +1421,11 @@ function handleFile(input) {
         recursos:       sheetToObjects(wb, 'Recursos'),
         proximosPassos: sheetToObjects(wb, 'Próximos Passos'),
         entregasMes:    sheetToObjects(wb, 'Entregas do Mes'),
+        mensal:         sheetToObjects(wb, 'Mensal'),
+        quinzenal:      sheetToObjects(wb, 'Quinzenal'),
       };
       document.getElementById('upload-status').textContent = 'Atualizando dashboard...';
+      setDashboardView('mensal', false);
       updateDashboard(sheets);
       setTimeout(() => {
         document.getElementById('upload-overlay').style.display = 'none';
@@ -1273,6 +1436,21 @@ function handleFile(input) {
     }
   };
   reader.readAsArrayBuffer(file);
+}
+
+function ensureInternalSheets(wb) {
+  const snapshotDate = new Date().toISOString().slice(0, 10);
+  const sourceSheets = ['Projeto', 'PMO', 'Cronograma', 'Financeiro', 'Risco', 'Recursos', 'Próximos Passos', 'Entregas do Mes'];
+  const rows = [];
+  sourceSheets.forEach(name => {
+    sheetToObjects(wb, name).forEach((row, idx) => {
+      rows.push({ Snapshot: snapshotDate, Aba: name, Linha: idx + 2, ...row });
+    });
+  });
+  wb.Sheets['Mensal'] = XLSX.utils.json_to_sheet(rows.length ? rows : [{ Snapshot: snapshotDate }]);
+  if (!wb.SheetNames.some(n => normKey(n) === 'mensal')) wb.SheetNames.push('Mensal');
+  wb.Sheets['Quinzenal'] = XLSX.utils.aoa_to_sheet([]);
+  if (!wb.SheetNames.some(n => normKey(n) === 'quinzenal')) wb.SheetNames.push('Quinzenal');
 }
 
 function sheetToObjects(wb, name) {
@@ -1290,6 +1468,12 @@ function sheetToObjects(wb, name) {
 //  DASHBOARD UPDATE ORCHESTRATOR
 // ================================================
 function updateDashboard(s) {
+  _lastSheets = s;
+  renderDashboardData(s);
+}
+
+function renderDashboardData(s) {
+  applyDashboardViewLayout();
   _cronData = s.cronograma || [];
   _riscoData = s.risco || [];
   updateHeader(s.projeto, s.pmo);
@@ -1301,6 +1485,53 @@ function updateDashboard(s) {
   updateRiscos(s.risco);
   updateNextp(s.proximosPassos);
   updateEntregas(s.entregasMes);
+  requestAnimationFrame(syncSidebarHeights);
+}
+
+function renderEmptyDashboard() {
+  applyDashboardViewLayout();
+  _allFinData = [];
+  _projData = [];
+  _cronData = [];
+  _riscoData = [];
+  ['sh-projeto','sh-negocio','sh-sponsor','sh-gerente','sh-corte','sh-periodo','sh-budget','sh-tipo'].forEach(id => set(id, '—'));
+  set('sh-bp-tipo', '-');
+  set('proj-subtitle', '—');
+  set('filter-label', 'Todos os meses');
+  set('obj-text', '—');
+  setHtml('prog-val', '—<span style="font-size:24px;">%</span>');
+  set('prog-atraso', '—');
+  set('prog-plan', 'Plan. ?%');
+  const progFill = document.getElementById('prog-fill');
+  const progMarker = document.getElementById('prog-marker');
+  if (progFill) progFill.style.width = '0%';
+  if (progMarker) progMarker.style.left = '0%';
+  set('rag-global', '—');
+  set('rag-cron', '—');
+  set('rag-fin', '—');
+  set('rag-risk', '—');
+  ['rag-cron-cell','rag-fin-cell','rag-risk-cell'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'rag-cell';
+  });
+  set('team-resp-name', '—');
+  setHtml('team-roles', '');
+  set('fy-budget', '—');
+  setHtml('fy-eac', '');
+  set('fy-badge', '—');
+  set('ytd-pv', '—');
+  setHtml('ytd-ac', '');
+  set('ytd-badge', '—');
+  set('chart-sub', 'Valores mensais em R$ - —');
+  const chart = document.getElementById('lineChart');
+  if (chart) chart.innerHTML = '';
+  setHtml('tl-axis', '<div class="tl-progress" id="tl-progress" style="width:0%"></div><div class="tl-today" id="tl-today" style="left:0%"></div>');
+  setHtml('tl-quarter-scale', '');
+  setHtml('tl-phases', '');
+  setHtml('tl-package-panel', '');
+  updateEntregas([]);
+  updateNextp([]);
+  updateRiscos([]);
   requestAnimationFrame(syncSidebarHeights);
 }
 
@@ -1358,6 +1589,59 @@ let _projData = [];
 let _cronData = [];
 let _riscoData = [];
 let _selectedMonth = null; // null = all
+let _dashboardView = 'mensal';
+let _lastSheets = null;
+let _ragHome = null;
+let _ragNext = null;
+
+function setDashboardView(view, render = true) {
+  _dashboardView = view;
+  document.querySelectorAll('.view-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === view);
+    btn.setAttribute('aria-selected', btn.dataset.view === view ? 'true' : 'false');
+  });
+  applyDashboardViewLayout();
+  if (!render) return;
+  if (_lastSheets) {
+    renderDashboardData(_lastSheets);
+  } else if (view === 'quinzenal') {
+    renderEmptyDashboard();
+  }
+}
+
+function applyDashboardViewLayout() {
+  const isQuinzenal = _dashboardView === 'quinzenal';
+  document.body.classList.toggle('view-quinzenal', isQuinzenal);
+  const rag = document.getElementById('rag-card');
+  const sidebar = document.querySelector('.rsidebar');
+  const healthAnchor = document.getElementById('health-strip-anchor');
+  const content = document.querySelector('.content');
+  if (rag && !_ragHome) {
+    _ragHome = rag.parentNode;
+    _ragNext = rag.nextSibling;
+  }
+  if (rag && sidebar && _ragHome) {
+    if (isQuinzenal && healthAnchor && rag.parentNode !== healthAnchor) healthAnchor.appendChild(rag);
+    if (!isQuinzenal && rag.parentNode !== _ragHome) _ragHome.insertBefore(rag, _ragNext);
+  }
+  if (content) {
+    Array.from(content.children).forEach(el => {
+      if (el.id === 'hidden-stubs') {
+        el.style.display = 'none';
+        return;
+      }
+      const area = (el.style.gridArea || '').trim();
+      el.style.display = isQuinzenal && ['obj', 'conc', 'fy', 'ytd', 'chart'].includes(area) ? 'none' : '';
+    });
+  }
+  const team = document.querySelector('.team-top');
+  if (team) team.style.display = isQuinzenal ? 'none' : '';
+  set('delivery-title', isQuinzenal ? 'Entregas dos Ultimos 15 Dias' : 'Entregas do Mes');
+  set('delivery-subtitle', isQuinzenal ? 'Entregas recentes' : 'Entregas previstas no mes');
+  set('nextp-title', isQuinzenal ? 'Proximas Entregas' : 'Proximos Passos');
+  set('nextp-subtitle', isQuinzenal ? 'Entregas previstas' : 'Acoes e responsaveis');
+  set('risk-title', isQuinzenal ? 'Pontos de Atencao' : 'Riscos e Bloqueios');
+}
 
 function getCutoffDateFromFilter() {
   if (!_selectedMonth || !_allFinData || !_allFinData.length) return new Date(_dashboardOpenedAt);
@@ -1673,6 +1957,7 @@ function updateCronograma(cron) {
 
   // Expose for timeline
   window._cronProgPct = progPct;
+  window._cronPlanPct = pvProgClamped;
 
   const progValEl = document.getElementById('prog-val');
   if (progValEl) progValEl.innerHTML = progPct + '<span style="font-size:24px;">%</span>';
@@ -1692,10 +1977,17 @@ function updateCronograma(cron) {
     const labelW = planEl.offsetWidth || 0;
     const markerX = wrapW * (pvProgClamped / 100);
     let leftPx = markerX - (labelW / 2);
+    planEl.style.right = '';
     if (pvProgClamped <= 0) leftPx = 0;
-    else if (pvProgClamped >= 100) leftPx = Math.max(0, wrapW - labelW);
-    else leftPx = Math.max(0, Math.min(leftPx, wrapW - labelW));
-    planEl.style.left = leftPx + 'px';
+    else if (pvProgClamped >= 90) {
+      planEl.style.left = '';
+      planEl.style.right = '0px';
+      planEl.style.textAlign = 'right';
+    } else {
+      leftPx = Math.max(0, Math.min(leftPx, Math.max(0, wrapW - labelW)));
+      planEl.style.left = leftPx + 'px';
+      planEl.style.textAlign = 'left';
+    }
   }
   // Atraso until cutoff
   let atrasoDias = 0;
@@ -1708,6 +2000,7 @@ function updateCronograma(cron) {
     const delay = Math.round((effectiveEnd - venc) / (1000*60*60*24));
     if (delay > atrasoDias) atrasoDias = delay;
   });
+  window._cronAtrasoDias = atrasoDias;
 
   const atrasoEl = document.getElementById('prog-atraso');
   if (atrasoEl) {
@@ -1727,7 +2020,7 @@ function updateRAG(cron, risco) {
   if (!cron || !cron.length) return;
   function ragByRatio(ratio) {
     if (ratio == null) return { cls: '', label: '—', color: '#8797ad' };
-    if (ratio > 1.02)  return { cls: 'g', label: 'Bom',  color: '#78BE00' };
+    if (ratio > 1.02)  return { cls: 'b', label: 'Bom',  color: '#005F96' };
     if (ratio >= 0.95) return { cls: 'b', label: 'No prazo',   color: '#005F96' };
     return                    { cls: 'a', label: 'Atenção', color: '#FF9E18' };
   }
@@ -1737,9 +2030,14 @@ function updateRAG(cron, risco) {
     set(noteId, rag.label);
   }
 
-  const spiRows = cron.filter(r => r['SPI '] != null && isFinite(r['SPI ']) && r['SPI '] > 0 && r['SPI '] < 10);
-  const spiAvg = spiRows.length ? spiRows.reduce((s, r) => s + r['SPI '], 0) / spiRows.length : null;
-  const cronRag = ragByRatio(spiAvg);
+  const cronRealPct = typeof window._cronProgPct === 'number' ? window._cronProgPct : null;
+  const cronPlanPct = typeof window._cronPlanPct === 'number' ? window._cronPlanPct : null;
+  const cronDelay = typeof window._cronAtrasoDias === 'number' ? window._cronAtrasoDias : 0;
+  const cronGap = cronRealPct != null && cronPlanPct != null ? cronRealPct - cronPlanPct : 0;
+  let cronRag;
+  if (cronDelay > 0 || cronGap < -5) cronRag = { cls: 'a', label: 'Atenção', color: '#FF9E18' };
+  else if (cronGap >= 3) cronRag = { cls: 'b', label: 'Bom', color: '#005F96' };
+  else cronRag = { cls: 'b', label: 'No prazo', color: '#005F96' };
   applyRagCell('rag-cron-cell', 'rag-cron', cronRag);
 
   function financeNumber(row, names) {
@@ -1768,8 +2066,8 @@ function updateRAG(cron, risco) {
     const real = financeNumber(row, ['Realizado Mensal']);
     const forecast = financeNumber(row, ['Forecast']);
     const ratios = [
-      financeRatio(eac || real + forecast, budget),
-      financeRatio(ac, pv),
+      eac === 0 ? 1 : financeRatio(eac, budget),
+      ac === 0 ? 1 : financeRatio(ac, pv),
       financeRatio(real || forecast, bp)
     ].filter(v => isFinite(v));
     if (!ratios.length) return { cls: '', label: '?', color: '#8797ad' };
@@ -1835,6 +2133,7 @@ function updateTimeline(cron) {
 
 function updateTimelineV1(cron) {
   if (!cron || !cron.length) return;
+  const viewIsQuinzenal = _dashboardView === 'quinzenal';
   const monthsAbbr = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const readDate = (row, names) => {
     const wanted = names.map(n => normKey(n));
@@ -2076,6 +2375,27 @@ function updateTimelineV1(cron) {
   if (!phasesEl) return;
   phasesEl.className = 'tl-months-bar';
   phasesEl.style.gridTemplateColumns = 'repeat(' + timelineMonths.length + ', 1fr)';
+  const quarterEl = document.getElementById('tl-quarter-scale');
+  if (quarterEl) {
+    if (viewIsQuinzenal) {
+      const groups = [];
+      timelineMonths.forEach(m => {
+        const q = Math.floor(m.monthIdx / 3) + 1;
+        const key = q + '-' + m.year;
+        const last = groups[groups.length - 1];
+        if (last && last.key === key) last.count += 1;
+        else groups.push({ key, label: 'T' + q + ' ' + m.year, count: 1 });
+      });
+      quarterEl.innerHTML =
+        '<div class="tl-quarter-row" style="grid-template-columns:' + groups.map(g => g.count + 'fr').join(' ') + '">' +
+        groups.map(g => '<div class="tl-quarter-cell">' + g.label + '</div>').join('') +
+        '</div><div class="tl-qmonth-row" style="grid-template-columns:repeat(' + timelineMonths.length + ',1fr)">' +
+        timelineMonths.map(m => '<div class="tl-qmonth-cell">' + monthsAbbr[m.monthIdx] + '</div>').join('') +
+        '</div>';
+    } else {
+      quarterEl.innerHTML = '';
+    }
+  }
   phasesEl.innerHTML = timelineMonths.map(m => {
     const acts = activitiesForMonth(m);
     const actsHtml = acts.map(a => {
@@ -2114,12 +2434,33 @@ function updateTimelineV2(cron) {
     const n = parseFloat(String(eap).replace(',', '.'));
     return isFinite(n) ? n : 999;
   };
-  const projStart = new Date(2026, 0, 1);
-  const projEnd = new Date(2026, 11, 31);
+  const pctNumber = value => {
+    const n = Number(String(value ?? '').replace('%', '').replace(',', '.'));
+    if (!isFinite(n)) return null;
+    return Math.max(0, Math.min(100, n > 1 ? n : n * 100));
+  };
+  const viewIsQuinzenal = _dashboardView === 'quinzenal';
+  const monthIndex = v => {
+    if (typeof v === 'number') return Math.max(0, Math.min(11, Math.trunc(v) - 1));
+    const k = normKey(v).slice(0, 3);
+    return ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'].indexOf(k);
+  };
+  const centerDate = (() => {
+    if (_selectedMonth && _allFinData && _allFinData.length) {
+      const row = _allFinData.find(r => r['__label'] === _selectedMonth);
+      const m = row ? monthIndex(pickMonthValue(row)) : -1;
+      const y = row ? Number(pickYearValue(row)) : 0;
+      if (m >= 0 && y) return new Date(y, m, 1);
+    }
+    const cut = (typeof window._cronCutoff !== 'undefined') ? window._cronCutoff : new Date();
+    return new Date(cut.getFullYear(), cut.getMonth(), 1);
+  })();
+  const projStart = viewIsQuinzenal ? new Date(centerDate.getFullYear(), centerDate.getMonth() - 2, 1) : new Date(2026, 0, 1);
+  const projEnd = viewIsQuinzenal ? new Date(centerDate.getFullYear(), centerDate.getMonth() + 3, 0) : new Date(2026, 11, 31);
   const totalMs = Math.max(1, projEnd - projStart);
   const tlPalette = ['#00558C','#78BE20','#FF9E18','#00B2A9','#FFCD00','#0075A9','#00A9CE'];
   const timelineMonths = [];
-  for (let d = new Date(2026, 0, 1); d <= projEnd; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+  for (let d = new Date(projStart.getFullYear(), projStart.getMonth(), 1); d <= projEnd; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
     timelineMonths.push({ monthIdx:d.getMonth(), year:d.getFullYear(), label:monthsAbbr[d.getMonth()], date:new Date(d.getFullYear(), d.getMonth(), 1), endDate:new Date(d.getFullYear(), d.getMonth() + 1, 0) });
   }
   const pctDate = d => {
@@ -2151,14 +2492,19 @@ function updateTimelineV2(cron) {
       const end = readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]);
       return { ...r, _begin: begin || end, _end: end || begin };
     })
-    .filter(r => r._end && r._end.getFullYear() === 2026)
+    .filter(r => {
+      if (!r._end) return false;
+      const begin = r._begin || r._end;
+      const end = r._end || r._begin;
+      return end >= projStart && begin <= projEnd;
+    })
     .sort((a,b) => a._end - b._end);
 
   const activities = cron
     .filter(r => { const m = normKey(r['Milestone']); return m !== 'marco' && m !== 'refinar'; })
     .filter(r => r['Pacote'])
-    .map(r => ({ pacote:String(r['Pacote'] || ''), eap:r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '', eapNum:getEapNum(r['Codigo EAP']), start:readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]) }))
-    .filter(r => r.start && r.start.getFullYear() === 2026);
+    .map(r => ({ pacote:String(r['Pacote'] || ''), status:String(r['Status'] || r['Status da Atividade'] || r['Status do Pacote'] || '-'), pct:pctNumber(r['% Progresso']), eap:r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '', eapNum:getEapNum(r['Codigo EAP']), start:readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]) }))
+    .filter(r => r.start && (viewIsQuinzenal ? (r.start >= projStart && r.start <= projEnd) : r.start.getFullYear() === 2026));
 
   const tl = document.getElementById('tl-axis');
   if (!tl) return;
@@ -2181,18 +2527,29 @@ function updateTimelineV2(cron) {
     return lane;
   });
   const labelH = 18;
-  const labelGap = 8;
-  const bandGap = 8;
-  const baseTop = 34;
-  const bandBottoms = [];
-  const laneTops = marcoLanes.map((lane) => {
-    const minTop = lane === 0 ? baseTop : (bandBottoms[lane - 1] || baseTop) + bandGap;
-    const lineTop = minTop + labelH + labelGap;
-    const bandBottom = lineTop + labelGap + labelH;
-    bandBottoms[lane] = Math.max(bandBottoms[lane] || 0, bandBottom);
-    return lineTop;
-  });
-  const axisHeight = Math.max(92, Math.max(...bandBottoms, baseTop + 52) + 10);
+  const labelGap = viewIsQuinzenal ? 10 : 8;
+  const bandGap = viewIsQuinzenal ? 18 : 8;
+  const baseTop = viewIsQuinzenal ? 58 : 34;
+  const laneCount = Math.max(1, ...marcoLanes.map(v => v + 1));
+  let axisHeight;
+  let laneTops;
+  if (viewIsQuinzenal) {
+    axisHeight = Math.max(330, 92 + laneCount * 46);
+    const topLane = 72;
+    const bottomLane = axisHeight - 48;
+    const step = laneCount > 1 ? (bottomLane - topLane) / (laneCount - 1) : 0;
+    laneTops = marcoLanes.map(lane => topLane + lane * step);
+  } else {
+    const bandBottoms = [];
+    laneTops = marcoLanes.map((lane) => {
+      const minTop = lane === 0 ? baseTop : (bandBottoms[lane - 1] || baseTop) + bandGap;
+      const lineTop = minTop + labelH + labelGap;
+      const bandBottom = lineTop + labelGap + labelH;
+      bandBottoms[lane] = Math.max(bandBottoms[lane] || 0, bandBottom);
+      return lineTop;
+    });
+    axisHeight = Math.max(92, Math.max(...bandBottoms, baseTop + 52) + 10);
+  }
   tl.style.height = axisHeight + 'px';
   let html = '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
   const endGroups = new Map();
@@ -2230,6 +2587,7 @@ function updateTimelineV2(cron) {
     let sideShift = 0;
     if (sameEnd.length > 1) sideShift = (sameIdx - (sameEnd.length - 1) / 2) * 7;
     mid = Math.max(4, Math.min(96, mid + sideShift));
+    if (viewIsQuinzenal && Math.abs(mid - todayPct) < 4) mid = Math.max(4, Math.min(96, mid + (mid <= todayPct ? -4 : 4)));
     const labelAbove = laneTop - labelGap - labelH;
     const labelBelow = laneTop + labelGap;
     const hitsLabel = top => labelEnd.some(l => Math.abs(mid - l.mid) < 9 && Math.abs(top - l.labelTop) < 20);
@@ -2237,15 +2595,17 @@ function updateTimelineV2(cron) {
     if (hitsLabel(labelTop)) labelTop = labelTop < laneTop ? labelTop - 20 : labelTop + 20;
     labelTop = Math.max(2, Math.min(labelTop, axisHeight - labelH - 2));
     labelEnd.push({ mid, labelTop });
+    const metricsX = Math.max(left, Math.min(right, left + (width * Math.max(progressPct, plannedPct) / 200)));
+    const progressText = progressPct.toFixed(progressPct % 1 ? 1 : 0);
+    const plannedText = plannedPct.toFixed(plannedPct % 1 ? 1 : 0);
     html += '<div class="tl-segment" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + left.toFixed(1) + '%;width:' + width.toFixed(1) + '%">' +
       '<div class="tl-seg-done" style="width:' + progressPct.toFixed(1) + '%"></div>' +
       (pendingPct > 0 ? '<div class="tl-seg-pending" style="left:' + progressPct.toFixed(1) + '%;width:' + pendingPct.toFixed(1) + '%"></div>' : '') +
       '</div>' +
-      '<div class="tl-start-diamond" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + b.toFixed(1) + '%" title="Inicio do marco"></div>' +
-      '<div class="tl-milestone ' + cls + '" style="top:' + laneTop.toFixed(1) + 'px;border-color:' + color + ';' + (cls === 'done' ? 'background:' + color + ';' : '') + 'left:' + e.toFixed(1) + '%"></div>' +
+      (b > 0.6 ? '<div class="tl-start-diamond" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + b.toFixed(1) + '%" title="Inicio do marco"></div>' : '') +
+      (e < 98.8 ? '<div class="tl-milestone ' + cls + '" style="top:' + laneTop.toFixed(1) + 'px;border-color:' + color + ';' + (cls === 'done' ? 'background:' + color + ';' : '') + 'left:' + e.toFixed(1) + '%"></div>' : '') +
       '<div class="tl-plan-marker" style="left:' + planX.toFixed(1) + '%;top:' + laneTop.toFixed(1) + 'px"></div>' +
-      '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + progressX.toFixed(1) + '%;top:' + (laneTop + 9).toFixed(1) + 'px">Real: ' + progressPct.toFixed(progressPct % 1 ? 1 : 0) + '%</div>' +
-      '<div class="tl-plan-label" style="left:' + planX.toFixed(1) + '%;top:' + (laneTop + 22).toFixed(1) + 'px">Plan: ' + plannedPct.toFixed(plannedPct % 1 ? 1 : 0) + '%</div>' +
+      '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + metricsX.toFixed(1) + '%;top:' + (laneTop + 9).toFixed(1) + 'px">Plan ' + plannedText + '% | <span class="real">Real ' + progressText + '%</span></div>' +
       '<div class="tl-seg-label" style="--tl-color:' + color + ';left:' + mid.toFixed(1) + '%;top:' + labelTop.toFixed(1) + 'px" title="' + String(m['Pacote'] || '-').replace(/"/g, '&quot;') + '">' + compact(m['Pacote']) + '</div>';
   });
   tl.innerHTML = html;
@@ -2279,12 +2639,70 @@ function updateTimelineV2(cron) {
     return tlPalette[nearestIdx % tlPalette.length];
   };
   const activitiesForMonth = m => activities.filter(a => a.start >= m.date && a.start <= m.endDate).sort((a,b) => a.eapNum - b.eapNum).slice(0, 3);
+  const packagePanel = document.getElementById('tl-package-panel');
+  if (packagePanel) {
+    if (viewIsQuinzenal) {
+      const rows = activities.slice().sort((a,b) => a.start - b.start || a.eapNum - b.eapNum);
+      const esc = v => String(v || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const statusColor = status => {
+        const s = normKey(status);
+        if (s.includes('conclu') || s.includes('entreg')) return '#78BE00';
+        if (s.includes('andamento') || s.includes('execu') || s.includes('progresso')) return '#0075A9';
+        return '#8797ad';
+      };
+      const groupName = a => {
+        const p = a.eap ? String(a.eap).split('.').filter(Boolean) : [];
+        const first = p.length ? p[0] : 'Sem pacote';
+        const marco = marcos.find(m => String(m['Codigo EAP'] || '').split('.').filter(Boolean)[0] === first);
+        return marco ? String(marco['Pacote'] || 'Pacote ' + first) : 'Pacote ' + first;
+      };
+      const groups = new Map();
+      rows.forEach(a => {
+        const key = groupName(a);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(a);
+      });
+      packagePanel.innerHTML = rows.length ? Array.from(groups.entries()).map(([pkg, items]) => {
+        const color = marcoColorForActivity(items[0]);
+        const subtasks = items.map(a => {
+          const stColor = statusColor(a.status);
+          const due = a.start ? a.start.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) : '-';
+          const pct = a.pct == null ? '-' : (a.pct.toFixed(a.pct % 1 ? 1 : 0).replace('.', ',') + '%');
+          return '<div class="tl-subtask" title="' + esc(a.pacote) + '"><div class="tl-subtask-name">' + esc(a.pacote) + '</div><div class="tl-subtask-pct">' + pct + '</div><div class="tl-subtask-status" style="--tl-color:' + stColor + '">' + esc(a.status) + '</div><div class="tl-subtask-date">' + due + '</div></div>';
+        }).join('');
+        return '<div class="tl-package-group"><div class="tl-package-head"><i style="--tl-color:' + color + '"></i><div class="tl-package-name" title="' + esc(pkg) + '">' + esc(pkg) + '</div></div><div class="tl-subtask-head"><span>Entrega</span><span>%</span><span>Status</span><span>Venc.</span></div><div class="tl-subtask-list">' + subtasks + '</div></div>';
+      }).join('') : '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma subtask no recorte.</div>';
+    } else {
+      packagePanel.innerHTML = '';
+    }
+  }
   const phasesEl = document.getElementById('tl-phases');
   if (!phasesEl) return;
   phasesEl.className = 'tl-months-bar';
   phasesEl.style.gridTemplateColumns = 'repeat(' + timelineMonths.length + ', 1fr)';
+  const quarterEl = document.getElementById('tl-quarter-scale');
+  if (quarterEl) {
+    if (viewIsQuinzenal) {
+      const groups = [];
+      timelineMonths.forEach(m => {
+        const q = Math.floor(m.monthIdx / 3) + 1;
+        const key = q + '-' + m.year;
+        const last = groups[groups.length - 1];
+        if (last && last.key === key) last.count += 1;
+        else groups.push({ key, label: 'T' + q + ' ' + m.year, count: 1 });
+      });
+      quarterEl.innerHTML =
+        '<div class="tl-quarter-row" style="grid-template-columns:' + groups.map(g => g.count + 'fr').join(' ') + '">' +
+        groups.map(g => '<div class="tl-quarter-cell">' + g.label + '</div>').join('') +
+        '</div><div class="tl-qmonth-row" style="grid-template-columns:repeat(' + timelineMonths.length + ',1fr)">' +
+        timelineMonths.map(m => '<div class="tl-qmonth-cell">' + monthsAbbr[m.monthIdx] + '</div>').join('') +
+        '</div>';
+    } else {
+      quarterEl.innerHTML = '';
+    }
+  }
   phasesEl.innerHTML = timelineMonths.map(m => {
-    const actsHtml = activitiesForMonth(m).map(a => {
+    const actsHtml = viewIsQuinzenal ? '' : activitiesForMonth(m).map(a => {
       const txt = a.pacote.length > 18 ? a.pacote.substring(0, 18) + '...' : a.pacote;
       const title = (a.eap ? a.eap + ' - ' : '') + a.pacote.replace(/"/g, '&quot;');
       const color = marcoColorForActivity(a);
@@ -2293,7 +2711,7 @@ function updateTimelineV2(cron) {
     return '<div class="tl-month-col"><div class="tl-month-label">' + m.label + '</div><div class="tl-month-year">' + m.year + '</div><div class="tl-month-activities">' + actsHtml + '</div></div>';
   }).join('');
   const tlSub = document.querySelector('[style*="grid-area:tl"] .card-sub');
-  if (tlSub) tlSub.textContent = 'Linha de base vs. real - ' + timelineMonths.length + ' meses';
+  if (tlSub) tlSub.textContent = viewIsQuinzenal ? 'Viewport quinzenal - ' + timelineMonths.length + ' meses' : 'Linha de base vs. real - ' + timelineMonths.length + ' meses';
 }
 
 // ??? TEAM ???
@@ -2347,17 +2765,13 @@ function updateRiscos(risco) {
   rows.sort((a, b) => (Number(b['Score']) || 0) - (Number(a['Score']) || 0));
   const html = rows.slice(0, 5).map(r => {
     const nome = String(r['Risco'] || r['Detalhamento do Risco'] || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    const statusNorm = String(r['Status do Evento'] || '').trim().toLowerCase();
     const score = Number(r['Score']) || 0;
     let dot = '#cbd5e1';
-    if (statusNorm.includes('materializado')) dot = '#dc2626';
-    else if (statusNorm.includes('monitor')) dot = '#FFCD00';
-    else if (statusNorm.includes('mitig')) dot = '#00B8B0';
-    else if (score >= 15) dot = '#dc2626';
+    if (score >= 15) dot = '#dc2626';
     else if (score >= 8) dot = '#FFCD00';
-    else if (score > 0) dot = '#00B8B0';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;">
-      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
+    else if (score > 0) dot = '#0075A9';
+    return `<div class="list-row">
+      <span class="list-dot" style="background:${dot};"></span>
       <div title="${nome}" style="flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${nome}</div>
     </div>`;
   }).join('');
@@ -2372,7 +2786,7 @@ function updateEntregas(entregas) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
     return;
   }
-  const rows = entregas.filter(r => r['Entrega Prevista'] && String(r['Entrega Prevista']).trim()).slice(0, 5);
+  const rows = entregas.filter(r => r['Entrega Prevista'] && String(r['Entrega Prevista']).trim());
   if (!rows.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
     return;
@@ -2384,11 +2798,11 @@ function updateEntregas(entregas) {
   };
   const html = rows.map(r => {
     const entrega = String(r['Entrega Prevista'] || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    const data = fmtEntregaData(r['M?s de Referencia'] || r['Mes de Referencia'] || r['Data']);
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;">
-      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--g);flex-shrink:0;"></span>
+    const st = normKey(r['Status da Entrega'] || r['Status'] || '');
+    const dot = st.includes('atras') ? '#FF9E18' : st.includes('andamento') ? '#FFCD00' : '#78BE20';
+    return `<div class="list-row" data-fit-row>
+      <span class="list-dot" style="background:${dot};"></span>
       <div title="${entrega}" style="flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${entrega}</div>
-      <div style="font-size:10px;color:var(--ink-400);white-space:nowrap;flex-shrink:0;">${data}</div>
     </div>`;
   }).join('');
   el.innerHTML = html;
@@ -2414,8 +2828,8 @@ function updateNextp(passos) {
     else if (prioLow.includes('media')) dot = '#FFCD00';
     else if (prioLow.includes('baixa')) dot = '#0075A9';
     else dot = '#cbd5e1';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;">
-      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
+    return `<div class="list-row">
+      <span class="list-dot" style="background:${dot};"></span>
       <div title="${acao}" style="flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${acao}</div>
     </div>`;
   }).join('');
@@ -2458,22 +2872,39 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     const h = 20;
     const minY = PT + 2;
     const maxY = zeroY - h - 10;
+    const nearY = y => clamp(y, Math.max(minY, p.y - 48), Math.min(maxY, p.y + 48));
     const candidates = {
-      above:      () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 24, minY, maxY) }),
-      below:      () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 12, minY, maxY) }),
-      right:      () => ({ x: clamp(p.x + 10, PL + 2, W - PR - w - 2), y: clamp(p.y - 24, minY, maxY) }),
-      left:       () => ({ x: clamp(p.x - w - 10, PL + 2, W - PR - w - 2), y: clamp(p.y - 24, minY, maxY) }),
-      aboveFar:   () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y - 58, minY, maxY) }),
-      belowFar:   () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: clamp(p.y + 52, minY, maxY) }),
-      rightFar:   () => ({ x: clamp(p.x + 18, PL + 2, W - PR - w - 2), y: clamp(p.y - 44, minY, maxY) }),
-      leftFar:    () => ({ x: clamp(p.x - w - 18, PL + 2, W - PR - w - 2), y: clamp(p.y - 44, minY, maxY) })
+      above:      () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 10) }),
+      below:      () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y + 12) }),
+      right:      () => ({ x: clamp(p.x + 10, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 10) }),
+      left:       () => ({ x: clamp(p.x - w - 10, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 10) }),
+      aboveFar:   () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 16) }),
+      belowFar:   () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y + 52) }),
+      aboveStack: () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 38) }),
+      belowStack: () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y + 40) }),
+      rightFar:   () => ({ x: clamp(p.x + 18, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 16) }),
+      leftFar:    () => ({ x: clamp(p.x - w - 18, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 16) }),
+      pairAbove:  () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y - h - 16) }),
+      pairBelow:  () => ({ x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2), y: nearY(p.y + 16) })
     };
     for (const pref of prefs) {
       const pos = (candidates[pref] || candidates.above)();
       const box = { x: pos.x, y: pos.y, w, h };
       if (!placed.some(prev => overlaps(box, prev))) return box;
     }
-    const fallback = candidates.above();
+    const scan = prefs[0] && String(prefs[0]).toLowerCase().includes('below')
+      ? [12, 34, 56, -34, -56, 78]
+      : [-30, -52, -74, 18, 40, -96];
+    for (const dy of scan) {
+      const box = {
+        x: clamp(p.x - w / 2, PL + 2, W - PR - w - 2),
+        y: nearY(p.y + dy),
+        w,
+        h
+      };
+      if (!placed.some(prev => overlaps(box, prev))) return box;
+    }
+    const fallback = (candidates[prefs[0]] || candidates.above)();
     return { x: fallback.x, y: fallback.y, w, h };
   };
   const renderLabel = (box, text, theme) => {
@@ -2484,7 +2915,7 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     const h = 20;
     const col = monthItems.filter(x => x.flatColumn).sort((a, b) => a.order - b.order);
     const level = Math.max(0, col.findIndex(x => x === item));
-    const topY = Math.min(...monthItems.map(x => x.p.y)) - 26 - (col.length - 1 - level) * 22;
+    const topY = Math.min(...monthItems.map(x => x.p.y)) - 20 - (col.length - 1 - level) * 22;
     return {
       x: clamp(item.p.x - w / 2, PL + 2, W - PR - w - 2),
       y: clamp(topY, PT + 2, zeroY - h - 12),
@@ -2519,7 +2950,7 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     const real = realArr[i];
     const forecast = forecastArr[i];
     const v = real != null ? real : forecast;
-    return v != null ? ({ x: X(i), y: Y(v), v, i }) : null;
+    return v != null ? ({ x: X(i), y: Y(v), v, i, source: real != null ? 'real' : 'forecast' }) : null;
   }).filter(Boolean);
   const planPastPts = planPts.filter(p => p.i <= filterIdx);
   const planFuturePts = planPts.filter(p => p.i >= filterIdx);
@@ -2569,27 +3000,51 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     ...[...planPts, ...realPts, ...forecastFuturePts].map(p => ({ x: p.x - 9, y: p.y - 9, w: 18, h: 18 }))
   ];
   const labelsByMonth = new Map();
-  const addLabel = (pts, order, textFn, theme, prefs, flatColumn = false) => {
+  const addLabel = (pts, order, series, textFn, theme, prefs, flatColumn = false) => {
     pts.forEach(p => {
       if (!p.v) return;
+      const text = textFn(p.v);
       if (!labelsByMonth.has(p.i)) labelsByMonth.set(p.i, []);
-      labelsByMonth.get(p.i).push({ p, order, text: textFn(p.v), theme, prefs, flatColumn });
+      const monthItems = labelsByMonth.get(p.i);
+      const resolvedTheme = typeof theme === 'function' ? theme(p) : theme;
+      monthItems.push({ p, order, series, text, theme: resolvedTheme, prefs, flatColumn, dedupeKey: series + '|' + text });
     });
   };
+  const labelPrefsForItem = (item, monthItems) => {
+    const pair = monthItems.length === 2;
+    if (pair) {
+      const other = monthItems.find(x => x !== item);
+      const sameLine = other && Math.abs(item.p.y - other.p.y) < 0.5;
+      const itemAboveLine = !other || (sameLine ? item.series === 'realForecast' : item.p.y < other.p.y);
+      return itemAboveLine
+        ? ['pairAbove', 'above', 'aboveStack', 'right', 'left', 'below']
+        : ['pairBelow', 'below', 'belowStack', 'right', 'left', 'above'];
+    }
+    if (item.series === 'realForecast') return ['above', 'aboveFar', 'right', 'left', 'below', 'belowFar'];
+    return ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar'];
+  };
 
-  addLabel(planPts, 2, v => fmtM(v), { fill: '#E6F5FA', stroke: '#0075A9', text: '#005F96' }, ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar', 'rightFar', 'leftFar'], flatPlan);
-  addLabel(actualForecastLabelPts, 0, v => fmtM(v), { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }, ['above', 'aboveFar', 'right', 'left', 'below', 'belowFar', 'rightFar', 'leftFar'], flatReal);
+  addLabel(actualForecastLabelPts, 0, 'realForecast', v => fmtM(v), p => (
+    p.source === 'forecast'
+      ? { fill: '#EAF7D0', stroke: '#16a34a', text: '#166534' }
+      : { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }
+  ), ['above', 'right', 'left', 'below'], false);
+  addLabel(planPts, 2, 'bp', v => fmtM(v), { fill: '#E6F5FA', stroke: '#0075A9', text: '#005F96' }, ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar', 'rightFar', 'leftFar'], flatPlan);
 
   for (let i = 0; i < months.length; i++) {
     const items = labelsByMonth.get(i) || [];
-    items.sort((a, b) => (b.p.v || 0) - (a.p.v || 0));
+    const compactPair = items.length === 2;
+    if (compactPair) items.sort((a, b) => a.p.y - b.p.y || a.order - b.order);
+    else items.sort((a, b) => (b.p.v || 0) - (a.p.v || 0));
     items.forEach((item, idx) => {
-      const prefs = idx === 0
-        ? ['above', 'right', 'left', 'aboveFar', 'below']
-        : ['below', 'rightFar', 'leftFar', 'belowFar', 'above'];
-      const box = item.flatColumn
+      const prefs = labelPrefsForItem(item, items);
+      let box = item.flatColumn && !compactPair
         ? buildColumnLabel(item, items)
         : buildLabel(item.p, item.text, item.theme, prefs, placed);
+      if (placed.some(prev => overlaps(box, prev))) {
+        box = buildLabel(item.p, item.text, item.theme, prefs, placed);
+      }
+      if (item.p.i !== filterIdx && placed.some(prev => overlaps(box, prev))) return;
       placed.push(box);
       out += renderLabel(box, item.text, item.theme);
     });
@@ -2599,9 +3054,9 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   svg.innerHTML = out;
 
   const legend = document.querySelectorAll('.legend span');
-  if (legend[0]) { legend[0].style.display = ''; legend[0].childNodes[legend[0].childNodes.length-1].textContent = 'Realizado'; const icon = legend[0].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
+  if (legend[0]) { legend[0].style.display = ''; legend[0].childNodes[legend[0].childNodes.length-1].textContent = 'Realizado + Forecast'; const icon = legend[0].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
   if (legend[1]) { legend[1].style.display = ''; legend[1].childNodes[legend[1].childNodes.length-1].textContent = 'BP'; legend[1].querySelector('i').style.background = '#0075A9'; }
-  if (legend[2]) { legend[2].style.display = ''; legend[2].childNodes[legend[2].childNodes.length-1].textContent = 'Forecast'; const icon = legend[2].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
+  if (legend[2]) legend[2].style.display = 'none';
 
   const sub = document.getElementById('chart-sub');
   if (sub) sub.textContent = 'Valores mensais em R$ - ' + months[0] + ' - ' + months[Math.min(filterIdx, months.length - 1)];
