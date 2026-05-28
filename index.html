@@ -1077,7 +1077,7 @@
       <!-- FULL YEAR -->
       <div class="kpi" id="card-fy" style="grid-area:fy;position:relative;padding-top:18px;padding-bottom:38px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <div class="kpi-label" style="font-size:13px;">Full Year</div>
+          <div class="kpi-label" id="fy-title" style="font-size:13px;">Full Year</div>
         </div>
         <div class="kpi-value" id="fy-budget" style="font-size:34px;">—</div>
         <div id="fy-eac" style="margin-top:12px;font-size:14px;color:var(--ink-500);"></div>
@@ -1107,7 +1107,7 @@
       <!-- YEAR TO DATE -->
       <div class="kpi" id="card-ytd" style="grid-area:ytd;position:relative;padding-top:18px;padding-bottom:38px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <div class="kpi-label" style="font-size:13px;">Year to Date</div>
+          <div class="kpi-label" id="ytd-title" style="font-size:13px;">Year to Date</div>
         </div>
         <div class="kpi-value" id="ytd-pv" style="font-size:34px;">—</div>
         <div id="ytd-ac" style="margin-top:12px;font-size:14px;color:var(--ink-500);"></div>
@@ -1821,6 +1821,9 @@ function renderFinanceiro(fin, proj) {
   });
   const periodItems = Array.from(rowsByKey.values()).sort((a, b) => (a.yr - b.yr) || (a.idx - b.idx) || (a.pos - b.pos));
   if (!periodItems.length) return;
+  const periodYearSpan = Math.max(1, periodItems[periodItems.length - 1].yr - periodItems[0].yr + 1);
+  set('fy-title', periodYearSpan <= 1 ? 'Full Year' : 'Full ' + periodYearSpan + '-Year');
+  set('ytd-title', periodYearSpan <= 1 ? 'Year to Date' : 'Total to Date');
 
   let filterMonthIdx = -1;
   if (typeof _selectedMonth !== 'undefined' && _selectedMonth) {
