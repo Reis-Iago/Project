@@ -509,9 +509,9 @@
   .content{display:grid;gap:14px}
   .rsidebar{display:flex;flex-direction:column;gap:12px;min-width:0}
   .team-top{display:grid;grid-template-columns:minmax(116px,130px) minmax(0,1fr);gap:10px}
-  .side-card,.delivery-card,.risk-card,.nextp-card,.health-sidebar-anchor{min-width:0}
+  .side-card,.delivery-card,.risk-card,.nextp-card,.support-card,.health-sidebar-anchor{min-width:0}
   .team-top .card{height:100%}
-  .delivery-card .card,.risk-card .card,.nextp-card .card,.health-sidebar-anchor .card{height:100%}
+  .delivery-card .card,.risk-card .card,.nextp-card .card,.support-card .card,.health-sidebar-anchor .card{height:100%}
   .bottom-stack{display:flex;flex-direction:column;gap:12px;min-width:0}
   .team-roles{display:flex;flex-direction:column;gap:2px;min-width:0}
   body.view-quinzenal .main{grid-template-columns:minmax(0,3fr) minmax(360px,2fr) !important}
@@ -536,10 +536,12 @@
   body.view-quinzenal #rag-card .rag-note{font-size:11px}
   body.view-quinzenal .delivery-card{min-height:0!important}
   body.view-quinzenal .nextp-card,
-  body.view-quinzenal .risk-card{min-height:0!important}
+  body.view-quinzenal .risk-card,
+  body.view-quinzenal .support-card{min-height:0!important}
   body.view-quinzenal .delivery-card .card,
   body.view-quinzenal .nextp-card .card,
-  body.view-quinzenal .risk-card .card{padding:14px 16px}
+  body.view-quinzenal .risk-card .card,
+  body.view-quinzenal .support-card .card{padding:14px 16px}
   body.view-quinzenal .bottom-stack{height:auto!important;min-height:0!important}
   body.view-quinzenal .list-row > div{
     white-space:normal!important;
@@ -1110,6 +1112,16 @@
           <div id="risk-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os riscos.</div>
         </div>
       </div>
+      <!-- Apoio necessario da gestao -->
+      <div class="support-card" style="min-height:114px;">
+        <div class="card" >
+          <div class="card-head">
+            <div><div class="card-title">Apoio necessario da gestao</div><div class="card-sub">Planos de acao</div></div>
+            <div class="mini-legend"><span><i style="background:#dc2626"></i>Alto</span><span><i style="background:#FFCD00"></i>Medio</span><span><i style="background:#0075A9"></i>Baixo</span></div>
+          </div>
+          <div id="support-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os apoios.</div>
+        </div>
+      </div>
     </div>
   </aside>
 
@@ -1153,9 +1165,17 @@ function filterRowsByReport(rows) {
 }
 function monthYearKeyFromValue(v) {
   if (v == null || v === '') return null;
+  if (v instanceof Date && !isNaN(v)) return `${v.getFullYear()}-${v.getMonth()}`;
   if (typeof v === 'number' && isFinite(v)) {
     const d = excelDate(v);
     return d ? `${d.getFullYear()}-${d.getMonth()}` : null;
+  }
+  const raw = String(v).trim();
+  const dateParts = raw.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  if (dateParts) {
+    const year = Number(dateParts[3].length === 2 ? '20' + dateParts[3] : dateParts[3]);
+    const month = Number(dateParts[2]) - 1;
+    return month >= 0 && month <= 11 ? `${year}-${month}` : null;
   }
   const s = normKey(v);
   const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1204,6 +1224,7 @@ function syncSidebarHeights() {
   const stack = document.querySelector('.bottom-stack');
   const risk = document.querySelector('.risk-card');
   const next = document.querySelector('.nextp-card');
+  const support = document.querySelector('.support-card');
   const healthSide = document.getElementById('health-sidebar-anchor');
   if (!content || !team || !delivery || !stack || !risk || !next) return;
   if (_dashboardView === 'quinzenal') {
@@ -1211,8 +1232,8 @@ function syncSidebarHeights() {
     const timeline = Array.from(content.children).find(el => (el.style.gridArea || '').trim() === 'tl');
     const timelineCard = timeline ? timeline.querySelector('.card') : null;
     const side = document.querySelector('.rsidebar');
-    const sideCards = [healthSide, delivery, next, risk].filter(Boolean);
-    [healthSide, delivery, stack, next, risk].filter(Boolean).forEach(el => {
+    const sideCards = [healthSide, delivery, next, risk, support].filter(Boolean);
+    [healthSide, delivery, stack, next, risk, support].filter(Boolean).forEach(el => {
       el.style.height = '';
       el.style.minHeight = '';
       const card = el.querySelector('.card');
@@ -1247,7 +1268,7 @@ function syncSidebarHeights() {
           if (card) card.style.height = '100%';
         });
         if (stack && next && risk) {
-          const stackH = next.offsetHeight + risk.offsetHeight + gap;
+          const stackH = next.offsetHeight + risk.offsetHeight + (support ? support.offsetHeight + gap : 0) + gap;
           stack.style.height = stackH + 'px';
           stack.style.minHeight = stackH + 'px';
         }
@@ -1279,11 +1300,12 @@ function syncSidebarHeights() {
   if (chart && chart.offsetHeight) {
     stack.style.height = chart.offsetHeight + 'px';
     stack.style.minHeight = chart.offsetHeight + 'px';
-    const half = Math.max(110, Math.floor((chart.offsetHeight - 12) / 2));
-    next.style.height = half + 'px';
-    risk.style.height = half + 'px';
-    next.style.minHeight = half + 'px';
-    risk.style.minHeight = half + 'px';
+    const stackCards = [next, risk, support].filter(Boolean);
+    const cardH = Math.max(110, Math.floor((chart.offsetHeight - 12 * Math.max(0, stackCards.length - 1)) / stackCards.length));
+    stackCards.forEach(el => {
+      el.style.height = cardH + 'px';
+      el.style.minHeight = cardH + 'px';
+    });
   }
   fitListToCard('delivery-list');
 }
@@ -1468,6 +1490,7 @@ function renderDashboardData(s) {
   updateTimeline(s.cronograma);
   updateTeam(s.recursos);
   updateRiscos(s.risco);
+  updateSupport(s.risco);
   updateNextp(s.proximosPassos);
   updateEntregas(s.entregasMes);
   requestAnimationFrame(syncSidebarHeights);
@@ -1517,6 +1540,7 @@ function renderEmptyDashboard() {
   updateEntregas([]);
   updateNextp([]);
   updateRiscos([]);
+  updateSupport([]);
   requestAnimationFrame(syncSidebarHeights);
 }
 
@@ -1676,6 +1700,11 @@ function reapplyFilter() {
     updateCronograma(_cronData);
     updateRAG(_cronData, _riscoData);
     updateTimeline(_cronData);
+  }
+  if (_lastSheets) {
+    updateRiscos(_lastSheets.risco);
+    updateSupport(_lastSheets.risco);
+    updateNextp(_lastSheets.proximosPassos);
   }
   requestAnimationFrame(syncSidebarHeights);
 }
@@ -2762,6 +2791,37 @@ function updateRiscos(risco) {
     return `<div class="list-row">
       <span class="list-dot" style="background:${dot};"></span>
       <div title="${nome}" style="flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${nome}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = html;
+}
+
+function updateSupport(risco) {
+  const el = document.getElementById('support-list');
+  if (!el) return;
+  if (!risco || !risco.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum apoio cadastrado.</div>';
+    return;
+  }
+  const rows = filterRowsByMonthField(filterRowsByReport(risco), ['Data de Atualização', 'Data de Atualizacao']).filter(r => {
+    const plano = pick(r, ['Plano de Ação', 'Plano de Acao']);
+    return plano && String(plano).trim();
+  });
+  if (!rows.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum apoio cadastrado.</div>';
+    return;
+  }
+  rows.sort((a, b) => (Number(b['Score']) || 0) - (Number(a['Score']) || 0));
+  const html = rows.slice(0, 5).map(r => {
+    const plano = String(pick(r, ['Plano de Ação', 'Plano de Acao']) || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const score = Number(r['Score']) || 0;
+    let dot = '#cbd5e1';
+    if (score >= 15) dot = '#dc2626';
+    else if (score >= 8) dot = '#FFCD00';
+    else if (score > 0) dot = '#0075A9';
+    return `<div class="list-row">
+      <span class="list-dot" style="background:${dot};"></span>
+      <div title="${plano}" style="flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--ink-700);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${plano}</div>
     </div>`;
   }).join('');
   el.innerHTML = html;
