@@ -1151,6 +1151,33 @@ function filterRowsByReport(rows) {
   const wanted = normKey(_dashboardView || 'mensal');
   return data.filter(r => normKey(pick(r, ['Report']) || '') === wanted);
 }
+function monthYearKeyFromValue(v) {
+  if (v == null || v === '') return null;
+  if (typeof v === 'number' && isFinite(v)) {
+    const d = excelDate(v);
+    return d ? `${d.getFullYear()}-${d.getMonth()}` : null;
+  }
+  const s = normKey(v);
+  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const month = months.findIndex(m => s.includes(m));
+  const y = String(v).match(/\d{2,4}/);
+  if (month < 0 || !y) return null;
+  const year = Number(y[0].length === 2 ? '20' + y[0] : y[0]);
+  return `${year}-${month}`;
+}
+function selectedMonthYearKey() {
+  if (!_selectedMonth || !_allFinData || !_allFinData.length) return null;
+  const row = _allFinData.find(r => r['__label'] === _selectedMonth);
+  if (!row) return monthYearKeyFromValue(_selectedMonth);
+  const m = pickMonthValue(row);
+  const y = pickYearValue(row);
+  return monthYearKeyFromValue(`${m}/${y}`);
+}
+function filterRowsByMonthField(rows, fieldAliases) {
+  const wanted = selectedMonthYearKey();
+  if (!wanted) return rows;
+  return rows.filter(r => monthYearKeyFromValue(pick(r, fieldAliases)) === wanted);
+}
 function pickMonthValue(row) {
   const monthKeys = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   for (const key of Object.keys(row || {})) {
@@ -2719,7 +2746,7 @@ function updateRiscos(risco) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum risco cadastrado.</div>';
     return;
   }
-  const rows = filterRowsByReport(risco).filter(r => (r['Risco'] && String(r['Risco']).trim()) || (r['Detalhamento do Risco'] && String(r['Detalhamento do Risco']).trim()));
+  const rows = filterRowsByMonthField(filterRowsByReport(risco), ['Data de Atualização', 'Data de Atualizacao']).filter(r => (r['Risco'] && String(r['Risco']).trim()) || (r['Detalhamento do Risco'] && String(r['Detalhamento do Risco']).trim()));
   if (!rows.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum risco cadastrado.</div>';
     return;
@@ -2777,7 +2804,7 @@ function updateNextp(passos) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma acao cadastrada.</div>';
     return;
   }
-  const rows = filterRowsByReport(passos).filter(r => { const acao = pick(r, ['Acao', 'Acoes', 'Acao Prevista']); return acao && String(acao).trim(); });
+  const rows = filterRowsByMonthField(filterRowsByReport(passos), ['Data Limite']).filter(r => { const acao = pick(r, ['Acao', 'Acoes', 'Acao Prevista']); return acao && String(acao).trim(); });
   if (!rows.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma acao cadastrada.</div>';
     return;
