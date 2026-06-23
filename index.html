@@ -543,14 +543,14 @@
   body.view-quinzenal .risk-card .card,
   body.view-quinzenal .support-card .card{padding:14px 16px}
   body.view-quinzenal .bottom-stack{height:auto!important;min-height:0!important}
-  body.view-quinzenal .list-row > div{
+  .rsidebar .list-row > div{
     white-space:normal!important;
     overflow:visible!important;
     text-overflow:clip!important;
     line-height:1.35!important;
   }
-  body.view-quinzenal .list-row{align-items:flex-start}
-  body.view-quinzenal .list-dot{margin-top:.32em}
+  .rsidebar .list-row{align-items:flex-start}
+  .rsidebar .list-dot{margin-top:.32em}
 
   .card{
     background:var(--card);border:1px solid var(--line);border-radius:6px;
@@ -1217,6 +1217,13 @@ function normalizeYear(v) {
   return m ? Number(m[0]) : null;
 }
 
+function resetLayoutMeasurements() {
+  document.querySelectorAll('.rsidebar,.team-top,.delivery-card,.bottom-stack,.nextp-card,.risk-card,.support-card,.health-sidebar-anchor,.content > *,.content > * .card,.rsidebar .card').forEach(el => {
+    el.style.height = '';
+    el.style.minHeight = '';
+  });
+}
+
 function syncSidebarHeights() {
   const content = document.querySelector('.content');
   const team = document.querySelector('.team-top');
@@ -1236,8 +1243,10 @@ function syncSidebarHeights() {
     [healthSide, delivery, stack, next, risk, support].filter(Boolean).forEach(el => {
       el.style.height = '';
       el.style.minHeight = '';
-      const card = el.querySelector('.card');
-      if (card) card.style.height = '';
+      el.querySelectorAll('.card').forEach(card => {
+        card.style.height = '';
+        card.style.minHeight = '';
+      });
     });
     if (side) {
       side.style.height = '';
@@ -1290,24 +1299,47 @@ function syncSidebarHeights() {
   const topEls = children.filter(el => ['obj', 'conc', 'rag'].includes((el.style.gridArea || '').trim()));
   const timeline = children.find(el => (el.style.gridArea || '').trim() === 'tl');
   const chart = children.find(el => (el.style.gridArea || '').trim() === 'chart');
+  [delivery, stack, next, risk, support, timeline, chart].filter(Boolean).forEach(el => {
+    el.style.height = '';
+    el.style.minHeight = '';
+    if (el.querySelectorAll) {
+      el.querySelectorAll('.card').forEach(card => {
+        card.style.height = '';
+        card.style.minHeight = '';
+      });
+    }
+  });
 
   const topH = Math.max(...topEls.map(el => el.offsetHeight).filter(Boolean));
   if (topH) team.style.minHeight = topH + 'px';
-  if (timeline && timeline.offsetHeight) {
-    delivery.style.height = timeline.offsetHeight + 'px';
-    delivery.style.minHeight = timeline.offsetHeight + 'px';
-  }
-  if (chart && chart.offsetHeight) {
-    stack.style.height = chart.offsetHeight + 'px';
-    stack.style.minHeight = chart.offsetHeight + 'px';
-    const stackCards = [next, risk, support].filter(Boolean);
-    const cardH = Math.max(110, Math.floor((chart.offsetHeight - 12 * Math.max(0, stackCards.length - 1)) / stackCards.length));
-    stackCards.forEach(el => {
-      el.style.height = cardH + 'px';
-      el.style.minHeight = cardH + 'px';
+  if (timeline && chart && delivery && stack) {
+    const sideCards = [delivery, next, risk, support].filter(Boolean);
+    const gap = 12;
+    const natural = sideCards.map(el => Math.ceil(el.offsetHeight || 0));
+    const naturalSideH = natural.reduce((a, b) => a + b, 0) + gap * Math.max(0, sideCards.length - 1);
+    const minSideH = sideCards.length * 110 + gap * Math.max(0, sideCards.length - 1);
+    const contentTargetH = Math.ceil(timeline.offsetHeight + chart.offsetHeight + gap);
+    const targetSideH = Math.max(contentTargetH, naturalSideH, minSideH);
+    const chartTargetH = Math.max(chart.offsetHeight, targetSideH - timeline.offsetHeight - gap);
+    chart.style.height = chartTargetH + 'px';
+    chart.style.minHeight = chartTargetH + 'px';
+    const extra = Math.max(0, targetSideH - naturalSideH);
+    const totalNatural = natural.reduce((a, b) => a + b, 0) || 1;
+    let used = 0;
+    sideCards.forEach((el, idx) => {
+      const h = idx === sideCards.length - 1
+        ? Math.max(110, targetSideH - gap * Math.max(0, sideCards.length - 1) - used)
+        : Math.max(110, Math.floor(natural[idx] + extra * (natural[idx] / totalNatural)));
+      used += h;
+      el.style.height = h + 'px';
+      el.style.minHeight = h + 'px';
+      const card = el.querySelector('.card');
+      if (card) card.style.height = '100%';
     });
+    const stackH = sideCards.slice(1).reduce((sum, el) => sum + el.offsetHeight, 0) + gap * Math.max(0, sideCards.length - 2);
+    stack.style.height = stackH + 'px';
+    stack.style.minHeight = stackH + 'px';
   }
-  fitListToCard('delivery-list');
 }
 
 function fitListToCard(listId) {
@@ -1616,10 +1648,12 @@ function setDashboardView(view, render = true) {
   } else if (view === 'quinzenal') {
     renderEmptyDashboard();
   }
+  requestAnimationFrame(() => requestAnimationFrame(syncSidebarHeights));
 }
 
 function applyDashboardViewLayout() {
   const isQuinzenal = _dashboardView === 'quinzenal';
+  resetLayoutMeasurements();
   document.body.classList.toggle('view-quinzenal', isQuinzenal);
   const rag = document.getElementById('rag-card');
   const sidebar = document.querySelector('.rsidebar');
@@ -1705,6 +1739,7 @@ function reapplyFilter() {
     updateRiscos(_lastSheets.risco);
     updateSupport(_lastSheets.risco);
     updateNextp(_lastSheets.proximosPassos);
+    updateEntregas(_lastSheets.entregasMes);
   }
   requestAnimationFrame(syncSidebarHeights);
 }
@@ -2835,7 +2870,11 @@ function updateEntregas(entregas) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
     return;
   }
-  const rows = filterRowsByReport(entregas).filter(r => r['Entrega Prevista'] && String(r['Entrega Prevista']).trim());
+  let baseRows = filterRowsByReport(entregas);
+  if (_dashboardView === 'mensal') {
+    baseRows = filterRowsByMonthField(baseRows, ['Mês de Referencia', 'Mes de Referencia', 'Mês Referência', 'Mes Referencia']);
+  }
+  const rows = baseRows.filter(r => r['Entrega Prevista'] && String(r['Entrega Prevista']).trim());
   if (!rows.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
     return;
