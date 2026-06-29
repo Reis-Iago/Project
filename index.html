@@ -2146,7 +2146,13 @@ function updateRAG(cron, risco) {
 
   let riskRag = { cls: 'b', label: 'Baixo', color: '#005F96' };
   if (risco && risco.length) {
-    const scores = risco.map(r => r['Score']).filter(s => s != null && isFinite(s));
+    const riskRows = filterRowsByMonthField(filterRowsByReport(risco), ['Data de Atualização', 'Data de Atualizacao']);
+    const scores = riskRows.map(r => {
+      const raw = pick(r, ['Score']);
+      if (typeof raw === 'number') return isFinite(raw) ? raw : null;
+      const n = Number(String(raw || '').replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
+      return isFinite(n) ? n : null;
+    }).filter(s => s != null);
     const maxScore = scores.length ? Math.max(...scores) : 0;
     if (maxScore >= 15) riskRag = { cls: 'r', label: 'Alto', color: '#E30613' };
     else if (maxScore >= 8) riskRag = { cls: 'a', label: 'Médio', color: '#FF9E18' };
