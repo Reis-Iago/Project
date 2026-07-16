@@ -2124,7 +2124,8 @@ function updateRAG(cron, risco) {
       financeRatio(real || forecast, bp)
     ].filter(v => isFinite(v));
     if (!ratios.length) return { cls: '', label: '?', color: '#8797ad' };
-    if (ratios.some(v => v > 1 || v < 0.95)) return { cls: 'a', label: 'Aten\u00e7\u00e3o', color: '#FF9E18' };
+    const EPS = 1e-9;
+    if (ratios.some(v => v > 1 + EPS || v < 0.95 - EPS)) return { cls: 'a', label: 'Aten\u00e7\u00e3o', color: '#FF9E18' };
     return { cls: 'b', label: 'Bom', color: '#005F96' };
   }
   let refFinRow = null;
@@ -2146,13 +2147,11 @@ function updateRAG(cron, risco) {
 
   let riskRag = { cls: 'b', label: 'Baixo', color: '#005F96' };
   if (risco && risco.length) {
-    const riskRows = filterRowsByMonthField(filterRowsByReport(risco), ['Data de Atualização', 'Data de Atualizacao']);
-    const scores = riskRows.map(r => {
-      const raw = pick(r, ['Score']);
-      if (typeof raw === 'number') return isFinite(raw) ? raw : null;
-      const n = Number(String(raw || '').replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
-      return isFinite(n) ? n : null;
-    }).filter(s => s != null);
+    const riskRows = filterRowsByMonthField(
+      filterRowsByReport(risco),
+      ['Data de Atualização', 'Data de Atualizacao']
+    ).filter(r => (r['Risco'] && String(r['Risco']).trim()) || (r['Detalhamento do Risco'] && String(r['Detalhamento do Risco']).trim()));
+    const scores = riskRows.map(r => r['Score']).filter(s => s != null && isFinite(s));
     const maxScore = scores.length ? Math.max(...scores) : 0;
     if (maxScore >= 15) riskRag = { cls: 'r', label: 'Alto', color: '#E30613' };
     else if (maxScore >= 8) riskRag = { cls: 'a', label: 'Médio', color: '#FF9E18' };
