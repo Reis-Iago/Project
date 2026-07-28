@@ -517,8 +517,12 @@
   body.view-quinzenal .main{grid-template-columns:minmax(0,3fr) minmax(360px,2fr) !important}
   body.view-quinzenal .content{
     grid-template-columns:1fr !important;
-    grid-template-areas:'tl' !important;
+    grid-template-areas:'moment' 'tl' !important;
   }
+  .moment-card{display:none;min-width:0}
+  body.view-quinzenal .moment-card{display:block}
+  .moment-card .card{min-height:96px;height:auto;padding:13px 16px;overflow:visible}
+  .moment-text{font-size:11px;line-height:1.45;color:var(--ink-700);white-space:pre-wrap;overflow-wrap:anywhere;overflow:visible}
   body.view-quinzenal .rsidebar{padding-top:0;display:flex;flex-direction:column;align-items:stretch}
   .health-strip-anchor{display:none;min-width:520px;flex:1}
   body.view-quinzenal .health-strip-anchor{display:none}
@@ -703,20 +707,38 @@
   body.view-quinzenal .tl-today::after{top:2px;transform:translate(-50%,0)}
   body.view-quinzenal .tl-months-bar{display:none}
   .tl-package-title{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin-bottom:7px}
-  .tl-package-list{display:flex;flex-direction:column;gap:6px;max-height:none;overflow:visible}
+  .tl-package-list{display:flex;flex-direction:column;gap:7px;max-height:none;overflow:visible}
+  body.view-quinzenal .tl-package-list{max-height:398px;overflow-y:auto;overflow-x:hidden;padding-right:4px;scrollbar-width:thin}
+  .tl-program-section{border:1px solid var(--line);border-radius:5px;overflow:hidden;background:#fff;flex:0 0 auto}
+  .tl-program-head{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  .tl-program-head b{min-width:18px;padding:1px 5px;border-radius:9px;text-align:center;font-size:9px;background:#fff}
+  .tl-program-section.late .tl-program-head{color:#b42318;background:#fff0ee}
+  .tl-program-section.active .tl-program-head{color:#00558c;background:#eaf6fb}
+  .tl-program-section.next .tl-program-head{color:#52647a;background:#f3f6fa}
+  .tl-program-cols,.tl-program-main{display:grid;grid-template-columns:minmax(0,1fr) 34px 72px 42px;gap:5px;align-items:start}
+  .tl-program-cols{padding:4px 7px 2px;font-size:8px;font-weight:800;color:var(--ink-400);text-transform:uppercase;letter-spacing:.03em}
+  .tl-program-cols span:not(:first-child){text-align:right}
+  .tl-program-item{padding:5px 7px;border-top:1px solid #e6edf4}
+  .tl-program-name{min-width:0;font-size:10px;line-height:1.25;font-weight:800;color:var(--ink-900);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  .tl-program-pct,.tl-program-status,.tl-program-date{font-size:9px;line-height:1.25;font-weight:700;text-align:right}
+  .tl-program-pct,.tl-program-date{color:var(--ink-500)}
+  .tl-program-pct,.tl-program-date{white-space:nowrap}
+  .tl-program-status{color:var(--tl-color,var(--ink-500));white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  .tl-program-status,.tl-subtask-status{text-align:right;justify-self:stretch;direction:ltr}
+  .tl-program-children{margin:4px 0 0 9px;border-left:1px solid #d7e0eb;padding-left:8px;display:flex;flex-direction:column;gap:2px}
   .tl-package-group{border-bottom:1px solid var(--line);padding:4px 0 6px}
   .tl-package-head{display:grid;grid-template-columns:8px 1fr;gap:8px;align-items:start}
   .tl-package-head i{width:8px;height:8px;border-radius:50%;margin-top:4px;background:var(--tl-color,var(--blue-700))}
   .tl-package-name{font-size:10.5px;font-weight:800;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tl-subtask-head{display:grid;grid-template-columns:minmax(0,1fr) 38px 58px 48px;gap:6px;margin:5px 0 0 16px;padding-left:9px;font-size:8.5px;font-weight:800;color:var(--ink-400);text-transform:uppercase;letter-spacing:.04em}
+  .tl-subtask-head{display:grid;grid-template-columns:minmax(0,1fr) 34px 72px 42px;gap:5px;margin:5px 0 0 16px;padding-left:9px;font-size:8.5px;font-weight:800;color:var(--ink-400);text-transform:uppercase;letter-spacing:.04em}
   .tl-subtask-list{margin:3px 0 0 16px;border-left:1px solid #d7e0eb;padding-left:9px;display:flex;flex-direction:column;gap:2px}
-  .tl-subtask{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 38px 58px 48px;gap:6px;align-items:center;min-width:0}
+  .tl-subtask{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 34px 72px 42px;gap:5px;align-items:start;min-width:0}
   .tl-subtask::before{content:"";position:absolute;left:-9px;top:8px;width:6px;border-top:1px solid #d7e0eb}
-  .tl-subtask-name{font-size:10px;font-weight:600;color:var(--ink-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tl-subtask-status{font-size:9px;font-weight:700;color:var(--tl-color,var(--ink-400));white-space:nowrap}
+  .tl-subtask-name{font-size:10px;line-height:1.25;font-weight:600;color:var(--ink-700);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  .tl-subtask-status{font-size:9px;line-height:1.25;font-weight:700;color:var(--tl-color,var(--ink-400));white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
   .tl-subtask-pct{font-size:9px;font-weight:700;color:var(--ink-500);white-space:nowrap;text-align:right}
   .tl-subtask-date{font-size:9px;font-weight:700;color:var(--ink-500);white-space:nowrap;text-align:right}
-  .tl-axis{position:relative;height:4px;background:transparent;border-radius:2px;margin:18px 8px 58px}
+  .tl-axis{position:relative;height:4px;background:transparent;border-radius:2px;margin:18px 8px 28px}
   .tl-progress{position:absolute;left:0;top:0;bottom:0;background:var(--blue-700);border-radius:2px;z-index:0}
   .tl-today{
     position:absolute;top:-14px;bottom:-14px;width:0;border-left:2px dashed var(--ink-700);
@@ -739,9 +761,9 @@
   .tl-seg-done{position:absolute;left:0;top:0;bottom:0;background:var(--tl-color,var(--blue-700));border-radius:3px}
   .tl-seg-pending{position:absolute;top:0;bottom:0;border-top:1.5px dashed var(--tl-color,var(--blue-700));transform:translateY(1px);opacity:.68}
   .tl-start-diamond{position:absolute;transform:translate(-50%,-50%) rotate(45deg);width:10px;height:10px;background:#fff;border:2px solid var(--tl-color,var(--blue-700));box-shadow:0 0 0 2px #fff;z-index:4;box-sizing:border-box}
-  .tl-seg-label{position:absolute;transform:translateX(-50%);text-align:center;max-width:240px;padding:2px 6px;border-radius:5px;background:var(--tl-color,var(--blue-700));border:1px solid var(--tl-color,var(--blue-700));font-size:10px;color:#fff;font-weight:700;z-index:5;white-space:nowrap;overflow:visible;text-overflow:clip;box-shadow:0 1px 2px rgba(15,23,42,.14)}
+  .tl-seg-label{position:absolute;transform:translateX(-50%);text-align:center;max-width:240px;padding:2px 6px;border-radius:5px;background:var(--tl-color,var(--blue-700));border:1px solid var(--tl-color,var(--blue-700));font-size:10px;line-height:12px;color:#fff;font-weight:700;z-index:5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 2px rgba(15,23,42,.14);box-sizing:border-box}
   .tl-seg-label.shift::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;background:var(--ink-400)}
-  .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:800;color:var(--ink-900);white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
+  .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:10px;line-height:12px;font-weight:800;color:var(--ink-900);white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
   .tl-progress-label .real{color:var(--tl-color,var(--blue-700))}
   .tl-plan-marker{position:absolute;width:2px;height:16px;background:var(--ink-900);transform:translate(-50%,-50%);z-index:6;border-radius:2px}
   .tl-label{
@@ -980,6 +1002,14 @@
 
 
 
+      <!-- MOMENTO ATUAL (quinzenal) -->
+      <div class="moment-card" style="grid-area:moment;">
+        <div class="card">
+          <div class="card-title" style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin-bottom:7px;">Momento Atual</div>
+          <div id="moment-text" class="moment-text">—</div>
+        </div>
+      </div>
+
       <!-- TIMELINE (spans cols 1-3 at row 2) -->
       <div style="grid-area:tl;">
         <div class="card">
@@ -1006,7 +1036,7 @@
               <div class="phases" id="tl-phases"></div>
             </div>
             <div class="tl-package-panel">
-              <div class="tl-package-title">Entregas do pacote</div>
+              <div class="tl-package-title">Programação de Entregas</div>
               <div class="tl-package-list" id="tl-package-panel">—</div>
             </div>
           </div>
@@ -1085,7 +1115,7 @@
     <div class="delivery-card" style="min-height:280px;">
       <div class="card" >
         <div class="card-head">
-          <div><div class="card-title" id="delivery-title">Entregas do Mes</div><div class="card-sub" id="delivery-subtitle">Entregas previstas no mes</div></div>
+          <div><div class="card-title" id="delivery-title">Evoluções e Entregas</div><div class="card-sub" id="delivery-subtitle">Entregas previstas no mes</div></div>
           <div class="mini-legend"><span><i style="background:#78BE00"></i>Entregue</span><span><i style="background:#FFCD00"></i>Em andamento</span><span><i style="background:#FF9E18"></i>Atrasada</span></div>
         </div>
         <div id="delivery-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as entregas.</div>
@@ -1096,7 +1126,7 @@
       <div class="nextp-card" style="min-height:114px;">
         <div class="card" >
           <div class="card-head">
-            <div><div class="card-title" id="nextp-title">Proximos Passos</div><div class="card-sub" id="nextp-subtitle">Acoes e responsaveis</div></div>
+            <div><div class="card-title" id="nextp-title">Próximas Ações</div><div class="card-sub" id="nextp-subtitle">Acoes e responsaveis</div></div>
             <div class="mini-legend"><span><i style="background:#dc2626"></i>Alta</span><span><i style="background:#FFCD00"></i>Media</span><span><i style="background:#0075A9"></i>Baixa</span></div>
           </div>
           <div id="nextp-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar as acoes.</div>
@@ -1106,7 +1136,7 @@
       <div class="risk-card" style="min-height:114px;">
         <div class="card" >
           <div class="card-head">
-            <div><div class="card-title" id="risk-title">Riscos e Bloqueios</div><div class="card-sub" id="risk-summary"></div></div>
+            <div><div class="card-title" id="risk-title">Bloqueios e Atenção</div><div class="card-sub" id="risk-summary"></div></div>
             <div class="mini-legend"><span><i style="background:#dc2626"></i>Alto</span><span><i style="background:#FFCD00"></i>Medio</span><span><i style="background:#0075A9"></i>Baixo</span></div>
           </div>
           <div id="risk-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os riscos.</div>
@@ -1116,7 +1146,7 @@
       <div class="support-card" style="min-height:114px;">
         <div class="card" >
           <div class="card-head">
-            <div><div class="card-title">Apoio necessario da gestao</div><div class="card-sub">Planos de acao</div></div>
+            <div><div class="card-title" id="support-title">Apoio e Decisão</div><div class="card-sub">Planos de acao</div></div>
             <div class="mini-legend"><span><i style="background:#dc2626"></i>Alto</span><span><i style="background:#FFCD00"></i>Medio</span><span><i style="background:#0075A9"></i>Baixo</span></div>
           </div>
           <div id="support-list" style="font-size:12px;color:var(--ink-400);padding:4px 0;">Carregue a planilha para visualizar os apoios.</div>
@@ -1218,7 +1248,7 @@ function normalizeYear(v) {
 }
 
 function resetLayoutMeasurements() {
-  document.querySelectorAll('.rsidebar,.team-top,.delivery-card,.bottom-stack,.nextp-card,.risk-card,.support-card,.health-sidebar-anchor,.content > *,.content > * .card,.rsidebar .card').forEach(el => {
+  document.querySelectorAll('.rsidebar,.team-top,.moment-card,.delivery-card,.bottom-stack,.nextp-card,.risk-card,.support-card,.health-sidebar-anchor,.content > *,.content > * .card,.rsidebar .card').forEach(el => {
     el.style.height = '';
     el.style.minHeight = '';
   });
@@ -1236,6 +1266,8 @@ function syncSidebarHeights() {
   if (!content || !team || !delivery || !stack || !risk || !next) return;
   if (_dashboardView === 'quinzenal') {
     team.style.minHeight = '';
+    const moment = content.querySelector('.moment-card');
+    const momentCard = moment ? moment.querySelector('.card') : null;
     const timeline = Array.from(content.children).find(el => (el.style.gridArea || '').trim() === 'tl');
     const timelineCard = timeline ? timeline.querySelector('.card') : null;
     const side = document.querySelector('.rsidebar');
@@ -1248,6 +1280,13 @@ function syncSidebarHeights() {
         card.style.minHeight = '';
       });
     });
+    if (momentCard) {
+      momentCard.style.height = '';
+      momentCard.style.minHeight = '';
+      const healthCard = healthSide ? healthSide.querySelector('.card') : null;
+      const healthMinH = healthCard ? Math.ceil(healthCard.getBoundingClientRect().height) : 0;
+      if (healthMinH) momentCard.style.minHeight = healthMinH + 'px';
+    }
     if (side) {
       side.style.height = '';
       side.style.minHeight = '';
@@ -1257,9 +1296,12 @@ function syncSidebarHeights() {
       timelineCard.style.height = '';
       const timelineH = Math.ceil(timelineCard.getBoundingClientRect().height);
       const gap = 12;
+      const momentH = moment && moment.style.display !== 'none' ? Math.ceil(moment.getBoundingClientRect().height) : 0;
+      const contentLeadH = momentH ? momentH + gap : 0;
+      const contentNaturalH = contentLeadH + timelineH;
       const natural = sideCards.map(el => Math.ceil((el.querySelector('.card') || el).getBoundingClientRect().height));
       const sideNatural = natural.reduce((a,b) => a + b, 0) + gap * Math.max(0, sideCards.length - 1);
-      const targetH = Math.max(timelineH, sideNatural);
+      const targetH = Math.max(contentNaturalH, sideNatural);
       if (side && targetH) {
         side.style.height = targetH + 'px';
         side.style.minHeight = targetH + 'px';
@@ -1282,9 +1324,10 @@ function syncSidebarHeights() {
           stack.style.minHeight = stackH + 'px';
         }
       }
-      if (targetH > timelineH) {
-        timelineCard.style.minHeight = targetH + 'px';
-        timelineCard.style.height = targetH + 'px';
+      const timelineTargetH = Math.max(timelineH, targetH - contentLeadH);
+      if (timelineTargetH > timelineH) {
+        timelineCard.style.minHeight = timelineTargetH + 'px';
+        timelineCard.style.height = timelineTargetH + 'px';
       }
     }
     return;
@@ -1451,6 +1494,7 @@ function handleFile(input) {
     try {
       const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:false});
       ensureInternalSheets(wb);
+      const momentoSheet = wb.SheetNames.find(n => ['momento atual', 'momento aual'].includes(normKey(n)));
       const sheets = {
         projeto:        sheetToObjects(wb, 'Projeto'),
         pmo:            sheetToObjects(wb, 'PMO'),
@@ -1462,6 +1506,7 @@ function handleFile(input) {
         entregasMes:    sheetToObjects(wb, 'Entregas do Mes'),
         mensal:         sheetToObjects(wb, 'Mensal'),
         quinzenal:      sheetToObjects(wb, 'Quinzenal'),
+        momentoAtual:   momentoSheet ? sheetToObjects(wb, momentoSheet) : [],
       };
       document.getElementById('upload-status').textContent = 'Atualizando dashboard...';
       setDashboardView('mensal', false);
@@ -1521,6 +1566,7 @@ function renderDashboardData(s) {
   updateRAG(s.cronograma, s.risco);
   updateTimeline(s.cronograma);
   updateTeam(s.recursos);
+  updateMomentoAtual(s.momentoAtual);
   updateRiscos(s.risco);
   updateSupport(s.risco);
   updateNextp(s.proximosPassos);
@@ -1569,6 +1615,7 @@ function renderEmptyDashboard() {
   setHtml('tl-quarter-scale', '');
   setHtml('tl-phases', '');
   setHtml('tl-package-panel', '');
+  set('moment-text', '—');
   updateEntregas([]);
   updateNextp([]);
   updateRiscos([]);
@@ -1624,6 +1671,41 @@ function updateHeader(proj, pmo) {
   set('sh-tipo', tipo ? String(tipo).toUpperCase() : '—');
 }
 
+function updateMomentoAtual(rows) {
+  const el = document.getElementById('moment-text');
+  if (!el) return;
+  if (_dashboardView !== 'quinzenal') {
+    el.textContent = '—';
+    return;
+  }
+  const toDate = value => {
+    const serialDate = excelDate(value);
+    if (serialDate) return new Date(serialDate.getUTCFullYear(), serialDate.getUTCMonth(), serialDate.getUTCDate());
+    if (value instanceof Date && !isNaN(value)) return value;
+    const text = String(value || '').trim();
+    const br = text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+    if (br) return new Date(Number(br[3]), Number(br[2]) - 1, Number(br[1]));
+    const parsed = new Date(text);
+    return isNaN(parsed) ? null : parsed;
+  };
+  const candidates = (Array.isArray(rows) ? rows : [])
+    .map(row => ({
+      resumo:pick(row, ['Resumo']),
+      report:normKey(pick(row, ['Report'])),
+      date:toDate(pick(row, ['Data']))
+    }))
+    .filter(row => ['quinzenal', 'quizenal'].includes(row.report) && row.date);
+  const cutoff = getCutoffDateFromFilter();
+  const samePeriod = _selectedMonth
+    ? candidates.filter(row => row.date.getFullYear() === cutoff.getFullYear() && row.date.getMonth() === cutoff.getMonth())
+    : candidates.filter(row => row.date <= cutoff);
+  const ordered = (samePeriod.length ? samePeriod : candidates).sort((a,b) => b.date - a.date);
+  const selected = ordered[0];
+  el.textContent = selected && String(selected.resumo || '').trim()
+    ? String(selected.resumo).trim()
+    : 'Resumo não informado para o período.';
+}
+
 // ─── FILTER STATE ───
 let _allFinData = [];
 let _projData = [];
@@ -1675,16 +1757,21 @@ function applyDashboardViewLayout() {
         return;
       }
       const area = (el.style.gridArea || '').trim();
+      if (area === 'moment') {
+        el.style.display = isQuinzenal ? '' : 'none';
+        return;
+      }
       el.style.display = isQuinzenal && ['obj', 'conc', 'fy', 'ytd', 'chart'].includes(area) ? 'none' : '';
     });
   }
   const team = document.querySelector('.team-top');
   if (team) team.style.display = isQuinzenal ? 'none' : '';
-  set('delivery-title', isQuinzenal ? 'Entregas dos Ultimos 15 Dias' : 'Entregas do Mes');
+  set('delivery-title', isQuinzenal ? 'Evolução da Janela' : 'Evoluções e Entregas');
   set('delivery-subtitle', isQuinzenal ? 'Entregas recentes' : 'Entregas previstas no mes');
-  set('nextp-title', isQuinzenal ? 'Proximas Entregas' : 'Proximos Passos');
+  set('nextp-title', isQuinzenal ? 'Próxima Janela' : 'Próximas Ações');
   set('nextp-subtitle', isQuinzenal ? 'Entregas previstas' : 'Acoes e responsaveis');
-  set('risk-title', isQuinzenal ? 'Pontos de Atencao' : 'Riscos e Bloqueios');
+  set('risk-title', 'Bloqueios e Atenção');
+  set('support-title', 'Apoio e Decisão');
 }
 
 function getCutoffDateFromFilter() {
@@ -1740,6 +1827,7 @@ function reapplyFilter() {
     updateSupport(_lastSheets.risco);
     updateNextp(_lastSheets.proximosPassos);
     updateEntregas(_lastSheets.entregasMes);
+    updateMomentoAtual(_lastSheets.momentoAtual);
   }
   requestAnimationFrame(syncSidebarHeights);
 }
@@ -2543,25 +2631,28 @@ function updateTimelineV2(cron) {
     if (cut >= end) return 1;
     return Math.max(0, Math.min(1, (cut - start) / (end - start)));
   };
-  const marcos = cron
+  const allMarcos = cron
     .filter(r => { const m = normKey(r['Milestone']); return m === 'marco' || m === 'refinar'; })
     .map(r => {
       const begin = readFirstDate(r, [['Data de Inicio'], ['Data Inicio'], ['Inicio'], ['In?cio'], ['Data de In?cio']]);
       const end = readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]);
       return { ...r, _begin: begin || end, _end: end || begin };
     })
+    .filter(r => r._end)
+    .sort((a,b) => a._end - b._end);
+  const marcos = allMarcos
     .filter(r => {
-      if (!r._end) return false;
       const begin = r._begin || r._end;
       const end = r._end || r._begin;
       return end >= projStart && begin <= projEnd;
-    })
-    .sort((a,b) => a._end - b._end);
+    });
 
-  const activities = cron
+  const allActivities = cron
     .filter(r => { const m = normKey(r['Milestone']); return m !== 'marco' && m !== 'refinar'; })
     .filter(r => r['Pacote'])
-    .map(r => ({ pacote:String(r['Pacote'] || ''), status:String(r['Status'] || r['Status da Atividade'] || r['Status do Pacote'] || '-'), pct:pctNumber(r['% Progresso']), eap:r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '', eapNum:getEapNum(r['Codigo EAP']), start:readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]) }))
+    .map(r => ({ pacote:String(r['Pacote'] || ''), status:String(r['Status'] || r['Status da Atividade'] || r['Status do Pacote'] || '-'), pct:pctNumber(r['% Progresso']), eap:r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '', eapNum:getEapNum(r['Codigo EAP']), begin:readFirstDate(r, [['Data de Inicio'], ['Data Inicio'], ['Inicio']]), start:readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]) }))
+    .filter(r => r.start);
+  const activities = allActivities
     .filter(r => r.start && (viewIsQuinzenal ? (r.start >= projStart && r.start <= projEnd) : r.start.getFullYear() === 2026));
 
   const tl = document.getElementById('tl-axis');
@@ -2572,88 +2663,67 @@ function updateTimelineV2(cron) {
   else if (today > projEnd) todayPct = 100;
 
   const compact = nome => String(nome || '-').trim();
-  const laneEnds = [];
-  const marcoLanes = marcos.map(m => {
-    const b = pctDate(m._begin);
-    const e = pctDate(m._end);
-    if (b == null || e == null) return 0;
-    const left = Math.min(b, e);
-    const right = Math.max(b, e);
-    let lane = laneEnds.findIndex(end => left > end + 1.2);
-    if (lane < 0) { lane = laneEnds.length; laneEnds.push(-Infinity); }
-    laneEnds[lane] = right;
-    return lane;
-  });
   const labelH = 18;
-  const labelGap = viewIsQuinzenal ? 10 : 8;
-  const bandGap = viewIsQuinzenal ? 18 : 8;
-  const baseTop = viewIsQuinzenal ? 58 : 34;
-  const laneCount = Math.max(1, ...marcoLanes.map(v => v + 1));
-  let axisHeight;
-  let laneTops;
-  if (viewIsQuinzenal) {
-    axisHeight = Math.max(330, 92 + laneCount * 46);
-    const topLane = 72;
-    const bottomLane = axisHeight - 48;
-    const step = laneCount > 1 ? (bottomLane - topLane) / (laneCount - 1) : 0;
-    laneTops = marcoLanes.map(lane => topLane + lane * step);
-  } else {
-    const bandBottoms = [];
-    laneTops = marcoLanes.map((lane) => {
-      const minTop = lane === 0 ? baseTop : (bandBottoms[lane - 1] || baseTop) + bandGap;
-      const lineTop = minTop + labelH + labelGap;
-      const bandBottom = lineTop + labelGap + labelH;
-      bandBottoms[lane] = Math.max(bandBottoms[lane] || 0, bandBottom);
-      return lineTop;
-    });
-    axisHeight = Math.max(92, Math.max(...bandBottoms, baseTop + 52) + 10);
-  }
-  tl.style.height = axisHeight + 'px';
-  let html = '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
-  const endGroups = new Map();
-  marcos.forEach((m, idx) => {
-    const e = pctDate(m._end);
-    if (e == null) return;
-    const key = e.toFixed(1);
-    if (!endGroups.has(key)) endGroups.set(key, []);
-    endGroups.get(key).push(idx);
-  });
-  const labelEnd = [];
-  marcos.forEach((m, i) => {
+  const labelGap = 8;
+  const laneCount = 6;
+  const laneFirstTop = 30;
+  const laneStep = 54;
+  const laneLineTops = Array.from({ length:laneCount }, (_, lane) => laneFirstTop + lane * laneStep);
+  const axisWidth = Math.max(1, tl.clientWidth || tl.getBoundingClientRect().width || 1000);
+  const measureCtx = document.createElement('canvas').getContext('2d');
+  if (measureCtx) measureCtx.font = '700 10px Inter, Arial, sans-serif';
+  const textWidth = text => Math.min(240, Math.max(42, Math.ceil(measureCtx ? measureCtx.measureText(text).width + 14 : text.length * 6 + 14)));
+  const pctToPx = pct => pct * axisWidth / 100;
+  const pxToPct = px => px * 100 / axisWidth;
+  const clampCenter = (pct, widthPx) => pxToPct(Math.max(widthPx / 2 + 2, Math.min(axisWidth - widthPx / 2 - 2, pctToPx(pct))));
+  const overlaps = (a, b, gap = 6) => a.left < b.right + gap && a.right + gap > b.left;
+  const laneUsage = Array.from({ length:laneCount }, () => ({ labels:[], metrics:[], segments:[] }));
+  const timelineItems = marcos.map((m, i) => {
     const b = pctDate(m._begin);
     const e = pctDate(m._end);
-    if (b == null || e == null) return;
-    const color = tlPalette[i % tlPalette.length];
+    if (b == null || e == null) return null;
     const left = Math.min(b, e);
     const right = Math.max(b, e);
     const width = Math.max(1.2, right - left);
     const progressPct = Math.round(marcoPct(m) * 1000) / 10;
     const plannedPct = Math.round(planPct(m) * 1000) / 10;
-    const pendingPct = Math.max(0, 100 - progressPct);
-    const progressX = left + (width * progressPct / 100);
-    const planX = left + (width * plannedPct / 100);
     const prevEnd = i > 0 ? pctDate(marcos[i - 1]._end) : left;
     const compressed = Math.abs(e - b) < 5.5;
     let mid = compressed && prevEnd != null ? (Math.min(prevEnd, e) + Math.max(prevEnd, e)) / 2 : left + width / 2;
-    mid = Math.max(4, Math.min(96, mid));
+    const labelWidth = textWidth(compact(m['Pacote']));
+    mid = clampCenter(Math.max(0.5, Math.min(99, mid)), labelWidth);
+    const metricsWidth = 126;
+    let metricsX = left + (width * Math.max(progressPct, plannedPct) / 200);
+    metricsX = clampCenter(metricsX, metricsWidth);
+    const labelRect = { left:pctToPx(mid) - labelWidth / 2, right:pctToPx(mid) + labelWidth / 2 };
+    const metricsRect = { left:pctToPx(metricsX) - metricsWidth / 2, right:pctToPx(metricsX) + metricsWidth / 2 };
+    const segmentRect = { left:pctToPx(left), right:pctToPx(right) };
+    const laneScores = laneUsage.map((usage, lane) => {
+      const textHits = usage.labels.filter(r => overlaps(labelRect, r)).length + usage.metrics.filter(r => overlaps(metricsRect, r)).length;
+      const segmentHits = usage.segments.filter(r => overlaps(segmentRect, r, 3)).length;
+      return { lane, textHits, segmentHits };
+    });
+    laneScores.sort((a, b) => a.textHits - b.textHits || a.segmentHits - b.segmentHits || a.lane - b.lane);
+    const lane = laneScores[0].lane;
+    laneUsage[lane].labels.push(labelRect);
+    laneUsage[lane].metrics.push(metricsRect);
+    laneUsage[lane].segments.push(segmentRect);
+    return { m, i, b, e, left, right, width, progressPct, plannedPct, mid, metricsX, labelWidth, lane };
+  }).filter(Boolean);
+  const usedLaneCount = Math.max(1, ...timelineItems.map(item => item.lane + 1));
+  const axisHeight = viewIsQuinzenal ? Math.max(210, laneLineTops[usedLaneCount - 1] + 30) : 330;
+  tl.style.height = axisHeight + 'px';
+  let html = '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
+  timelineItems.forEach(item => {
+    const { m, i, b, e, left, right, width, progressPct, plannedPct, mid, metricsX, labelWidth, lane } = item;
+    const color = tlPalette[i % tlPalette.length];
+    const pendingPct = Math.max(0, 100 - progressPct);
+    const planX = left + (width * plannedPct / 100);
     const status = String(m['Status'] || '').toLowerCase();
     const cls = status.includes('conclu') ? 'done' : status.includes('atraso') || status.includes('atrasad') ? 'late' : status.includes('andamento') ? 'active' : 'upcoming';
-    const lane = marcoLanes[i] || 0;
-    const laneTop = laneTops[i] || baseTop;
-    const sameEnd = endGroups.get(e.toFixed(1)) || [];
-    const sameIdx = sameEnd.indexOf(i);
-    let sideShift = 0;
-    if (sameEnd.length > 1) sideShift = (sameIdx - (sameEnd.length - 1) / 2) * 7;
-    mid = Math.max(4, Math.min(96, mid + sideShift));
-    if (viewIsQuinzenal && Math.abs(mid - todayPct) < 4) mid = Math.max(4, Math.min(96, mid + (mid <= todayPct ? -4 : 4)));
+    const laneTop = laneLineTops[lane];
     const labelAbove = laneTop - labelGap - labelH;
-    const labelBelow = laneTop + labelGap;
-    const hitsLabel = top => labelEnd.some(l => Math.abs(mid - l.mid) < 9 && Math.abs(top - l.labelTop) < 20);
-    let labelTop = !hitsLabel(labelAbove) ? labelAbove : labelBelow;
-    if (hitsLabel(labelTop)) labelTop = labelTop < laneTop ? labelTop - 20 : labelTop + 20;
-    labelTop = Math.max(2, Math.min(labelTop, axisHeight - labelH - 2));
-    labelEnd.push({ mid, labelTop });
-    const metricsX = Math.max(left, Math.min(right, left + (width * Math.max(progressPct, plannedPct) / 200)));
+    const labelTop = Math.max(2, labelAbove);
     const progressText = progressPct.toFixed(progressPct % 1 ? 1 : 0);
     const plannedText = plannedPct.toFixed(plannedPct % 1 ? 1 : 0);
     html += '<div class="tl-segment" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + left.toFixed(1) + '%;width:' + width.toFixed(1) + '%">' +
@@ -2664,7 +2734,7 @@ function updateTimelineV2(cron) {
       (e < 98.8 ? '<div class="tl-milestone ' + cls + '" style="top:' + laneTop.toFixed(1) + 'px;border-color:' + color + ';' + (cls === 'done' ? 'background:' + color + ';' : '') + 'left:' + e.toFixed(1) + '%"></div>' : '') +
       '<div class="tl-plan-marker" style="left:' + planX.toFixed(1) + '%;top:' + laneTop.toFixed(1) + 'px"></div>' +
       '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + metricsX.toFixed(1) + '%;top:' + (laneTop + 9).toFixed(1) + 'px">Plan ' + plannedText + '% | <span class="real">Real ' + progressText + '%</span></div>' +
-      '<div class="tl-seg-label" style="--tl-color:' + color + ';left:' + mid.toFixed(1) + '%;top:' + labelTop.toFixed(1) + 'px" title="' + String(m['Pacote'] || '-').replace(/"/g, '&quot;') + '">' + compact(m['Pacote']) + '</div>';
+      '<div class="tl-seg-label" style="--tl-color:' + color + ';left:' + mid.toFixed(1) + '%;top:' + labelTop.toFixed(1) + 'px;width:' + labelWidth + 'px" title="' + String(m['Pacote'] || '-').replace(/"/g, '&quot;') + '">' + compact(m['Pacote']) + '</div>';
   });
   tl.innerHTML = html;
 
@@ -2700,36 +2770,60 @@ function updateTimelineV2(cron) {
   const packagePanel = document.getElementById('tl-package-panel');
   if (packagePanel) {
     if (viewIsQuinzenal) {
-      const rows = activities.slice().sort((a,b) => a.start - b.start || a.eapNum - b.eapNum);
       const esc = v => String(v || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      const statusColor = status => {
+      const isDone = item => {
+        const status = normKey(item['Status'] || item.status);
+        const pct = item.pct != null ? item.pct : pctNumber(item['% Progresso']);
+        return status.includes('conclu') || status.includes('entreg') || pct >= 100;
+      };
+      const statusColor = (status, category) => {
         const s = normKey(status);
+        if (category === 'late' || s.includes('bloque') || s.includes('atras')) return '#d92d20';
         if (s.includes('conclu') || s.includes('entreg')) return '#78BE00';
         if (s.includes('andamento') || s.includes('execu') || s.includes('progresso')) return '#0075A9';
         return '#8797ad';
       };
-      const groupName = a => {
-        const p = a.eap ? String(a.eap).split('.').filter(Boolean) : [];
-        const first = p.length ? p[0] : 'Sem pacote';
-        const marco = marcos.find(m => String(m['Codigo EAP'] || '').split('.').filter(Boolean)[0] === first);
-        return marco ? String(marco['Pacote'] || 'Pacote ' + first) : 'Pacote ' + first;
+      const cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const categoryOf = m => {
+        if (m._end < cutoff) return 'late';
+        const status = normKey(m['Status']);
+        const progress = pctNumber(m['% Progresso']) || 0;
+        if (status.includes('andamento') || status.includes('execu') || status.includes('progresso') || status.includes('bloque') || progress > 0) return 'active';
+        return 'next';
       };
-      const groups = new Map();
-      rows.forEach(a => {
-        const key = groupName(a);
-        if (!groups.has(key)) groups.set(key, []);
-        groups.get(key).push(a);
-      });
-      packagePanel.innerHTML = rows.length ? Array.from(groups.entries()).map(([pkg, items]) => {
-        const color = marcoColorForActivity(items[0]);
-        const subtasks = items.map(a => {
-          const stColor = statusColor(a.status);
-          const due = a.start ? a.start.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) : '-';
-          const pct = a.pct == null ? '-' : (a.pct.toFixed(a.pct % 1 ? 1 : 0).replace('.', ',') + '%');
-          return '<div class="tl-subtask" title="' + esc(a.pacote) + '"><div class="tl-subtask-name">' + esc(a.pacote) + '</div><div class="tl-subtask-pct">' + pct + '</div><div class="tl-subtask-status" style="--tl-color:' + stColor + '">' + esc(a.status) + '</div><div class="tl-subtask-date">' + due + '</div></div>';
-        }).join('');
-        return '<div class="tl-package-group"><div class="tl-package-head"><i style="--tl-color:' + color + '"></i><div class="tl-package-name" title="' + esc(pkg) + '">' + esc(pkg) + '</div></div><div class="tl-subtask-head"><span>Entrega</span><span>%</span><span>Status</span><span>Venc.</span></div><div class="tl-subtask-list">' + subtasks + '</div></div>';
-      }).join('') : '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma subtask no recorte.</div>';
+      const programItems = allMarcos
+        .filter(m => !isDone(m))
+        .filter(m => m._end < cutoff || (m._end >= projStart && (m._begin || m._end) <= projEnd))
+        .map(m => ({ m, category:categoryOf(m) }));
+      const sections = [
+        { key:'late', label:'Atrasados' },
+        { key:'active', label:'Em andamento' },
+        { key:'next', label:'Próximos' }
+      ];
+      const renderItem = ({ m, category }) => {
+        const prefix = eapPrefix(m['Codigo EAP']);
+        const children = allActivities
+          .filter(a => prefix && eapPrefix(a.eap) === prefix && !isDone(a))
+          .sort((a,b) => a.start - b.start || a.eapNum - b.eapNum);
+        const status = String(m['Status'] || '-');
+        const color = statusColor(status, category);
+        const due = m._end ? m._end.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) : '-';
+        const pctValue = pctNumber(m['% Progresso']);
+        const pct = pctValue == null ? '-' : pctValue.toFixed(pctValue % 1 ? 1 : 0).replace('.', ',') + '%';
+        const childrenHtml = children.length ? '<div class="tl-program-children">' + children.map(a => {
+          const childDue = a.start.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+          const childPct = a.pct == null ? '-' : a.pct.toFixed(a.pct % 1 ? 1 : 0).replace('.', ',') + '%';
+          const childColor = statusColor(a.status, category);
+          return '<div class="tl-subtask" title="' + esc(a.pacote) + '"><div class="tl-subtask-name">' + esc(a.pacote) + '</div><div class="tl-subtask-pct">' + childPct + '</div><div class="tl-subtask-status" style="--tl-color:' + childColor + '" title="' + esc(a.status) + '">' + esc(a.status) + '</div><div class="tl-subtask-date">' + childDue + '</div></div>';
+        }).join('') + '</div>' : '';
+        return '<div class="tl-program-item"><div class="tl-program-main" title="' + esc(m['Pacote']) + '"><div class="tl-program-name">' + esc(m['Pacote']) + '</div><div class="tl-program-pct">' + pct + '</div><div class="tl-program-status" style="--tl-color:' + color + '" title="' + esc(status) + '">' + esc(status) + '</div><div class="tl-program-date">' + due + '</div></div>' + childrenHtml + '</div>';
+      };
+      const renderedSections = sections.map(section => {
+        const items = programItems.filter(item => item.category === section.key).sort((a,b) => a.m._end - b.m._end || getEapNum(a.m['Codigo EAP']) - getEapNum(b.m['Codigo EAP']));
+        if (!items.length) return '';
+        return '<div class="tl-program-section ' + section.key + '"><div class="tl-program-head"><span>' + section.label + '</span><b>' + items.length + '</b></div><div class="tl-program-cols"><span>Entrega</span><span>%</span><span>Status</span><span>Venc.</span></div>' + items.map(renderItem).join('') + '</div>';
+      }).join('');
+      packagePanel.innerHTML = renderedSections || '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega pendente no recorte.</div>';
     } else {
       packagePanel.innerHTML = '';
     }
