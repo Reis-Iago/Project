@@ -479,13 +479,14 @@
   /* ========== SUBHEADER ========== */
   .subheader{
     background:#fff;border-bottom:1px solid var(--line);
-    padding:12px 24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+    padding:12px 24px;display:flex;align-items:center;column-gap:clamp(10px,1.4vw,28px);row-gap:12px;flex-wrap:wrap;
   }
-  .sh-item{display:flex;flex-direction:column;gap:2px}
+  .sh-item{display:flex;flex-direction:column;gap:2px;flex:0 0 auto}
   .sh-label{font-size:10px;color:var(--ink-400);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
-  .sh-value{font-size:13px;font-weight:600;color:var(--ink-900)}
-  .sh-sep{width:1px;height:28px;background:var(--line)}
-  .sh-spacer{flex:1}
+  .sh-value{font-size:13px;font-weight:600;color:var(--ink-900);white-space:nowrap}
+  .sh-sep{width:1px;height:28px;background:var(--line);flex:0 0 1px}
+  .sh-spacer{flex:1 1 0;min-width:0}
+  .header-controls{display:flex;align-items:center;gap:10px;flex:0 0 auto;white-space:nowrap;margin-left:auto}
   .filter-btn{
     display:inline-flex;align-items:center;gap:8px;
     background:var(--blue-50);color:var(--blue-800);
@@ -517,7 +518,7 @@
   body.view-quinzenal .main{grid-template-columns:minmax(0,3fr) minmax(360px,2fr) !important}
   body.view-quinzenal .content{
     grid-template-columns:1fr !important;
-    grid-template-areas:'moment' 'tl' !important;
+    grid-template-areas:'moment' 'conc' 'tl' !important;
   }
   .moment-card{display:none;min-width:0}
   body.view-quinzenal .moment-card{display:block}
@@ -574,6 +575,7 @@
   .mini-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;flex:0 0 7px;}
   .list-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:0 0 7px;box-sizing:border-box;align-self:center;}
   .list-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);min-width:0;}
+  #delivery-list .list-row,#nextp-list .list-row,#risk-list .list-row,#support-list .list-row{border-bottom:0}
 
   /* ---- KPI ROW ---- */
   .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -584,6 +586,7 @@
   .kpi::before{
     content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--blue-700);
   }
+  .progress-card::before,#card-fy::before,#card-ytd::before{display:none}
   .kpi.ok::before{background:var(--g)}
   .kpi.warn::before{background:var(--a)}
   .kpi.bad::before{background:var(--r)}
@@ -628,15 +631,31 @@
     display:flex;justify-content:space-between;margin-top:6px;
     font-size:10px;color:var(--ink-500);font-weight:500;
   }
+  .prog-summary{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:2px}
+  .prog-value-group{display:flex;align-items:baseline;gap:9px;min-width:0}
+  .prog-compare{font-size:11px;color:var(--ink-400);font-weight:500;white-space:nowrap}
+  .prog-status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap}
+  .prog-status-pill svg{width:13px;height:13px;flex:0 0 auto}
+  .prog-status-pill.late{color:#FF9E18;background:#fff7e8;border:1px solid #ffe0ad}
+  .prog-status-pill.ahead{color:#78BE00;background:#f2f9e7;border:1px solid #d9edb5}
+  .prog-status-pill.ontime{color:#005F96;background:#eaf6fb;border:1px solid #cce8f3}
+  .prog-visual{position:relative;height:42px;margin-top:8px;font-size:10.5px;color:var(--ink-500);overflow:visible}
+  .prog-track{position:absolute;left:0;right:0;bottom:0;height:12px;background:#eef2f7;border-radius:6px;overflow:visible}
+  .prog-gap{display:none;position:absolute;top:0;height:100%;background:repeating-linear-gradient(135deg,rgba(255,158,24,.42) 0 4px,rgba(255,158,24,.12) 4px 8px)}
+  .prog-meta{position:absolute;top:0;color:#000;font-weight:700;font-size:11.5px;white-space:nowrap;padding:2px 5px;border:1px solid #d7e0eb;border-radius:3px;background:#fff;line-height:16px}
 
   /* ---- MID GRID ---- */
   .mid-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:14px}
 
   /* Line chart */
   .chart-wrap{height:240px;width:100%;position:relative}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--ink-700);font-weight:500}
-  .legend span{display:inline-flex;align-items:center;gap:5px}
-  .legend i{width:14px;height:2px;display:inline-block;border-radius:1px}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--ink-700);font-weight:600}
+  .legend span{display:inline-flex;align-items:center;gap:7px;padding:4px 7px;border:1px solid #e3eaf1;border-radius:6px;background:#f8fafc}
+  .legend i{position:relative;width:24px;height:9px;display:inline-block;border:1px solid #d8e3ec;border-radius:5px;background:#fff!important;box-sizing:border-box}
+  .legend i::before{content:"";position:absolute;left:3px;right:3px;top:3px;height:2px;border-radius:2px;background:var(--legend-color,#64748b)}
+  .legend i::after{content:"";position:absolute;left:10px;top:1px;width:5px;height:5px;border:1px solid var(--legend-color,#64748b);border-radius:50%;background:#fff;box-sizing:border-box}
+  .legend-real{--legend-color:#16a34a}
+  .legend-bp{--legend-color:#0075A9}
   .legend i.dashed{height:0;border-top:2px dashed currentColor}
 
   /* Donut */
@@ -691,13 +710,16 @@
   }
   .tl-card-body{display:block}
   .tl-package-panel{display:none}
-  body.view-quinzenal .tl-card-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:stretch}
+  body.view-quinzenal .tl-card-body{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:stretch}
   body.view-quinzenal .content > [style*="grid-area:tl"] > .card{min-height:0}
-  body.view-quinzenal .tl-package-panel{display:block;border-left:1px solid var(--line);padding-left:14px;padding-right:8px;min-width:0;overflow:visible}
+  body.view-quinzenal .tl-package-panel{display:block;border-left:1px solid #e8edf3;padding-left:16px;padding-right:8px;min-width:0;overflow:visible}
   body.view-quinzenal .tl{overflow:hidden;padding-top:0}
   .tl-quarter-scale{display:none}
-  body.view-quinzenal .tl-quarter-scale{display:block;margin:0 16px 14px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#f8fafc}
-  .tl-quarter-row{display:grid;background:#f3f6fa;border-bottom:1px solid var(--line)}
+  body.view-quinzenal .tl-quarter-scale{display:block;margin:0 16px 14px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#fff}
+  body:not(.view-quinzenal) .tl-quarter-scale{display:block;margin:0 8px 12px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#fff}
+  body:not(.view-quinzenal) .tl-axis{margin:12px 8px 8px}
+  body:not(.view-quinzenal) .tl-months-bar{display:none}
+  .tl-quarter-row{display:grid;background:#fff;border-bottom:1px solid var(--line)}
   .tl-quarter-cell{text-align:center;font-size:10px;font-weight:800;color:#003b5c;padding:6px 4px;border-right:1px solid var(--line)}
   .tl-quarter-cell:last-child{border-right:0}
   .tl-qmonth-row{display:grid}
@@ -709,21 +731,27 @@
   .tl-package-title{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin-bottom:7px}
   .tl-package-list{display:flex;flex-direction:column;gap:7px;max-height:none;overflow:visible}
   body.view-quinzenal .tl-package-list{max-height:398px;overflow-y:auto;overflow-x:hidden;padding-right:4px;scrollbar-width:thin}
-  .tl-program-section{border:1px solid var(--line);border-radius:5px;overflow:hidden;background:#fff;flex:0 0 auto}
+  .tl-program-section{border:1px solid #e3e9f0;border-radius:7px;overflow:hidden;background:#fff;flex:0 0 auto;box-shadow:0 1px 2px rgba(16,42,67,.04)}
   .tl-program-head{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  .tl-program-head span{display:flex;align-items:center;gap:5px}
+  .tl-program-head svg{width:12px;height:12px;flex:0 0 auto}
   .tl-program-head b{min-width:18px;padding:1px 5px;border-radius:9px;text-align:center;font-size:9px;background:#fff}
   .tl-program-section.late .tl-program-head{color:#b42318;background:#fff0ee}
   .tl-program-section.active .tl-program-head{color:#00558c;background:#eaf6fb}
   .tl-program-section.next .tl-program-head{color:#52647a;background:#f3f6fa}
-  .tl-program-cols,.tl-program-main{display:grid;grid-template-columns:minmax(0,1fr) 34px 72px 42px;gap:5px;align-items:start}
+  .tl-program-cols,.tl-program-main{display:grid;grid-template-columns:minmax(0,1fr) 62px 82px 42px;gap:6px;align-items:center}
   .tl-program-cols{padding:4px 7px 2px;font-size:8px;font-weight:800;color:var(--ink-400);text-transform:uppercase;letter-spacing:.03em}
   .tl-program-cols span:not(:first-child){text-align:right}
-  .tl-program-item{padding:5px 7px;border-top:1px solid #e6edf4}
+  .tl-program-item{padding:6px 7px}
   .tl-program-name{min-width:0;font-size:10px;line-height:1.25;font-weight:800;color:var(--ink-900);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
   .tl-program-pct,.tl-program-status,.tl-program-date{font-size:9px;line-height:1.25;font-weight:700;text-align:right}
   .tl-program-pct,.tl-program-date{color:var(--ink-500)}
   .tl-program-pct,.tl-program-date{white-space:nowrap}
-  .tl-program-status{color:var(--tl-color,var(--ink-500));white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  .tl-program-status{color:var(--tl-color,var(--ink-500));white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;display:flex;align-items:flex-start;justify-content:flex-end;gap:3px}
+  .tl-program-status svg{width:11px;height:11px;flex:0 0 auto;margin-top:1px}
+  .tl-program-progress{display:flex;align-items:center;justify-content:flex-end;gap:4px;white-space:nowrap}
+  .tl-program-progress-track{width:27px;height:5px;border-radius:4px;background:#edf1f5;overflow:hidden;flex:0 0 auto}
+  .tl-program-progress-fill{display:block;height:100%;border-radius:4px;background:var(--tl-color,#8797ad)}
   .tl-program-status,.tl-subtask-status{text-align:right;justify-self:stretch;direction:ltr}
   .tl-program-children{margin:4px 0 0 9px;border-left:1px solid #d7e0eb;padding-left:8px;display:flex;flex-direction:column;gap:2px}
   .tl-package-group{border-bottom:1px solid var(--line);padding:4px 0 6px}
@@ -732,12 +760,33 @@
   .tl-package-name{font-size:10.5px;font-weight:800;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tl-subtask-head{display:grid;grid-template-columns:minmax(0,1fr) 34px 72px 42px;gap:5px;margin:5px 0 0 16px;padding-left:9px;font-size:8.5px;font-weight:800;color:var(--ink-400);text-transform:uppercase;letter-spacing:.04em}
   .tl-subtask-list{margin:3px 0 0 16px;border-left:1px solid #d7e0eb;padding-left:9px;display:flex;flex-direction:column;gap:2px}
-  .tl-subtask{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 34px 72px 42px;gap:5px;align-items:start;min-width:0}
+  .tl-subtask{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 62px 82px 42px;gap:6px;align-items:center;min-width:0}
   .tl-subtask::before{content:"";position:absolute;left:-9px;top:8px;width:6px;border-top:1px solid #d7e0eb}
   .tl-subtask-name{font-size:10px;line-height:1.25;font-weight:600;color:var(--ink-700);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
   .tl-subtask-status{font-size:9px;line-height:1.25;font-weight:700;color:var(--tl-color,var(--ink-400));white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  .tl-subtask-status{display:flex;align-items:flex-start;justify-content:flex-end;gap:3px}
+  .tl-subtask-status svg{width:11px;height:11px;flex:0 0 auto;margin-top:1px}
   .tl-subtask-pct{font-size:9px;font-weight:700;color:var(--ink-500);white-space:nowrap;text-align:right}
   .tl-subtask-date{font-size:9px;font-weight:700;color:var(--ink-500);white-space:nowrap;text-align:right}
+  .tl-status-legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .tl-status-legend-dot.done{background:#12a978}
+  .tl-status-legend-dot.ontime{background:#2f80ed}
+  .tl-status-legend-dot.alert{background:#e5484d}
+  .tl-status-legend-dot.future{background:#c7cfd9}
+  body.view-quinzenal .tl-axis{position:relative;margin:0 16px 8px;background:transparent;border-radius:0}
+  .tl-gantt-grid{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .tl-gantt-grid-line{position:absolute;top:0;bottom:0;width:0;border-left:1px dashed #dfe6ee}
+  .tl-gantt-row{position:absolute;left:0;right:0;height:48px;z-index:2}
+  .tl-gantt-name{position:absolute;top:0;font-size:10.5px;line-height:1.2;font-weight:650;color:var(--ink-800);max-width:none;white-space:nowrap}
+  .tl-gantt-name.align-right{transform:translateX(-100%);text-align:right}
+  .tl-gantt-bar{position:absolute;top:18px;height:14px;border:1px solid #dbe2ea;border-radius:7px;background:#edf1f5;overflow:hidden;box-sizing:border-box}
+  .tl-gantt-fill{display:block;height:100%;border-radius:6px;background:var(--tl-color)}
+  .tl-gantt-meta{position:absolute;top:17px;transform:translateX(6px);font-size:9px;line-height:14px;font-weight:750;color:var(--tl-color);white-space:nowrap}
+  .tl-gantt-meta.align-right{transform:translateX(calc(-100% - 6px));text-align:right}
+  .tl-gantt-row.done{--tl-color:#12a978}
+  .tl-gantt-row.ontime{--tl-color:#2f80ed}
+  .tl-gantt-row.alert{--tl-color:#e5484d}
+  .tl-gantt-row.future{--tl-color:#aeb8c5}
   .tl-axis{position:relative;height:4px;background:transparent;border-radius:2px;margin:18px 8px 28px}
   .tl-progress{position:absolute;left:0;top:0;bottom:0;background:var(--blue-700);border-radius:2px;z-index:0}
   .tl-today{
@@ -758,12 +807,23 @@
   .tl-milestone.late{border-color:var(--r);background:var(--r)}
   .tl-milestone.upcoming{border-color:var(--ink-400);background:#fff}
   .tl-segment{position:absolute;height:3px;transform:translateY(-50%);border-radius:3px;z-index:1;background:#dbe7f2}
+  body:not(.view-quinzenal) .tl-segment{background:transparent}
+  body:not(.view-quinzenal) .tl-milestone{width:11px;height:11px;border-width:2px}
   .tl-seg-done{position:absolute;left:0;top:0;bottom:0;background:var(--tl-color,var(--blue-700));border-radius:3px}
   .tl-seg-pending{position:absolute;top:0;bottom:0;border-top:1.5px dashed var(--tl-color,var(--blue-700));transform:translateY(1px);opacity:.68}
+  .tl-month-grid{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .tl-month-grid-line{position:absolute;top:0;bottom:0;width:0;border-left:1px solid #e7edf3}
+  .tl-subtask-stem{position:absolute;width:0;border-left:1px dashed var(--tl-color,var(--blue-700));opacity:.55;z-index:2}
+  .tl-subtask-tree-branch{position:absolute;width:12px;height:0;border-top:1px solid var(--tl-color,var(--blue-700));opacity:.65;z-index:3}
+  .tl-subtask-tree-dot{position:absolute;width:5px;height:5px;border-radius:50%;transform:translate(-50%,-50%);background:var(--tl-color,var(--blue-700));box-shadow:0 0 0 1px #fff;z-index:5}
+  .tl-subtask-tree-name{position:absolute;max-width:160px;padding:0 3px;background:#fff;color:var(--ink-900);font-size:8px;line-height:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:6}
+  .tl-subtask-tree-name.left{transform:translateX(-100%);text-align:right}
+  .tl-subtask-count{display:inline-flex;align-items:center;justify-content:center;min-width:13px;height:13px;margin-left:4px;padding:0 3px;border-radius:7px;background:rgba(255,255,255,.22);font-size:8px;line-height:1;font-weight:800;vertical-align:1px}
+  .tl-subtask-more{position:absolute;width:17px;height:11px;border-radius:6px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--tl-color,var(--blue-700));color:var(--tl-color,var(--blue-700));font-size:10px;line-height:9px;font-weight:800;z-index:7;box-shadow:0 0 0 1px #fff}
   .tl-start-diamond{position:absolute;transform:translate(-50%,-50%) rotate(45deg);width:10px;height:10px;background:#fff;border:2px solid var(--tl-color,var(--blue-700));box-shadow:0 0 0 2px #fff;z-index:4;box-sizing:border-box}
   .tl-seg-label{position:absolute;transform:translateX(-50%);text-align:center;max-width:240px;padding:2px 6px;border-radius:5px;background:var(--tl-color,var(--blue-700));border:1px solid var(--tl-color,var(--blue-700));font-size:10px;line-height:12px;color:#fff;font-weight:700;z-index:5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 2px rgba(15,23,42,.14);box-sizing:border-box}
   .tl-seg-label.shift::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;background:var(--ink-400)}
-  .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:10px;line-height:12px;font-weight:800;color:var(--ink-900);white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
+  .tl-progress-label{position:absolute;transform:translateX(-50%);font-size:10px;line-height:12px;font-weight:800;color:var(--tl-color,var(--blue-700));white-space:nowrap;z-index:5;background:#fff;padding:0 3px;border-radius:3px}
   .tl-progress-label .real{color:var(--tl-color,var(--blue-700))}
   .tl-plan-marker{position:absolute;width:2px;height:16px;background:var(--ink-900);transform:translate(-50%,-50%);z-index:6;border-radius:2px}
   .tl-label{
@@ -933,14 +993,16 @@
     <div class="sh-item"><span class="sh-label">Business Plan</span><span class="sh-value" id="sh-bp-tipo">-</span></div>
     <div class="health-strip-anchor" id="health-strip-anchor"></div>
     <div class="sh-spacer"></div>
-    <button class="filter-btn" id="filter-btn" onclick="openFilter()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"></polygon></svg>
-      <span id="filter-label">Todos os meses</span>
-    </button>
-    <div class="view-mode-group" role="tablist" aria-label="Visão do relatório">
-      <span class="view-mode-label">Visão</span>
-      <button class="view-tab active" type="button" data-view="mensal" aria-selected="true" onclick="setDashboardView('mensal')">Mensal</button>
-      <button class="view-tab" type="button" data-view="quinzenal" aria-selected="false" onclick="setDashboardView('quinzenal')">Quinzenal</button>
+    <div class="header-controls">
+      <button class="filter-btn" id="filter-btn" onclick="openFilter()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"></polygon></svg>
+        <span id="filter-label">Todos os meses</span>
+      </button>
+      <div class="view-mode-group" role="tablist" aria-label="Visão do relatório">
+        <span class="view-mode-label">Visão</span>
+        <button class="view-tab active" type="button" data-view="mensal" aria-selected="true" onclick="setDashboardView('mensal')">Mensal</button>
+        <button class="view-tab" type="button" data-view="quinzenal" aria-selected="false" onclick="setDashboardView('quinzenal')">Quinzenal</button>
+      </div>
     </div>
   </div>
 
@@ -961,7 +1023,7 @@
 
       <!-- OBJETIVO -->
       <div class="card" style="grid-area:obj;overflow:hidden;">
-        <div class="card-title" style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin-bottom:8px;">Objetivo do Projeto</div>
+        <div class="card-title" style="margin-bottom:8px;">Objetivo do Projeto</div>
         <div id="obj-text" style="font-size:11px;color:var(--ink-700);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;">—</div>
       </div>
 
@@ -970,16 +1032,20 @@
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="kpi-label" style="font-size:11px;">Conclusão do Projeto</div>
         </div>
-        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
-          <div id="prog-val" style="font-size:38px;font-weight:800;color:#1a2740;line-height:1;">—<span style="font-size:24px;">%</span></div>
-          <div id="prog-atraso" style="font-size:12px;color:var(--ink-500);font-weight:500;">—</div>
+        <div class="prog-summary">
+          <div class="prog-value-group">
+            <div id="prog-val" style="font-size:38px;font-weight:800;color:#1a2740;line-height:1;">—<span style="font-size:24px;">%</span></div>
+            <div id="prog-compare" class="prog-compare">vs. —% planejado</div>
+          </div>
+          <div id="prog-atraso">—</div>
         </div>
-        <div style="position:relative;height:12px;background:#eef2f7;border-radius:6px;overflow:visible;">
-          <div id="prog-fill" style="position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#00B8B0,#78BE00);border-radius:6px;transition:width .3s;"></div>
-          <div id="prog-marker" style="position:absolute;top:-4px;left:0%;width:3px;height:20px;background:#0f172a;border-radius:1px;transition:left .3s;" title="Planejado"></div>
-        </div>
-        <div id="prog-plan-wrap" style="position:relative;height:18px;margin-top:8px;font-size:10.5px;color:var(--ink-500);overflow:visible;">
-          <span id="prog-plan" style="position:absolute;left:0;top:0;color:#000;font-weight:700;font-size:11.5px;white-space:nowrap;">Plan. ?%</span>
+        <div id="prog-plan-wrap" class="prog-visual">
+          <span id="prog-plan" class="prog-meta">Meta: —%</span>
+          <div class="prog-track">
+            <div id="prog-fill" style="position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#00B8B0,#78BE00);border-radius:6px;transition:width .3s;"></div>
+            <div id="prog-gap" class="prog-gap"></div>
+            <div id="prog-marker" style="position:absolute;top:-8px;left:0%;width:3px;height:20px;background:#0f172a;border-radius:1px;transition:left .3s;" title="Planejado"></div>
+          </div>
         </div>
       </div>
 
@@ -1005,7 +1071,7 @@
       <!-- MOMENTO ATUAL (quinzenal) -->
       <div class="moment-card" style="grid-area:moment;">
         <div class="card">
-          <div class="card-title" style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin-bottom:7px;">Momento Atual</div>
+          <div class="card-title" style="margin-bottom:7px;">Momento Atual</div>
           <div id="moment-text" class="moment-text">—</div>
         </div>
       </div>
@@ -1058,11 +1124,11 @@
         <div class="card-head">
           <div>
             <div class="card-title" id="chart-title">Consumo Financeiro</div>
-            <div class="card-sub" id="chart-sub">BP vs. Realizado Mensal · R$</div>
+            <div class="card-sub" id="chart-sub">Registro comparativo mensal BP x Realizado + Forecast</div>
           </div>
           <div class="legend">
-            <span><i style="background:#16a34a"></i>Realizado + Forecast</span>
-            <span><i style="background:#0075A9"></i>BP</span>
+            <span class="legend-real"><i></i>Realizado + Forecast</span>
+            <span class="legend-bp"><i></i>BP</span>
           </div>
         </div>
         <div class="chart-wrap" style="height:340px;">
@@ -1268,6 +1334,7 @@ function syncSidebarHeights() {
     team.style.minHeight = '';
     const moment = content.querySelector('.moment-card');
     const momentCard = moment ? moment.querySelector('.card') : null;
+    const conclusion = Array.from(content.children).find(el => (el.style.gridArea || '').trim() === 'conc');
     const timeline = Array.from(content.children).find(el => (el.style.gridArea || '').trim() === 'tl');
     const timelineCard = timeline ? timeline.querySelector('.card') : null;
     const side = document.querySelector('.rsidebar');
@@ -1296,8 +1363,8 @@ function syncSidebarHeights() {
       timelineCard.style.height = '';
       const timelineH = Math.ceil(timelineCard.getBoundingClientRect().height);
       const gap = 12;
-      const momentH = moment && moment.style.display !== 'none' ? Math.ceil(moment.getBoundingClientRect().height) : 0;
-      const contentLeadH = momentH ? momentH + gap : 0;
+      const leadItems = [moment, conclusion].filter(el => el && el.style.display !== 'none');
+      const contentLeadH = leadItems.reduce((sum, el) => sum + Math.ceil(el.getBoundingClientRect().height), 0) + gap * leadItems.length;
       const contentNaturalH = contentLeadH + timelineH;
       const natural = sideCards.map(el => Math.ceil((el.querySelector('.card') || el).getBoundingClientRect().height));
       const sideNatural = natural.reduce((a,b) => a + b, 0) + gap * Math.max(0, sideCards.length - 1);
@@ -1587,10 +1654,13 @@ function renderEmptyDashboard() {
   set('obj-text', '—');
   setHtml('prog-val', '—<span style="font-size:24px;">%</span>');
   set('prog-atraso', '—');
-  set('prog-plan', 'Plan. ?%');
+  set('prog-compare', 'vs. —% planejado');
+  set('prog-plan', 'Meta: —%');
   const progFill = document.getElementById('prog-fill');
+  const progGap = document.getElementById('prog-gap');
   const progMarker = document.getElementById('prog-marker');
   if (progFill) progFill.style.width = '0%';
+  if (progGap) progGap.style.display = 'none';
   if (progMarker) progMarker.style.left = '0%';
   set('rag-global', '—');
   set('rag-cron', '—');
@@ -1608,7 +1678,7 @@ function renderEmptyDashboard() {
   set('ytd-pv', '—');
   setHtml('ytd-ac', '');
   set('ytd-badge', '—');
-  set('chart-sub', 'Valores mensais em R$ - —');
+  set('chart-sub', 'Registro comparativo mensal BP x Realizado + Forecast');
   const chart = document.getElementById('lineChart');
   if (chart) chart.innerHTML = '';
   setHtml('tl-axis', '<div class="tl-progress" id="tl-progress" style="width:0%"></div><div class="tl-today" id="tl-today" style="left:0%"></div>');
@@ -1761,7 +1831,7 @@ function applyDashboardViewLayout() {
         el.style.display = isQuinzenal ? '' : 'none';
         return;
       }
-      el.style.display = isQuinzenal && ['obj', 'conc', 'fy', 'ytd', 'chart'].includes(area) ? 'none' : '';
+      el.style.display = isQuinzenal && ['obj', 'fy', 'ytd', 'chart'].includes(area) ? 'none' : '';
     });
   }
   const team = document.querySelector('.team-top');
@@ -2105,15 +2175,23 @@ function updateCronograma(cron) {
   // SPI = Real / Planejado (cutoff-aware)
   const spiCutoff = avgPlan > 0 ? avgReal / avgPlan : (avgReal > 0 ? 999 : 0);
   set('prog-real', 'Real ' + progPct + '%');
-  set('prog-plan', 'Plan. ' + pvProgClamped + '%');
+  set('prog-compare', 'vs. ' + pvProgClamped + '% planejado');
+  set('prog-plan', 'Meta: ' + pvProgClamped + '%');
   const fill = document.getElementById('prog-fill');
   if (fill) fill.style.width = progPct + '%';
+  const gap = document.getElementById('prog-gap');
+  if (gap) {
+    const gapWidth = Math.max(0, pvProgClamped - progPct);
+    gap.style.left = Math.min(100, progPct) + '%';
+    gap.style.width = gapWidth + '%';
+    gap.style.display = gapWidth > 0 ? 'block' : 'none';
+  }
   const marker = document.getElementById('prog-marker');
   if (marker) { marker.style.left = 'calc(' + pvProgClamped + '% - 1.5px)'; marker.title = 'Planejado ' + pvProgClamped + '%'; }
   const planEl = document.getElementById('prog-plan');
   const planWrap = document.getElementById('prog-plan-wrap');
   if (planEl && planWrap) {
-    planEl.textContent = 'Plan. ' + pvProgClamped + '%';
+    planEl.textContent = 'Meta: ' + pvProgClamped + '%';
     const wrapW = planWrap.clientWidth || 0;
     const labelW = planEl.offsetWidth || 0;
     const markerX = wrapW * (pvProgClamped / 100);
@@ -2145,9 +2223,9 @@ function updateCronograma(cron) {
 
   const atrasoEl = document.getElementById('prog-atraso');
   if (atrasoEl) {
-    if (atrasoDias > 0) atrasoEl.innerHTML = '<span style="color:#FF9E18;font-weight:600;">▼ ' + atrasoDias + ' dias atraso</span>';
-    else if (progPct > pvProgClamped) atrasoEl.innerHTML = '<span style="color:#78BE00;font-weight:600;">▲ Adiantado</span>';
-    else atrasoEl.innerHTML = '<span style="color:#005F96;font-weight:600;">No prazo</span>';
+    if (atrasoDias > 0) atrasoEl.innerHTML = '<span class="prog-status-pill late"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 14 13H2L8 2Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 5.4v3.7m0 1.8v.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' + atrasoDias + ' dias de atraso</span>';
+    else if (progPct > pvProgClamped) atrasoEl.innerHTML = '<span class="prog-status-pill ahead">▲ Adiantado</span>';
+    else atrasoEl.innerHTML = '<span class="prog-status-pill ontime">No prazo</span>';
   }
 
   const spiRows = cron.filter(r => r['SPI '] != null && isFinite(r['SPI ']) && r['SPI '] > 0 && r['SPI '] < 10);
@@ -2523,24 +2601,20 @@ function updateTimelineV1(cron) {
   phasesEl.style.gridTemplateColumns = 'repeat(' + timelineMonths.length + ', 1fr)';
   const quarterEl = document.getElementById('tl-quarter-scale');
   if (quarterEl) {
-    if (viewIsQuinzenal) {
-      const groups = [];
-      timelineMonths.forEach(m => {
-        const q = Math.floor(m.monthIdx / 3) + 1;
-        const key = q + '-' + m.year;
-        const last = groups[groups.length - 1];
-        if (last && last.key === key) last.count += 1;
-        else groups.push({ key, label: 'T' + q + ' ' + m.year, count: 1 });
-      });
-      quarterEl.innerHTML =
-        '<div class="tl-quarter-row" style="grid-template-columns:' + groups.map(g => g.count + 'fr').join(' ') + '">' +
-        groups.map(g => '<div class="tl-quarter-cell">' + g.label + '</div>').join('') +
-        '</div><div class="tl-qmonth-row" style="grid-template-columns:repeat(' + timelineMonths.length + ',1fr)">' +
-        timelineMonths.map(m => '<div class="tl-qmonth-cell">' + monthsAbbr[m.monthIdx] + '</div>').join('') +
-        '</div>';
-    } else {
-      quarterEl.innerHTML = '';
-    }
+    const groups = [];
+    timelineMonths.forEach(m => {
+      const q = Math.floor(m.monthIdx / 3) + 1;
+      const key = q + '-' + m.year;
+      const last = groups[groups.length - 1];
+      if (last && last.key === key) last.count += 1;
+      else groups.push({ key, label: 'T' + q + ' ' + m.year, count: 1 });
+    });
+    quarterEl.innerHTML =
+      '<div class="tl-quarter-row" style="grid-template-columns:' + groups.map(g => g.count + 'fr').join(' ') + '">' +
+      groups.map(g => '<div class="tl-quarter-cell">' + g.label + '</div>').join('') +
+      '</div><div class="tl-qmonth-row" style="grid-template-columns:repeat(' + timelineMonths.length + ',1fr)">' +
+      timelineMonths.map(m => '<div class="tl-qmonth-cell">' + monthsAbbr[m.monthIdx] + '</div>').join('') +
+      '</div>';
   }
   phasesEl.innerHTML = timelineMonths.map(m => {
     const acts = activitiesForMonth(m);
@@ -2550,7 +2624,7 @@ function updateTimelineV1(cron) {
       const color = marcoColorForActivity(a);
       return '<div class="tl-activity" style="background:' + color + '" title="' + title + '">' + txt + '</div>';
     }).join('');
-    return '<div class="tl-month-col"><div class="tl-month-label">' + m.label + '</div><div class="tl-month-year">' + m.year + '</div><div class="tl-month-activities">' + actsHtml + '</div></div>';
+    return '<div class="tl-month-col"><div class="tl-month-activities">' + actsHtml + '</div></div>';
   }).join('');
 
   const tlSub = document.querySelector('[style*="grid-area:tl"] .card-sub');
@@ -2648,7 +2722,7 @@ function updateTimelineV2(cron) {
     });
 
   const allActivities = cron
-    .filter(r => { const m = normKey(r['Milestone']); return m !== 'marco' && m !== 'refinar'; })
+    .filter(r => normKey(r['Milestone']) === 'tarefa')
     .filter(r => r['Pacote'])
     .map(r => ({ pacote:String(r['Pacote'] || ''), status:String(r['Status'] || r['Status da Atividade'] || r['Status do Pacote'] || '-'), pct:pctNumber(r['% Progresso']), eap:r['Codigo EAP'] != null ? String(r['Codigo EAP']) : '', eapNum:getEapNum(r['Codigo EAP']), begin:readFirstDate(r, [['Data de Inicio'], ['Data Inicio'], ['Inicio']]), start:readFirstDate(r, [['Data de Vencimento'], ['Data Fim Planejada Projetada'], ['Data Fim Real'], ['Data de Inicio']]) }))
     .filter(r => r.start);
@@ -2662,13 +2736,77 @@ function updateTimelineV2(cron) {
   if (today >= projStart && today <= projEnd) todayPct = ((today - projStart) / totalMs) * 100;
   else if (today > projEnd) todayPct = 100;
 
+  const timelineLegend = document.querySelector('[style*="grid-area:tl"] .tl-legend');
+  if (timelineLegend) {
+    timelineLegend.innerHTML = viewIsQuinzenal
+      ? '<span class="tl-legend-item"><i class="tl-status-legend-dot done"></i>Concluído</span><span class="tl-legend-item"><i class="tl-status-legend-dot ontime"></i>No prazo</span><span class="tl-legend-item"><i class="tl-status-legend-dot alert"></i>Atraso / Atenção</span><span class="tl-legend-item"><i class="tl-status-legend-dot future"></i>Futuro</span><span class="tl-legend-item"><i class="tl-legend-today"></i>Hoje</span>'
+      : '<span class="tl-legend-item"><i class="tl-legend-start"></i>Inicio do marco</span><span class="tl-legend-item"><i class="tl-legend-dot"></i>Marco em andamento</span><span class="tl-legend-item"><i class="tl-legend-dot done"></i>Marco entregue</span><span class="tl-legend-item"><i class="tl-legend-today"></i>Hoje</span>';
+  }
+
+  if (viewIsQuinzenal) {
+    const escTl = v => String(v || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const ganttItems = marcos.slice().sort((a,b) => (a._begin || a._end) - (b._begin || b._end) || a._end - b._end);
+    const ganttStatus = m => {
+      const status = normKey(m['Status']);
+      const pct = Math.round(marcoPct(m) * 1000) / 10;
+      if (status.includes('conclu') || status.includes('entreg') || pct >= 100) return 'done';
+      if (status.includes('bloque') || status.includes('atras') || m._end < today) return 'alert';
+      if (status.includes('andamento') || status.includes('execu') || status.includes('progresso') || pct > 0) return 'ontime';
+      return 'future';
+    };
+    const rowPitch = 50;
+    const topPad = 12;
+    const axisHeight = Math.max(210, topPad + ganttItems.length * rowPitch + 12);
+    tl.style.height = axisHeight + 'px';
+    let gridHtml = '<div class="tl-gantt-grid">';
+    for (let i = 1; i < timelineMonths.length; i++) gridHtml += '<i class="tl-gantt-grid-line" style="left:' + (i * 100 / timelineMonths.length).toFixed(2) + '%"></i>';
+    gridHtml += '</div>';
+    let html = gridHtml + '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
+    ganttItems.forEach((m, i) => {
+      const begin = pctDate(m._begin || m._end);
+      const end = pctDate(m._end || m._begin);
+      if (begin == null || end == null) return;
+      const left = Math.max(0, Math.min(begin, end));
+      const right = Math.min(100, Math.max(begin, end));
+      const barLeft = Math.min(95, left);
+      const width = Math.min(100 - barLeft, Math.max(5, right - left));
+      const progress = Math.max(0, Math.min(100, Math.round(marcoPct(m) * 1000) / 10));
+      const planned = Math.max(0, Math.min(100, Math.round(planPct(m) * 1000) / 10));
+      const statusClass = ganttStatus(m);
+      const packageIndex = Math.max(0, allMarcos.indexOf(m));
+      const packageColor = tlPalette[packageIndex % tlPalette.length];
+      const alignRight = barLeft > 73;
+      const labelLeft = alignRight ? Math.min(99, barLeft + width) : barLeft;
+      const metaPoint = barLeft + width;
+      const metaAlignRight = metaPoint > 84;
+      const progressText = progress.toFixed(progress % 1 ? 1 : 0).replace('.', ',');
+      const plannedText = planned.toFixed(planned % 1 ? 1 : 0).replace('.', ',');
+      html += '<div class="tl-gantt-row ' + statusClass + '" style="--tl-color:' + packageColor + ';top:' + (topPad + i * rowPitch) + 'px">' +
+        '<div class="tl-gantt-name' + (alignRight ? ' align-right' : '') + '" style="left:' + labelLeft.toFixed(1) + '%" title="' + escTl(m['Pacote']) + '">' + escTl(m['Pacote']) + '</div>' +
+        '<div class="tl-gantt-bar" style="left:' + barLeft.toFixed(1) + '%;width:' + width.toFixed(1) + '%"><span class="tl-gantt-fill" style="width:' + progress.toFixed(1) + '%"></span></div>' +
+        '<div class="tl-gantt-meta' + (metaAlignRight ? ' align-right' : '') + '" style="left:' + metaPoint.toFixed(1) + '%">Real ' + progressText + '% · Plan ' + plannedText + '%</div>' +
+        '</div>';
+    });
+    tl.innerHTML = html;
+  } else {
   const compact = nome => String(nome || '-').trim();
+  const monthlyEapParts = eap => String(eap == null ? '' : eap).replace(',', '.').split('.').map(part => part.trim()).filter(Boolean);
+  const monthlyEscape = value => String(value || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const monthlySubtasks = marco => {
+    const parent = monthlyEapParts(marco['Codigo EAP']);
+    if (!parent.length) return [];
+    return allActivities
+      .filter(activity => {
+        const child = monthlyEapParts(activity.eap);
+        return child.length === parent.length + 1 && parent.every((part, index) => child[index] === part);
+      })
+      .sort((a,b) => a.start - b.start || a.eapNum - b.eapNum);
+  };
   const labelH = 18;
   const labelGap = 8;
   const laneCount = 6;
   const laneFirstTop = 30;
   const laneStep = 54;
-  const laneLineTops = Array.from({ length:laneCount }, (_, lane) => laneFirstTop + lane * laneStep);
   const axisWidth = Math.max(1, tl.clientWidth || tl.getBoundingClientRect().width || 1000);
   const measureCtx = document.createElement('canvas').getContext('2d');
   if (measureCtx) measureCtx.font = '700 10px Inter, Arial, sans-serif';
@@ -2690,7 +2828,8 @@ function updateTimelineV2(cron) {
     const prevEnd = i > 0 ? pctDate(marcos[i - 1]._end) : left;
     const compressed = Math.abs(e - b) < 5.5;
     let mid = compressed && prevEnd != null ? (Math.min(prevEnd, e) + Math.max(prevEnd, e)) / 2 : left + width / 2;
-    const labelWidth = textWidth(compact(m['Pacote']));
+    const subtaskCount = monthlySubtasks(m).length;
+    const labelWidth = textWidth(compact(m['Pacote']) + (subtaskCount ? '  ' + subtaskCount : ''));
     mid = clampCenter(Math.max(0.5, Math.min(99, mid)), labelWidth);
     const metricsWidth = 126;
     let metricsX = left + (width * Math.max(progressPct, plannedPct) / 200);
@@ -2711,32 +2850,76 @@ function updateTimelineV2(cron) {
     return { m, i, b, e, left, right, width, progressPct, plannedPct, mid, metricsX, labelWidth, lane };
   }).filter(Boolean);
   const usedLaneCount = Math.max(1, ...timelineItems.map(item => item.lane + 1));
-  const axisHeight = viewIsQuinzenal ? Math.max(210, laneLineTops[usedLaneCount - 1] + 30) : 330;
+  const laneSubtaskRows = Array.from({ length:laneCount }, () => 0);
+  timelineItems.forEach(item => {
+    laneSubtaskRows[item.lane] = Math.max(laneSubtaskRows[item.lane], Math.min(3, monthlySubtasks(item.m).length));
+  });
+  const laneLineTops = [];
+  let laneCursor = laneFirstTop;
+  for (let lane = 0; lane < laneCount; lane++) {
+    laneLineTops.push(laneCursor);
+    laneCursor += laneStep + laneSubtaskRows[lane] * 18;
+  }
+  const lastLane = usedLaneCount - 1;
+  const axisHeight = viewIsQuinzenal
+    ? Math.max(210, laneLineTops[lastLane] + 30)
+    : Math.max(360, laneLineTops[lastLane] + 36 + laneSubtaskRows[lastLane] * 18);
   tl.style.height = axisHeight + 'px';
-  let html = '<div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
+  let html = '<div class="tl-month-grid">';
+  for (let monthIndex = 1; monthIndex < timelineMonths.length; monthIndex++) {
+    html += '<i class="tl-month-grid-line" style="left:' + (monthIndex * 100 / timelineMonths.length).toFixed(2) + '%"></i>';
+  }
+  html += '</div><div class="tl-today" style="left:' + todayPct.toFixed(1) + '%"></div>';
   timelineItems.forEach(item => {
     const { m, i, b, e, left, right, width, progressPct, plannedPct, mid, metricsX, labelWidth, lane } = item;
     const color = tlPalette[i % tlPalette.length];
     const pendingPct = Math.max(0, 100 - progressPct);
-    const planX = left + (width * plannedPct / 100);
-    const status = String(m['Status'] || '').toLowerCase();
-    const cls = status.includes('conclu') ? 'done' : status.includes('atraso') || status.includes('atrasad') ? 'late' : status.includes('andamento') ? 'active' : 'upcoming';
+    const progressX = Math.max(0.6, Math.min(99.2, left + (width * progressPct / 100)));
+    const completed = progressPct >= 99.95;
     const laneTop = laneLineTops[lane];
     const labelAbove = laneTop - labelGap - labelH;
     const labelTop = Math.max(2, labelAbove);
     const progressText = progressPct.toFixed(progressPct % 1 ? 1 : 0);
     const plannedText = plannedPct.toFixed(plannedPct % 1 ? 1 : 0);
+    const subtasks = monthlySubtasks(m);
+    let subtaskHtml = '';
+    const visibleSubtaskRows = Math.min(3, subtasks.length);
+    const treeLeft = left > 84;
+    const branchWidthPct = pxToPct(12);
+    const treeBranchLeft = treeLeft ? Math.max(.5, left - branchWidthPct) : left;
+    const treeDotX = treeLeft ? treeBranchLeft : Math.min(99, left + branchWidthPct);
+    const treeNameX = treeLeft ? Math.max(.5, treeDotX - pxToPct(3)) : Math.min(99, treeDotX + pxToPct(3));
+    if (visibleSubtaskRows) {
+      subtaskHtml += '<div class="tl-subtask-stem" style="--tl-color:' + color + ';top:' + (laneTop + 24).toFixed(1) + 'px;left:' + left.toFixed(1) + '%;height:' + ((visibleSubtaskRows - 1) * 18 + 10) + 'px"></div>';
+    }
+    subtasks.slice(0, 2).forEach((activity, subtaskIndex) => {
+      const rowY = laneTop + 34 + subtaskIndex * 18;
+      const activityDate = activity.start ? activity.start.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) : '-';
+      const activityTitle = activity.pacote + ' · ' + activity.status + ' · ' + activityDate;
+      subtaskHtml +=
+        '<div class="tl-subtask-tree-branch" style="--tl-color:' + color + ';top:' + rowY.toFixed(1) + 'px;left:' + treeBranchLeft.toFixed(1) + '%"></div>' +
+        '<div class="tl-subtask-tree-dot" style="--tl-color:' + color + ';top:' + rowY.toFixed(1) + 'px;left:' + treeDotX.toFixed(1) + '%"></div>' +
+        '<div class="tl-subtask-tree-name' + (treeLeft ? ' left' : '') + '" style="top:' + (rowY - 5).toFixed(1) + 'px;left:' + treeNameX.toFixed(1) + '%" title="' + monthlyEscape(activityTitle) + '">' + monthlyEscape(activity.pacote) + '</div>';
+    });
+    if (subtasks.length > 2) {
+      const remainingTitle = 'Mais ' + (subtasks.length - 2) + ' subtarefas: ' + subtasks.slice(2).map(activity => activity.pacote).join('; ');
+      const moreY = laneTop + 70;
+      subtaskHtml +=
+        '<div class="tl-subtask-tree-branch" style="--tl-color:' + color + ';top:' + moreY.toFixed(1) + 'px;left:' + treeBranchLeft.toFixed(1) + '%"></div>' +
+        '<div class="tl-subtask-more" style="--tl-color:' + color + ';top:' + moreY.toFixed(1) + 'px;left:' + treeDotX.toFixed(1) + '%" title="' + monthlyEscape(remainingTitle) + '">…</div>';
+    }
     html += '<div class="tl-segment" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + left.toFixed(1) + '%;width:' + width.toFixed(1) + '%">' +
       '<div class="tl-seg-done" style="width:' + progressPct.toFixed(1) + '%"></div>' +
       (pendingPct > 0 ? '<div class="tl-seg-pending" style="left:' + progressPct.toFixed(1) + '%;width:' + pendingPct.toFixed(1) + '%"></div>' : '') +
       '</div>' +
       (b > 0.6 ? '<div class="tl-start-diamond" style="--tl-color:' + color + ';top:' + laneTop.toFixed(1) + 'px;left:' + b.toFixed(1) + '%" title="Inicio do marco"></div>' : '') +
-      (e < 98.8 ? '<div class="tl-milestone ' + cls + '" style="top:' + laneTop.toFixed(1) + 'px;border-color:' + color + ';' + (cls === 'done' ? 'background:' + color + ';' : '') + 'left:' + e.toFixed(1) + '%"></div>' : '') +
-      '<div class="tl-plan-marker" style="left:' + planX.toFixed(1) + '%;top:' + laneTop.toFixed(1) + 'px"></div>' +
-      '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + metricsX.toFixed(1) + '%;top:' + (laneTop + 9).toFixed(1) + 'px">Plan ' + plannedText + '% | <span class="real">Real ' + progressText + '%</span></div>' +
-      '<div class="tl-seg-label" style="--tl-color:' + color + ';left:' + mid.toFixed(1) + '%;top:' + labelTop.toFixed(1) + 'px;width:' + labelWidth + 'px" title="' + String(m['Pacote'] || '-').replace(/"/g, '&quot;') + '">' + compact(m['Pacote']) + '</div>';
+      (progressPct > 0.05 ? '<div class="tl-milestone ' + (completed ? 'done' : 'active') + '" style="top:' + laneTop.toFixed(1) + 'px;left:' + progressX.toFixed(1) + '%;border-color:' + color + ';background:' + (completed ? color : '#fff') + ';" title="' + (completed ? 'Marco entregue' : 'Marco em andamento') + '"></div>' : '') +
+      subtaskHtml +
+      '<div class="tl-progress-label" style="--tl-color:' + color + ';left:' + metricsX.toFixed(1) + '%;top:' + (laneTop + 13).toFixed(1) + 'px">Plan ' + plannedText + '% | <span class="real">Real ' + progressText + '%</span></div>' +
+      '<div class="tl-seg-label" style="--tl-color:' + color + ';left:' + mid.toFixed(1) + '%;top:' + labelTop.toFixed(1) + 'px;width:' + labelWidth + 'px" title="' + monthlyEscape(String(m['Pacote'] || '-') + (subtasks.length ? ' · ' + subtasks.length + ' subentrega(s): ' + subtasks.map(activity => activity.pacote).join('; ') : '')) + '">' + monthlyEscape(compact(m['Pacote'])) + (subtasks.length ? '<span class="tl-subtask-count">' + subtasks.length + '</span>' : '') + '</div>';
   });
   tl.innerHTML = html;
+  }
 
   const eapPrefix = eap => {
     const parts = String(eap || '').split('.').filter(Boolean);
@@ -2783,6 +2966,23 @@ function updateTimelineV2(cron) {
         if (s.includes('andamento') || s.includes('execu') || s.includes('progresso')) return '#0075A9';
         return '#8797ad';
       };
+      const statusIcon = (status, category) => {
+        const s = normKey(status);
+        if (s.includes('bloque')) return '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m5.8 5.8 4.4 4.4m0-4.4-4.4 4.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+        if (category === 'late' || s.includes('atras')) return '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 14 13H2L8 2Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 5.4v3.7m0 1.8v.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+        if (category === 'active') return '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.8 6A5 5 0 1 0 13 9.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="m10.4 3.8 2.6 2.3 1.3-3.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        return '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.5V8l2.4 1.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+      };
+      const sectionIcon = category => category === 'late'
+        ? statusIcon('atrasado', 'late')
+        : category === 'active'
+          ? statusIcon('em andamento', 'active')
+          : statusIcon('não iniciado', 'next');
+      const progressHtml = (value, color) => {
+        const safe = value == null ? 0 : Math.max(0, Math.min(100, value));
+        const text = value == null ? '-' : value.toFixed(value % 1 ? 1 : 0).replace('.', ',') + '%';
+        return '<div class="tl-program-progress" style="--tl-color:' + color + '"><span class="tl-program-progress-track"><i class="tl-program-progress-fill" style="width:' + safe.toFixed(1) + '%"></i></span><span>' + text + '</span></div>';
+      };
       const cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate());
       const categoryOf = m => {
         if (m._end < cutoff) return 'late';
@@ -2809,19 +3009,17 @@ function updateTimelineV2(cron) {
         const color = statusColor(status, category);
         const due = m._end ? m._end.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) : '-';
         const pctValue = pctNumber(m['% Progresso']);
-        const pct = pctValue == null ? '-' : pctValue.toFixed(pctValue % 1 ? 1 : 0).replace('.', ',') + '%';
         const childrenHtml = children.length ? '<div class="tl-program-children">' + children.map(a => {
           const childDue = a.start.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-          const childPct = a.pct == null ? '-' : a.pct.toFixed(a.pct % 1 ? 1 : 0).replace('.', ',') + '%';
           const childColor = statusColor(a.status, category);
-          return '<div class="tl-subtask" title="' + esc(a.pacote) + '"><div class="tl-subtask-name">' + esc(a.pacote) + '</div><div class="tl-subtask-pct">' + childPct + '</div><div class="tl-subtask-status" style="--tl-color:' + childColor + '" title="' + esc(a.status) + '">' + esc(a.status) + '</div><div class="tl-subtask-date">' + childDue + '</div></div>';
+          return '<div class="tl-subtask" title="' + esc(a.pacote) + '"><div class="tl-subtask-name">' + esc(a.pacote) + '</div><div class="tl-subtask-pct">' + progressHtml(a.pct, childColor) + '</div><div class="tl-subtask-status" style="--tl-color:' + childColor + '" title="' + esc(a.status) + '">' + statusIcon(a.status, category) + '<span>' + esc(a.status) + '</span></div><div class="tl-subtask-date">' + childDue + '</div></div>';
         }).join('') + '</div>' : '';
-        return '<div class="tl-program-item"><div class="tl-program-main" title="' + esc(m['Pacote']) + '"><div class="tl-program-name">' + esc(m['Pacote']) + '</div><div class="tl-program-pct">' + pct + '</div><div class="tl-program-status" style="--tl-color:' + color + '" title="' + esc(status) + '">' + esc(status) + '</div><div class="tl-program-date">' + due + '</div></div>' + childrenHtml + '</div>';
+        return '<div class="tl-program-item"><div class="tl-program-main" title="' + esc(m['Pacote']) + '"><div class="tl-program-name">' + esc(m['Pacote']) + '</div><div class="tl-program-pct">' + progressHtml(pctValue, color) + '</div><div class="tl-program-status" style="--tl-color:' + color + '" title="' + esc(status) + '">' + statusIcon(status, category) + '<span>' + esc(status) + '</span></div><div class="tl-program-date">' + due + '</div></div>' + childrenHtml + '</div>';
       };
       const renderedSections = sections.map(section => {
         const items = programItems.filter(item => item.category === section.key).sort((a,b) => a.m._end - b.m._end || getEapNum(a.m['Codigo EAP']) - getEapNum(b.m['Codigo EAP']));
         if (!items.length) return '';
-        return '<div class="tl-program-section ' + section.key + '"><div class="tl-program-head"><span>' + section.label + '</span><b>' + items.length + '</b></div><div class="tl-program-cols"><span>Entrega</span><span>%</span><span>Status</span><span>Venc.</span></div>' + items.map(renderItem).join('') + '</div>';
+        return '<div class="tl-program-section ' + section.key + '"><div class="tl-program-head"><span>' + sectionIcon(section.key) + section.label + '</span><b>' + items.length + '</b></div><div class="tl-program-cols"><span>Entrega</span><span>Progresso</span><span>Status</span><span>Venc.</span></div>' + items.map(renderItem).join('') + '</div>';
       }).join('');
       packagePanel.innerHTML = renderedSections || '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega pendente no recorte.</div>';
     } else {
@@ -2834,34 +3032,22 @@ function updateTimelineV2(cron) {
   phasesEl.style.gridTemplateColumns = 'repeat(' + timelineMonths.length + ', 1fr)';
   const quarterEl = document.getElementById('tl-quarter-scale');
   if (quarterEl) {
-    if (viewIsQuinzenal) {
-      const groups = [];
-      timelineMonths.forEach(m => {
-        const q = Math.floor(m.monthIdx / 3) + 1;
-        const key = q + '-' + m.year;
-        const last = groups[groups.length - 1];
-        if (last && last.key === key) last.count += 1;
-        else groups.push({ key, label: 'T' + q + ' ' + m.year, count: 1 });
-      });
-      quarterEl.innerHTML =
-        '<div class="tl-quarter-row" style="grid-template-columns:' + groups.map(g => g.count + 'fr').join(' ') + '">' +
-        groups.map(g => '<div class="tl-quarter-cell">' + g.label + '</div>').join('') +
-        '</div><div class="tl-qmonth-row" style="grid-template-columns:repeat(' + timelineMonths.length + ',1fr)">' +
-        timelineMonths.map(m => '<div class="tl-qmonth-cell">' + monthsAbbr[m.monthIdx] + '</div>').join('') +
-        '</div>';
-    } else {
-      quarterEl.innerHTML = '';
-    }
+    const groups = [];
+    timelineMonths.forEach(m => {
+      const q = Math.floor(m.monthIdx / 3) + 1;
+      const key = q + '-' + m.year;
+      const last = groups[groups.length - 1];
+      if (last && last.key === key) last.count += 1;
+      else groups.push({ key, label: 'T' + q + ' ' + m.year, count: 1 });
+    });
+    quarterEl.innerHTML =
+      '<div class="tl-quarter-row" style="grid-template-columns:' + groups.map(g => g.count + 'fr').join(' ') + '">' +
+      groups.map(g => '<div class="tl-quarter-cell">' + g.label + '</div>').join('') +
+      '</div><div class="tl-qmonth-row" style="grid-template-columns:repeat(' + timelineMonths.length + ',1fr)">' +
+      timelineMonths.map(m => '<div class="tl-qmonth-cell">' + monthsAbbr[m.monthIdx] + '</div>').join('') +
+      '</div>';
   }
-  phasesEl.innerHTML = timelineMonths.map(m => {
-    const actsHtml = viewIsQuinzenal ? '' : activitiesForMonth(m).map(a => {
-      const txt = a.pacote.length > 18 ? a.pacote.substring(0, 18) + '...' : a.pacote;
-      const title = (a.eap ? a.eap + ' - ' : '') + a.pacote.replace(/"/g, '&quot;');
-      const color = marcoColorForActivity(a);
-      return '<div class="tl-activity" style="background:' + color + '" title="' + title + '">' + txt + '</div>';
-    }).join('');
-    return '<div class="tl-month-col"><div class="tl-month-label">' + m.label + '</div><div class="tl-month-year">' + m.year + '</div><div class="tl-month-activities">' + actsHtml + '</div></div>';
-  }).join('');
+  phasesEl.innerHTML = '';
   const tlSub = document.querySelector('[style*="grid-area:tl"] .card-sub');
   if (tlSub) tlSub.textContent = viewIsQuinzenal ? 'Viewport quinzenal - ' + timelineMonths.length + ' meses' : 'Linha de base vs. real - ' + timelineMonths.length + ' meses';
 }
@@ -3052,6 +3238,10 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     }
     return d;
   };
+  const areaFrom = (pts, baseY) => {
+    if (pts.length < 2) return '';
+    return `${pathFrom(pts)} L${pts[pts.length - 1].x.toFixed(1)},${baseY.toFixed(1)} L${pts[0].x.toFixed(1)},${baseY.toFixed(1)} Z`;
+  };
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
   const overlaps = (a, b) => !(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y);
   const buildLabel = (p, text, theme, prefs, placed) => {
@@ -3095,7 +3285,15 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     return { x: fallback.x, y: fallback.y, w, h };
   };
   const renderLabel = (box, text, theme) => {
-    return `<rect x="${box.x.toFixed(1)}" y="${box.y.toFixed(1)}" width="${box.w.toFixed(1)}" height="${box.h}" rx="3" fill="${theme.fill}" stroke="${theme.stroke}" stroke-width="0.8"/><text x="${(box.x + box.w/2).toFixed(1)}" y="${(box.y + 14).toFixed(1)}" font-size="11" fill="${theme.text}" text-anchor="middle" font-family="Inter" font-weight="700">${text}</text>`;
+    if (theme.split) {
+      const mid = box.x + box.w / 2;
+      const leftPath = `M${(box.x + 3).toFixed(1)},${box.y.toFixed(1)} H${mid.toFixed(1)} V${(box.y + box.h).toFixed(1)} H${(box.x + 3).toFixed(1)} Q${box.x.toFixed(1)},${(box.y + box.h).toFixed(1)} ${box.x.toFixed(1)},${(box.y + box.h - 3).toFixed(1)} V${(box.y + 3).toFixed(1)} Q${box.x.toFixed(1)},${box.y.toFixed(1)} ${(box.x + 3).toFixed(1)},${box.y.toFixed(1)} Z`;
+      const rightPath = `M${mid.toFixed(1)},${box.y.toFixed(1)} H${(box.x + box.w - 3).toFixed(1)} Q${(box.x + box.w).toFixed(1)},${box.y.toFixed(1)} ${(box.x + box.w).toFixed(1)},${(box.y + 3).toFixed(1)} V${(box.y + box.h - 3).toFixed(1)} Q${(box.x + box.w).toFixed(1)},${(box.y + box.h).toFixed(1)} ${(box.x + box.w - 3).toFixed(1)},${(box.y + box.h).toFixed(1)} H${mid.toFixed(1)} Z`;
+      const parts = text.split(' | ');
+      return `<path d="${leftPath}" fill="${theme.leftFill}"/><path d="${rightPath}" fill="${theme.rightFill}"/><rect x="${box.x.toFixed(1)}" y="${box.y.toFixed(1)}" width="${box.w.toFixed(1)}" height="${box.h}" rx="3" fill="none" stroke="${theme.stroke}" stroke-width="0.8"/><text x="${(box.x + box.w * .25).toFixed(1)}" y="${(box.y + 14).toFixed(1)}" font-size="10" fill="${theme.leftText}" text-anchor="middle" font-family="Inter" font-weight="700">${parts[0]}</text><text x="${mid.toFixed(1)}" y="${(box.y + 14).toFixed(1)}" font-size="10" fill="#64748b" text-anchor="middle" font-family="Inter" font-weight="700">|</text><text x="${(box.x + box.w * .75).toFixed(1)}" y="${(box.y + 14).toFixed(1)}" font-size="10" fill="${theme.rightText}" text-anchor="middle" font-family="Inter" font-weight="700">${parts[1]}</text>`;
+    }
+    const textOutline = theme.textStroke ? ` stroke="${theme.textStroke}" stroke-width="1.5" paint-order="stroke"` : '';
+    return `<rect x="${box.x.toFixed(1)}" y="${box.y.toFixed(1)}" width="${box.w.toFixed(1)}" height="${box.h}" rx="3" fill="${theme.fill}" stroke="${theme.stroke}" stroke-width="0.8"/><text x="${(box.x + box.w/2).toFixed(1)}" y="${(box.y + 14).toFixed(1)}" font-size="11" fill="${theme.text}"${textOutline} text-anchor="middle" font-family="Inter" font-weight="700">${text}</text>`;
   };
   const buildColumnLabel = (item, monthItems) => {
     const w = Math.max(46, item.text.length * 7 + 18);
@@ -3111,7 +3309,16 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     };
   };
 
-  let out = '';
+  let out = '<defs>' +
+    '<linearGradient id="finBlueShadow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0075A9" stop-opacity=".10"/><stop offset="100%" stop-color="#0075A9" stop-opacity=".015"/></linearGradient>' +
+    '<linearGradient id="finGreenShadow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16a34a" stop-opacity=".18"/><stop offset="100%" stop-color="#16a34a" stop-opacity=".025"/></linearGradient>' +
+    '<linearGradient id="finForecastShadow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16a34a" stop-opacity=".13"/><stop offset="100%" stop-color="#16a34a" stop-opacity=".02"/></linearGradient>' +
+    '</defs>';
+
+  if (filterIdx >= 0 && filterIdx < months.length - 1) {
+    const futureX = X(filterIdx);
+    out += `<rect x="${futureX.toFixed(1)}" y="${PT}" width="${(W - PR - futureX).toFixed(1)}" height="${chartH}" fill="#f4f8fb" opacity=".72"/>`;
+  }
 
   for (let i = 0; i <= 4; i++) {
     const y = PT + chartH * (i / 4);
@@ -3124,12 +3331,6 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     out += `<text x="${X(i).toFixed(1)}" y="${H-14}" font-size="13" fill="#8797ad" text-anchor="middle" font-family="Inter">${m}</text>`;
   });
 
-  if (filterIdx >= 0 && filterIdx < months.length) {
-    const mx = X(filterIdx);
-    out += `<line x1="${mx.toFixed(1)}" y1="${PT}" x2="${mx.toFixed(1)}" y2="${PT+chartH}" stroke="#9ca3af" stroke-width="1.2" stroke-dasharray="4 4" opacity=".7"/>`;
-    out += `<text x="${mx.toFixed(1)}" y="${PT-10}" font-size="12" fill="#64748b" text-anchor="middle" font-family="Inter">${months[filterIdx]}</text>`;
-  }
-
   const planPts = planArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
   const realPts = realArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
   const forecastPts = forecastArr.map((v, i) => v != null ? ({ x: X(i), y: Y(v), v, i }) : null).filter(Boolean);
@@ -3139,6 +3340,19 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
     const v = real != null ? real : forecast;
     return v != null ? ({ x: X(i), y: Y(v), v, i, source: real != null ? 'real' : 'forecast' }) : null;
   }).filter(Boolean);
+  const firstOfValueRun = pts => {
+    let previousIndex = -2;
+    let previousText = null;
+    return pts.filter(p => {
+      const text = fmtM(p.v);
+      const repeated = p.i === previousIndex + 1 && text === previousText;
+      previousIndex = p.i;
+      previousText = text;
+      return !repeated;
+    });
+  };
+  const realForecastLabelPts = firstOfValueRun(actualForecastLabelPts);
+  const planLabelPts = firstOfValueRun(planPts);
   const planPastPts = planPts.filter(p => p.i <= filterIdx);
   const planFuturePts = planPts.filter(p => p.i >= filterIdx);
   const forecastFuturePts = [];
@@ -3163,10 +3377,21 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   const zeroY = Y(0);
   out += `<line x1="${PL}" y1="${zeroY.toFixed(1)}" x2="${W-PR}" y2="${zeroY.toFixed(1)}" stroke="#cbd5e1" stroke-width="1.2"/>`;
 
+  if (planPastPts.length >= 2) out += `<path d="${areaFrom(planPastPts, zeroY)}" fill="url(#finBlueShadow)" stroke="none"/>`;
+  if (planFuturePts.length >= 2) out += `<path d="${areaFrom(planFuturePts, zeroY)}" fill="url(#finBlueShadow)" stroke="none" opacity=".55"/>`;
+  if (realPts.length >= 2) out += `<path d="${areaFrom(realPts, zeroY)}" fill="url(#finGreenShadow)" stroke="none"/>`;
+  if (forecastFuturePts.length >= 2) out += `<path d="${areaFrom(forecastFuturePts, zeroY)}" fill="url(#finForecastShadow)" stroke="none"/>`;
+
   if (planPastPts.length >= 2) out += `<path d="${pathFrom(planPastPts)}" fill="none" stroke="#0075A9" stroke-width="2.4"/>`;
   if (planFuturePts.length >= 2) out += `<path d="${pathFrom(planFuturePts)}" fill="none" stroke="#0075A9" stroke-width="2.4" stroke-dasharray="6 5"/>`;
   if (realPts.length >= 2) out += `<path d="${pathFrom(realPts)}" fill="none" stroke="#16a34a" stroke-width="2.8"/>`;
   if (forecastFuturePts.length >= 2) out += `<path d="${pathFrom(forecastFuturePts)}" fill="none" stroke="#16a34a" stroke-width="2.8" stroke-dasharray="6 5"/>`;
+
+  if (filterIdx >= 0 && filterIdx < months.length) {
+    const mx = X(filterIdx);
+    out += `<line x1="${mx.toFixed(1)}" y1="${PT}" x2="${mx.toFixed(1)}" y2="${PT+chartH}" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4 4" opacity=".8"/>`;
+    out += `<text x="${mx.toFixed(1)}" y="${PT-10}" font-size="12" fill="#64748b" text-anchor="middle" font-family="Inter">${months[filterIdx]}</text>`;
+  }
 
   planPts.forEach((p, i) => {
     const current = i === planPts.length - 1;
@@ -3207,31 +3432,71 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
         ? ['pairAbove', 'above', 'aboveStack', 'right', 'left', 'below']
         : ['pairBelow', 'below', 'belowStack', 'right', 'left', 'above'];
     }
-    if (item.series === 'realForecast') return ['above', 'aboveFar', 'right', 'left', 'below', 'belowFar'];
+    if (item.series === 'realForecast' || item.series === 'merged') return ['above', 'aboveFar', 'right', 'left', 'below', 'belowFar'];
     return ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar'];
   };
 
-  addLabel(actualForecastLabelPts, 0, 'realForecast', v => fmtM(v), p => (
-    p.source === 'forecast'
-      ? { fill: '#EAF7D0', stroke: '#16a34a', text: '#166534' }
-      : { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }
-  ), ['above', 'right', 'left', 'below'], false);
-  addLabel(planPts, 2, 'bp', v => fmtM(v), { fill: '#E6F5FA', stroke: '#0075A9', text: '#005F96' }, ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar', 'rightFar', 'leftFar'], flatPlan);
+  const realLabelsByIndex = new Map(realForecastLabelPts.map(p => [p.i, p]));
+  const planLabelsByIndex = new Map(planLabelPts.map(p => [p.i, p]));
+  for (let i = 0; i < months.length; i++) {
+    const realPoint = realLabelsByIndex.get(i);
+    const planPoint = planLabelsByIndex.get(i);
+    const realValue = realArr[i] != null ? realArr[i] : forecastArr[i];
+    const planValue = planArr[i];
+    const sameDisplayedValue = realValue != null && planValue != null && fmtM(realValue) === fmtM(planValue);
+    if (sameDisplayedValue && (realPoint || planPoint)) {
+      const mergedPoint = realPoint || { ...planPoint, source: i > filterIdx ? 'forecast' : 'real' };
+      addLabel([mergedPoint], 0, 'merged', v => fmtM(v) + ' | ' + fmtM(v), { split: true, leftFill: '#16a34a', leftText: '#ffffff', rightFill: '#E6F5FA', rightText: '#005F96', stroke: '#4a94b1' }, ['above', 'right', 'left', 'below'], false);
+      continue;
+    }
+    if (realPoint) {
+      addLabel([realPoint], 0, 'realForecast', v => fmtM(v), p => (
+        p.source === 'forecast'
+          ? { fill: '#EAF7D0', stroke: '#16a34a', text: '#166534' }
+          : { fill: '#16a34a', stroke: '#16a34a', text: '#ffffff' }
+      ), ['above', 'right', 'left', 'below'], false);
+    }
+    if (planPoint) {
+      addLabel([planPoint], 2, 'bp', v => fmtM(v), { fill: '#E6F5FA', stroke: '#0075A9', text: '#005F96' }, ['below', 'belowFar', 'right', 'left', 'above', 'aboveFar', 'rightFar', 'leftFar'], flatPlan);
+    }
+  }
 
   for (let i = 0; i < months.length; i++) {
     const items = labelsByMonth.get(i) || [];
-    const compactPair = items.length === 2;
-    if (compactPair) items.sort((a, b) => a.p.y - b.p.y || a.order - b.order);
-    else items.sort((a, b) => (b.p.v || 0) - (a.p.v || 0));
-    items.forEach((item, idx) => {
-      const prefs = labelPrefsForItem(item, items);
-      let box = item.flatColumn && !compactPair
-        ? buildColumnLabel(item, items)
-        : buildLabel(item.p, item.text, item.theme, prefs, placed);
-      if (placed.some(prev => overlaps(box, prev))) {
-        box = buildLabel(item.p, item.text, item.theme, prefs, placed);
+    items.sort((a, b) => a.order - b.order);
+    items.forEach(item => {
+      const isActualForecast = item.series === 'realForecast' || item.series === 'merged';
+      const monthRealForecast = realArr[item.p.i] != null ? realArr[item.p.i] : forecastArr[item.p.i];
+      const monthPlan = planArr[item.p.i];
+      let direction = isActualForecast ? -1 : 1;
+      if (item.series !== 'merged' && monthRealForecast != null && monthPlan != null && fmtM(monthRealForecast) !== fmtM(monthPlan)) {
+        const itemIsHigher = isActualForecast ? monthRealForecast > monthPlan : monthPlan > monthRealForecast;
+        direction = itemIsHigher ? -1 : 1;
       }
-      if (item.p.i !== filterIdx && placed.some(prev => overlaps(box, prev))) return;
+      const w = Math.max(46, item.text.length * 7 + 18);
+      const h = 20;
+      const x = clamp(item.p.x - w / 2, PL + 2, W - PR - w - 2);
+      const verticalLevels = [0, 22, 44, 66];
+      let box = null;
+      for (const level of verticalLevels) {
+        const y = clamp(
+          item.p.y + (direction < 0 ? -h - 10 - level : 12 + level),
+          PT + 2,
+          zeroY - h - 10
+        );
+        const candidate = { x, y, w, h };
+        if (!placed.some(prev => overlaps(candidate, prev))) {
+          box = candidate;
+          break;
+        }
+        if (!box) box = candidate;
+      }
+      const connectorColor = isActualForecast ? '#16a34a' : '#0075A9';
+      if (box.y + box.h < item.p.y - 2) {
+        out += `<line x1="${item.p.x.toFixed(1)}" y1="${(box.y + box.h).toFixed(1)}" x2="${item.p.x.toFixed(1)}" y2="${(item.p.y - 4).toFixed(1)}" stroke="${connectorColor}" stroke-width="1" opacity=".65"/>`;
+      } else if (box.y > item.p.y + 2) {
+        out += `<line x1="${item.p.x.toFixed(1)}" y1="${(item.p.y + 4).toFixed(1)}" x2="${item.p.x.toFixed(1)}" y2="${box.y.toFixed(1)}" stroke="${connectorColor}" stroke-width="1" opacity=".65"/>`;
+      }
       placed.push(box);
       out += renderLabel(box, item.text, item.theme);
     });
@@ -3241,12 +3506,12 @@ function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   svg.innerHTML = out;
 
   const legend = document.querySelectorAll('.legend span');
-  if (legend[0]) { legend[0].style.display = ''; legend[0].childNodes[legend[0].childNodes.length-1].textContent = 'Realizado + Forecast'; const icon = legend[0].querySelector('i'); icon.style.background = '#16a34a'; icon.style.borderColor = '#16a34a'; icon.style.color = '#16a34a'; }
-  if (legend[1]) { legend[1].style.display = ''; legend[1].childNodes[legend[1].childNodes.length-1].textContent = 'BP'; legend[1].querySelector('i').style.background = '#0075A9'; }
+  if (legend[0]) { legend[0].style.display = ''; legend[0].classList.add('legend-real'); legend[0].childNodes[legend[0].childNodes.length-1].textContent = 'Realizado + Forecast'; }
+  if (legend[1]) { legend[1].style.display = ''; legend[1].classList.add('legend-bp'); legend[1].childNodes[legend[1].childNodes.length-1].textContent = 'BP'; }
   if (legend[2]) legend[2].style.display = 'none';
 
   const sub = document.getElementById('chart-sub');
-  if (sub) sub.textContent = 'Valores mensais em R$ - ' + months[0] + ' - ' + months[Math.min(filterIdx, months.length - 1)];
+  if (sub) sub.textContent = 'Registro comparativo mensal BP x Realizado + Forecast';
 }
 
 // ??? legacy stubs (donut no longer shown) ???
