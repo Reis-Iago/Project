@@ -2370,6 +2370,44 @@ function financeHeroHtml(v) {
     (match[2] ? '<span class="finance-unit">' + match[2] + '</span>' : '');
 }
 
+function isGisLegadoProject() {
+  const projectRows = (_lastSheets && _lastSheets.projeto) || _projData || [];
+  const project = projectRows[0] || {};
+  const name = project['Projeto'] || project['Nome'] || '';
+  const normalizedName = normKey(name);
+  return normalizedName.includes('gis') && normalizedName.includes('legado');
+}
+
+const GIS_LEGADO_MILESTONE_WEIGHTS = Object.freeze({
+  '1':0.0095,
+  '2':0.0190,
+  '3':0.1612,
+  '4':0.3074,
+  '5':0.1726,
+  '6':0.1534,
+  '7':0.1340,
+  '8':0.0240,
+  '9':0.0095,
+  '10':0.0095,
+});
+
+function fixedMilestoneWeight(row) {
+  const raw = pick(row, ['Porcentagem', 'Percentual', 'Peso', '%']);
+  if (raw != null && raw !== '') {
+    const text = String(raw).trim();
+    const explicitPercent = text.includes('%');
+    const value = Number(text.replace('%', '').replace(',', '.'));
+    if (isFinite(value) && value >= 0) {
+      const ratio = explicitPercent || value > 1 ? value / 100 : value;
+      return Math.min(1, Math.max(0, ratio));
+    }
+  }
+  const eapRaw = pick(row, ['Codigo EAP', 'Código EAP']);
+  const eapNumber = Number(String(eapRaw ?? '').replace(',', '.'));
+  const eap = isFinite(eapNumber) ? String(Math.trunc(eapNumber)) : String(eapRaw || '').trim();
+  return GIS_LEGADO_MILESTONE_WEIGHTS[eap] ?? null;
+}
+
 // ─── CRONOGRAMA (SPI + Progresso) ───
 function updateCronograma(cron) {
   if (!cron || !cron.length) return;
@@ -2424,23 +2462,35 @@ function updateCronograma(cron) {
   }
 
   const cutoffValues = items.map(progressAtCutoff);
-  const avgReal = cutoffValues.reduce((s, v) => s + v.real, 0) / (cutoffValues.length || 1);
-  const avgPlan = cutoffValues.reduce((s, v) => s + v.plan, 0) / (cutoffValues.length || 1);
+  const useFixedWeights = isGisLegadoProject();
+  const weights = useFixedWeights ? items.map(fixedMilestoneWeight) : [];
+  const hasFixedWeights = useFixedWeights && items.length > 0 && weights.every(weight => weight != null) && weights.some(weight => weight > 0);
+  const aggregatedReal = hasFixedWeights
+    ? cutoffValues.reduce((sum, value, index) => sum + value.real * (weights[index] || 0), 0)
+    : cutoffValues.reduce((sum, value) => sum + value.real, 0) / (cutoffValues.length || 1);
+  const aggregatedPlan = hasFixedWeights
+    ? cutoffValues.reduce((sum, value, index) => sum + value.plan * (weights[index] || 0), 0)
+    : cutoffValues.reduce((sum, value) => sum + value.plan, 0) / (cutoffValues.length || 1);
+  const avgReal = Math.min(1, Math.max(0, aggregatedReal));
+  const avgPlan = Math.min(1, Math.max(0, aggregatedPlan));
 
-  const progPct = Math.round(avgReal * 100);
-  const pvProgClamped = Math.round(Math.min(1, Math.max(0, avgPlan)) * 100);
+  const progressPrecision = hasFixedWeights ? 2 : 0;
+  const progPct = Number((avgReal * 100).toFixed(progressPrecision));
+  const pvProgClamped = Number((Math.min(1, Math.max(0, avgPlan)) * 100).toFixed(progressPrecision));
+  const progPctLabel = hasFixedWeights ? progPct.toFixed(2).replace('.', ',') : String(progPct);
+  const planPctLabel = hasFixedWeights ? pvProgClamped.toFixed(2).replace('.', ',') : String(pvProgClamped);
 
   // Expose for timeline
   window._cronProgPct = progPct;
   window._cronPlanPct = pvProgClamped;
 
   const progValEl = document.getElementById('prog-val');
-  if (progValEl) progValEl.innerHTML = progPct + '<span style="font-size:24px;">%</span>';
+  if (progValEl) progValEl.innerHTML = progPctLabel + '<span style="font-size:24px;">%</span>';
   // SPI = Real / Planejado (cutoff-aware)
   const spiCutoff = avgPlan > 0 ? avgReal / avgPlan : (avgReal > 0 ? 999 : 0);
-  set('prog-real', 'Real ' + progPct + '%');
-  set('prog-compare', 'vs. ' + pvProgClamped + '% planejado');
-  set('prog-plan', 'Meta: ' + pvProgClamped + '%');
+  set('prog-real', 'Real ' + progPctLabel + '%');
+  set('prog-compare', 'vs. ' + planPctLabel + '% planejado');
+  set('prog-plan', 'Meta: ' + planPctLabel + '%');
   const fill = document.getElementById('prog-fill');
   if (fill) fill.style.width = progPct + '%';
   const gap = document.getElementById('prog-gap');
@@ -2451,11 +2501,11 @@ function updateCronograma(cron) {
     gap.style.display = gapWidth > 0 ? 'block' : 'none';
   }
   const marker = document.getElementById('prog-marker');
-  if (marker) { marker.style.left = 'calc(' + pvProgClamped + '% - 1.5px)'; marker.title = 'Planejado ' + pvProgClamped + '%'; }
+  if (marker) { marker.style.left = 'calc(' + pvProgClamped + '% - 1.5px)'; marker.title = 'Planejado ' + planPctLabel + '%'; }
   const planEl = document.getElementById('prog-plan');
   const planWrap = document.getElementById('prog-plan-wrap');
   if (planEl && planWrap) {
-    planEl.textContent = 'Meta: ' + pvProgClamped + '%';
+    planEl.textContent = 'Meta: ' + planPctLabel + '%';
     const wrapW = planWrap.clientWidth || 0;
     const labelW = planEl.offsetWidth || 0;
     const markerX = wrapW * (pvProgClamped / 100);
