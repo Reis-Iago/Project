@@ -831,8 +831,8 @@
   .tl{
     position:relative;padding:10px 4px 38px;
   }
-  .tl-card-body{display:block}
-  .tl-package-panel{display:none}
+  .tl-card-body{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:stretch}
+  .tl-package-panel{display:block;border-left:1px solid #e8edf3;padding-left:16px;padding-right:8px;min-width:0;overflow:visible}
   body.view-quinzenal .tl-card-body{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:stretch}
   body.view-quinzenal .content > [style*="grid-area:tl"] > .card{min-height:0}
   body.view-quinzenal .tl-package-panel{display:block;border-left:1px solid #e8edf3;padding-left:16px;padding-right:8px;min-width:0;overflow:visible}
@@ -852,7 +852,7 @@
   body.view-quinzenal .tl-today::after{top:2px;transform:translate(-50%,0)}
   body.view-quinzenal .tl-months-bar{display:none}
   .tl-package-title{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin-bottom:7px}
-  .tl-package-list{display:flex;flex-direction:column;gap:7px;max-height:none;overflow:visible}
+  .tl-package-list{display:flex;flex-direction:column;gap:7px;max-height:398px;overflow-y:auto;overflow-x:hidden;padding-right:4px;scrollbar-width:thin}
   body.view-quinzenal .tl-package-list{max-height:398px;overflow-y:auto;overflow-x:hidden;padding-right:4px;scrollbar-width:thin}
   .tl-program-section{border:1px solid #e3e9f0;border-radius:7px;overflow:hidden;background:#fff;flex:0 0 auto;box-shadow:0 1px 2px rgba(16,42,67,.04)}
   .tl-program-head{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
@@ -885,7 +885,7 @@
   .tl-subtask-list{margin:3px 0 0 16px;border-left:1px solid #d7e0eb;padding-left:9px;display:flex;flex-direction:column;gap:2px}
   .tl-subtask{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 62px 82px 42px;gap:6px;align-items:center;min-width:0}
   .tl-subtask::before{content:"";position:absolute;left:-9px;top:8px;width:6px;border-top:1px solid #d7e0eb}
-  .tl-subtask-name{font-size:10px;line-height:1.25;font-weight:600;color:var(--ink-700);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  .tl-subtask-name{font-size:9px;line-height:1.25;font-weight:600;color:var(--ink-700);white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
   .tl-subtask-status{font-size:9px;line-height:1.25;font-weight:700;color:var(--tl-color,var(--ink-400));white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
   .tl-subtask-status{display:flex;align-items:flex-start;justify-content:flex-end;gap:3px}
   .tl-subtask-status svg{width:11px;height:11px;flex:0 0 auto;margin-top:1px}
@@ -1518,10 +1518,27 @@ function selectedMonthYearKey() {
   const y = pickYearValue(row);
   return monthYearKeyFromValue(`${m}/${y}`);
 }
+function selectedMonthDateRange() {
+  const key = selectedMonthYearKey();
+  const parts = key && key.match(/^(\d{4})-(\d{1,2})$/);
+  if (!parts) return null;
+  const year = Number(parts[1]);
+  const month = Number(parts[2]);
+  return {
+    start: new Date(year, month, 1, 0, 0, 0, 0),
+    end: new Date(year, month + 1, 0, 23, 59, 59, 999)
+  };
+}
 function filterRowsByMonthField(rows, fieldAliases) {
-  const wanted = selectedMonthYearKey();
-  if (!wanted) return rows;
-  return rows.filter(r => monthYearKeyFromValue(pick(r, fieldAliases)) === wanted);
+  const range = selectedMonthDateRange();
+  if (!range) return rows;
+  return rows.filter(r => {
+    const key = monthYearKeyFromValue(pick(r, fieldAliases));
+    const parts = key && key.match(/^(\d{4})-(\d{1,2})$/);
+    if (!parts) return false;
+    const date = new Date(Number(parts[1]), Number(parts[2]), 1);
+    return date >= range.start && date <= range.end;
+  });
 }
 function pickMonthValue(row) {
   const monthKeys = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -1547,6 +1564,11 @@ function resetLayoutMeasurements() {
     el.style.height = '';
     el.style.minHeight = '';
   });
+  const packageList = document.getElementById('tl-package-panel');
+  if (packageList) {
+    packageList.style.maxHeight = '';
+    packageList.style.overflowY = '';
+  }
 }
 
 function syncSidebarHeights() {
@@ -1566,8 +1588,13 @@ function syncSidebarHeights() {
     const conclusion = Array.from(content.children).find(el => (el.style.gridArea || '').trim() === 'conc');
     const timeline = Array.from(content.children).find(el => (el.style.gridArea || '').trim() === 'tl');
     const timelineCard = timeline ? timeline.querySelector('.card') : null;
+    const packageList = document.getElementById('tl-package-panel');
     const side = document.querySelector('.rsidebar');
     const sideCards = [healthSide, delivery, next, risk, support].filter(Boolean);
+    if (packageList) {
+      packageList.style.maxHeight = '';
+      packageList.style.overflowY = '';
+    }
     [healthSide, delivery, stack, next, risk, support].filter(Boolean).forEach(el => {
       el.style.height = '';
       el.style.minHeight = '';
@@ -1624,6 +1651,14 @@ function syncSidebarHeights() {
       if (timelineTargetH > timelineH) {
         timelineCard.style.minHeight = timelineTargetH + 'px';
         timelineCard.style.height = timelineTargetH + 'px';
+      }
+      if (packageList) {
+        const availableH = Math.max(0, Math.floor(
+          timelineCard.getBoundingClientRect().bottom - packageList.getBoundingClientRect().top - 12
+        ));
+        const naturalH = packageList.scrollHeight;
+        packageList.style.maxHeight = availableH + 'px';
+        packageList.style.overflowY = naturalH > availableH ? 'auto' : 'visible';
       }
     }
     return;
@@ -2015,11 +2050,11 @@ function updateMomentoAtual(rows) {
       date:toDate(pick(row, ['Data']))
     }))
     .filter(row => ['quinzenal', 'quizenal'].includes(row.report) && row.date);
-  const cutoff = getCutoffDateFromFilter();
-  const samePeriod = _selectedMonth
-    ? candidates.filter(row => row.date.getFullYear() === cutoff.getFullYear() && row.date.getMonth() === cutoff.getMonth())
-    : candidates.filter(row => row.date <= cutoff);
-  const ordered = (samePeriod.length ? samePeriod : candidates).sort((a,b) => b.date - a.date);
+  const range = selectedMonthDateRange();
+  const samePeriod = range
+    ? candidates.filter(row => row.date >= range.start && row.date <= range.end)
+    : candidates;
+  const ordered = samePeriod.sort((a,b) => b.date - a.date);
   const selected = ordered[0];
   el.textContent = selected && String(selected.resumo || '').trim()
     ? String(selected.resumo).trim()
@@ -3119,16 +3154,7 @@ function updateTimelineV2(cron) {
   const compact = nome => String(nome || '-').trim();
   const monthlyEapParts = eap => String(eap == null ? '' : eap).replace(',', '.').split('.').map(part => part.trim()).filter(Boolean);
   const monthlyEscape = value => String(value || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  const monthlySubtasks = marco => {
-    const parent = monthlyEapParts(marco['Codigo EAP']);
-    if (!parent.length) return [];
-    return allActivities
-      .filter(activity => {
-        const child = monthlyEapParts(activity.eap);
-        return child.length === parent.length + 1 && parent.every((part, index) => child[index] === part);
-      })
-      .sort((a,b) => a.start - b.start || a.eapNum - b.eapNum);
-  };
+  const monthlySubtasks = () => [];
   const labelH = 18;
   const labelGap = 8;
   const laneCount = 6;
@@ -3190,7 +3216,7 @@ function updateTimelineV2(cron) {
   const lastLane = usedLaneCount - 1;
   const axisHeight = viewIsQuinzenal
     ? Math.max(210, laneLineTops[lastLane] + 30)
-    : Math.max(360, laneLineTops[lastLane] + 36 + laneSubtaskRows[lastLane] * 18);
+    : Math.max(300, laneLineTops[lastLane] + 36);
   tl.style.height = axisHeight + 'px';
   let html = '<div class="tl-month-grid">';
   for (let monthIndex = 1; monthIndex < timelineMonths.length; monthIndex++) {
@@ -3279,7 +3305,7 @@ function updateTimelineV2(cron) {
   const activitiesForMonth = m => activities.filter(a => a.start >= m.date && a.start <= m.endDate).sort((a,b) => a.eapNum - b.eapNum).slice(0, 3);
   const packagePanel = document.getElementById('tl-package-panel');
   if (packagePanel) {
-    if (viewIsQuinzenal) {
+    {
       const esc = v => String(v || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       const isDone = item => {
         const status = normKey(item['Status'] || item.status);
@@ -3349,8 +3375,6 @@ function updateTimelineV2(cron) {
         return '<div class="tl-program-section ' + section.key + '"><div class="tl-program-head"><span>' + sectionIcon(section.key) + section.label + '</span><b>' + items.length + '</b></div><div class="tl-program-cols"><span>Entrega</span><span>Progresso</span><span>Status</span><span>Venc.</span></div>' + items.map(renderItem).join('') + '</div>';
       }).join('');
       packagePanel.innerHTML = renderedSections || '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega pendente no recorte.</div>';
-    } else {
-      packagePanel.innerHTML = '';
     }
   }
   const phasesEl = document.getElementById('tl-phases');
@@ -3513,9 +3537,7 @@ function updateEntregas(entregas) {
     return;
   }
   let baseRows = filterRowsByReport(entregas);
-  if (_dashboardView === 'mensal') {
-    baseRows = filterRowsByMonthField(baseRows, ['Mês de Referencia', 'Mes de Referencia', 'Mês Referência', 'Mes Referencia']);
-  }
+  baseRows = filterRowsByMonthField(baseRows, ['Mês de Referencia', 'Mes de Referencia', 'Mês Referência', 'Mes Referencia']);
   const rows = baseRows.filter(r => r['Entrega Prevista'] && String(r['Entrega Prevista']).trim());
   if (!rows.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhuma entrega cadastrada.</div>';
