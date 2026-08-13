@@ -1218,17 +1218,21 @@
           <div class="pptx-field">
             <label for="pptx-fit">Enquadramento</label>
             <select id="pptx-fit" onchange="updatePPTXPreview()">
-              <option value="cover">Preencher o slide</option>
-              <option value="contain">Exibir todo o dashboard</option>
+              <option value="contain" selected>Ajustar ao slide - sem cortes</option>
+              <option value="cover">Preencher - pode recortar</option>
             </select>
           </div>
           <div class="pptx-field">
             <div class="pptx-field-row"><label for="pptx-zoom">Ajuste manual de zoom</label><span class="pptx-field-value" id="pptx-zoom-value">100%</span></div>
-            <input id="pptx-zoom" type="range" min="80" max="130" step="1" value="100" oninput="updatePPTXPreview()">
+            <input id="pptx-zoom" type="range" min="80" max="100" step="1" value="100" oninput="updatePPTXPreview()">
           </div>
           <div class="pptx-field">
-            <div class="pptx-field-row"><label for="pptx-margin">Margem</label><span class="pptx-field-value" id="pptx-margin-value">0%</span></div>
-            <input id="pptx-margin" type="range" min="0" max="8" step="1" value="0" oninput="updatePPTXPreview()">
+            <div class="pptx-field-row"><label for="pptx-vertical">Preenchimento vertical</label><span class="pptx-field-value" id="pptx-vertical-value">100%</span></div>
+            <input id="pptx-vertical" type="range" min="80" max="100" step="1" value="100" oninput="updatePPTXPreview()">
+          </div>
+          <div class="pptx-field">
+            <div class="pptx-field-row"><label for="pptx-margin">Margem</label><span class="pptx-field-value" id="pptx-margin-value">2%</span></div>
+            <input id="pptx-margin" type="range" min="0" max="8" step="1" value="2" oninput="updatePPTXPreview()">
           </div>
           <div class="pptx-field">
             <label for="pptx-quality">Qualidade da imagem</label>
@@ -1885,6 +1889,42 @@ async function captureDashboardForPPTX(scale) {
   }
 }
 
+function composeDashboardSlideCanvas(sourceCanvas, options, targetWidth, targetHeight) {
+  const output = document.createElement('canvas');
+  output.width = Math.max(1, Math.round(targetWidth));
+  output.height = Math.max(1, Math.round(targetHeight));
+  const ctx = output.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, output.width, output.height);
+
+  const marginPct = Math.max(0, Math.min(8, Number(options.margin) || 0)) / 100;
+  const marginX = output.width * marginPct;
+  const marginY = output.height * marginPct;
+  const usableW = output.width - marginX * 2;
+  const usableH = output.height - marginY * 2;
+  const baseScale = options.fitMode === 'contain'
+    ? Math.min(usableW / sourceCanvas.width, usableH / sourceCanvas.height)
+    : Math.max(usableW / sourceCanvas.width, usableH / sourceCanvas.height);
+  const zoom = Math.max(.8, Math.min(1, (Number(options.zoom) || 100) / 100));
+  const drawW = sourceCanvas.width * baseScale * zoom;
+  const verticalFill = Math.max(.8, Math.min(1, (Number(options.verticalFill) || 100) / 100));
+  const drawH = options.fitMode === 'contain'
+    ? usableH * verticalFill
+    : sourceCanvas.height * baseScale * zoom;
+  const drawX = marginX + (usableW - drawW) / 2;
+  const drawY = marginY + (usableH - drawH) / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(marginX, marginY, usableW, usableH);
+  ctx.clip();
+  ctx.drawImage(sourceCanvas, drawX, drawY, drawW, drawH);
+  ctx.restore();
+  return output;
+}
+
+let _pptxPreviewSourceCanvas = null;
+
 async function openPPTXExport() {
   const modal = document.getElementById('pptx-export-modal');
   const page = document.querySelector('.page');
@@ -1895,14 +1935,14 @@ async function openPPTXExport() {
     return;
   }
   modal.style.display = 'flex';
+  _pptxPreviewSourceCanvas = null;
   image.style.display = 'none';
   empty.style.display = 'flex';
   empty.textContent = 'Gerando prévia...';
   updatePPTXPreview();
   try {
-    const canvas = await captureDashboardForPPTX(.3);
-    image.src = canvas.toDataURL('image/jpeg', .82);
-    image.style.display = 'block';
+    _pptxPreviewSourceCanvas = await captureDashboardForPPTX(.3);
+    updatePPTXPreview();
     empty.style.display = 'none';
   } catch (error) {
     console.error('Falha ao gerar prévia PPTX:', error);
@@ -1917,27 +1957,38 @@ function closePPTXExport() {
 
 function updatePPTXPreview() {
   const format = document.getElementById('pptx-format')?.value || 'wide';
-  const fitMode = document.getElementById('pptx-fit')?.value || 'cover';
+  const fitMode = document.getElementById('pptx-fit')?.value || 'contain';
   const zoom = Number(document.getElementById('pptx-zoom')?.value || 100);
+  const verticalFill = Number(document.getElementById('pptx-vertical')?.value || 100);
   const margin = Number(document.getElementById('pptx-margin')?.value || 0);
   const frame = document.getElementById('pptx-preview-frame');
   const image = document.getElementById('pptx-preview-image');
   set('pptx-zoom-value', zoom + '%');
+  set('pptx-vertical-value', verticalFill + '%');
   set('pptx-margin-value', margin + '%');
   if (frame) {
     frame.style.aspectRatio = format === 'standard' ? '4 / 3' : '16 / 9';
-    frame.style.setProperty('--pptx-margin', margin + '%');
-    frame.style.setProperty('--pptx-zoom', String(zoom / 100));
+    frame.style.setProperty('--pptx-margin', '0%');
+    frame.style.setProperty('--pptx-zoom', '1');
   }
-  if (image) image.style.objectFit = fitMode === 'cover' ? 'cover' : 'contain';
+  if (image && _pptxPreviewSourceCanvas) {
+    const previewW = 640;
+    const previewH = format === 'standard' ? 480 : 360;
+    const previewCanvas = composeDashboardSlideCanvas(_pptxPreviewSourceCanvas, { fitMode, zoom, verticalFill, margin }, previewW, previewH);
+    image.src = previewCanvas.toDataURL('image/jpeg', .86);
+    image.style.objectFit = 'fill';
+    image.style.transform = 'none';
+    image.style.display = 'block';
+  }
 }
 
 async function exportPPTXFromDialog() {
   const confirmButton = document.getElementById('pptx-export-confirm');
   const options = {
     format:document.getElementById('pptx-format')?.value || 'wide',
-    fitMode:document.getElementById('pptx-fit')?.value || 'cover',
+    fitMode:document.getElementById('pptx-fit')?.value || 'contain',
     zoom:Number(document.getElementById('pptx-zoom')?.value || 100),
+    verticalFill:Number(document.getElementById('pptx-vertical')?.value || 100),
     margin:Number(document.getElementById('pptx-margin')?.value || 0),
     quality:Number(document.getElementById('pptx-quality')?.value || 2)
   };
@@ -1980,23 +2031,17 @@ async function exportPPTX(options = {}) {
     slide.background = { color:'FFFFFF' };
     const slideW = standard ? 10 : 13.333;
     const slideH = 7.5;
-    const marginPct = Math.max(0, Math.min(8, Number(options.margin) || 0)) / 100;
-    const marginX = slideW * marginPct;
-    const marginY = slideH * marginPct;
-    const usableW = slideW - marginX * 2;
-    const usableH = slideH - marginY * 2;
-    const baseFit = options.fitMode === 'contain'
-      ? Math.min(usableW / canvas.width, usableH / canvas.height)
-      : Math.max(usableW / canvas.width, usableH / canvas.height);
-    const zoom = Math.max(.8, Math.min(1.3, (Number(options.zoom) || 100) / 100));
-    const imageW = canvas.width * baseFit * zoom;
-    const imageH = canvas.height * baseFit * zoom;
+    const quality = Number(options.quality) || 2;
+    const outputScale = quality >= 3 ? 2 : quality >= 2 ? 4 / 3 : 1;
+    const outputW = (standard ? 1440 : 1920) * outputScale;
+    const outputH = 1080 * outputScale;
+    const slideCanvas = composeDashboardSlideCanvas(canvas, options, outputW, outputH);
     slide.addImage({
-      data:canvas.toDataURL('image/png'),
-      x:marginX + (usableW - imageW) / 2,
-      y:marginY + (usableH - imageH) / 2,
-      w:imageW,
-      h:imageH
+      data:slideCanvas.toDataURL('image/png'),
+      x:0,
+      y:0,
+      w:slideW,
+      h:slideH
     });
 
     const projectName = String(document.getElementById('sh-projeto')?.textContent || 'Dashboard do Projeto').trim();
