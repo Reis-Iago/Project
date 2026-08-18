@@ -493,6 +493,9 @@
   .project-badge.type{font-family:inherit;line-height:inherit;background:#eef2ff;border-color:#dfe3ff;color:#4338ca;cursor:pointer;transition:background .15s ease,border-color .15s ease}
   .project-badge.type:hover{background:#e2e7ff;border-color:#cbd3ff}
   .project-badge.type:focus-visible{outline:2px solid #9aa9ff;outline-offset:2px}
+  .project-badge.image-export-trigger{font-family:inherit;line-height:inherit;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+  .project-badge.image-export-trigger:hover{background:#e9f2fb;border-color:#bfd5e8}
+  .project-badge.image-export-trigger:focus-visible{outline:2px solid #75baff;outline-offset:2px}
   .pptx-modal{display:none;position:fixed;inset:0;z-index:9000;align-items:center;justify-content:center;padding:20px;background:rgba(15,25,45,.55);backdrop-filter:blur(4px)}
   .pptx-dialog{width:min(860px,calc(100vw - 40px));max-height:calc(100vh - 40px);overflow:auto;border:1px solid #dce4ed;border-radius:12px;background:#fff;box-shadow:0 18px 55px rgba(0,0,0,.24)}
   .pptx-dialog-head{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;border-bottom:1px solid #e8edf3}
@@ -518,6 +521,19 @@
   .pptx-action.secondary{background:#f1f4f8;color:var(--ink-600)}
   .pptx-action.primary{background:#075ee8;color:#fff}
   .pptx-action:disabled{opacity:.55;cursor:wait}
+  .image-export-dialog{width:min(980px,calc(100vw - 40px))}
+  .image-export-preview-frame{position:relative;width:100%;overflow:hidden;background:#fff;box-shadow:0 2px 10px rgba(15,39,66,.14);touch-action:none;user-select:none}
+  .image-export-preview-frame img{width:100%;height:100%;display:block;object-fit:fill;pointer-events:none}
+  .image-crop-selection{position:absolute;display:none;min-width:40px;min-height:40px;border:2px solid #075ee8;box-shadow:0 0 0 9999px rgba(15,27,45,.48);cursor:move;touch-action:none}
+  .image-crop-selection::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,.75);pointer-events:none}
+  .image-crop-handle{position:absolute;width:13px;height:13px;border:2px solid #fff;border-radius:50%;background:#075ee8;box-shadow:0 1px 4px rgba(15,27,45,.35)}
+  .image-crop-handle.nw{left:-7px;top:-7px;cursor:nwse-resize}
+  .image-crop-handle.ne{right:-7px;top:-7px;cursor:nesw-resize}
+  .image-crop-handle.sw{left:-7px;bottom:-7px;cursor:nesw-resize}
+  .image-crop-handle.se{right:-7px;bottom:-7px;cursor:nwse-resize}
+  .image-export-info{padding:9px 10px;border:1px solid #dce4ed;border-radius:6px;background:#f8fafc;color:var(--ink-500);font-size:10px;line-height:1.45}
+  .image-export-reset{height:32px;border:1px solid #d8e1eb;border-radius:6px;background:#fff;color:var(--ink-700);font:700 10px Inter,Arial,sans-serif;cursor:pointer}
+  .image-export-reset:hover{background:#f4f7fa}
   .project-subtitle{margin-top:2px;font-size:9.5px;font-weight:500;color:var(--ink-400);white-space:nowrap}
   .header-meta{padding:9px 18px 10px;display:flex;align-items:stretch;gap:0;flex-wrap:wrap;background:#fbfcfe}
   .sh-item{display:flex;flex-direction:column;justify-content:center;gap:4px;flex:1 1 145px;min-width:120px;padding:0 16px;border-left:1px solid var(--line)}
@@ -773,12 +789,14 @@
   .prog-compare{font-size:11px;color:var(--ink-400);font-weight:500;white-space:nowrap}
   .prog-status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap}
   .prog-status-pill svg{width:13px;height:13px;flex:0 0 auto}
+  .prog-status-alert-icon{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;flex:0 0 13px;font:400 13px/13px 'Segoe UI Symbol',Arial,sans-serif}
   .prog-status-pill.late{color:#FF9E18;background:#fff7e8;border:1px solid #ffe0ad}
   .prog-status-pill.ahead{color:#78BE00;background:#f2f9e7;border:1px solid #d9edb5}
   .prog-status-pill.ontime{color:#005F96;background:#eaf6fb;border:1px solid #cce8f3}
   .prog-visual{position:relative;height:42px;margin-top:8px;font-size:10.5px;color:var(--ink-500);overflow:visible}
   .prog-track{position:absolute;left:0;right:0;bottom:0;height:12px;background:#eef2f7;border-radius:6px;overflow:visible}
-  .prog-gap{display:none;position:absolute;top:0;height:100%;background:repeating-linear-gradient(135deg,rgba(255,158,24,.42) 0 4px,rgba(255,158,24,.12) 4px 8px)}
+  .prog-gap{display:none;position:absolute;top:0;height:100%;overflow:hidden}
+  .prog-gap svg{display:block;width:100%;height:100%}
   .prog-meta{position:absolute;top:0;color:#000;font-weight:700;font-size:11.5px;white-space:nowrap;padding:2px 5px;border:1px solid #d7e0eb;border-radius:3px;background:#fff;line-height:16px}
 
   /* ---- MID GRID ---- */
@@ -1064,6 +1082,7 @@
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@4.0.1/dist/pptxgen.bundle.js"></script>
 <style>
   #upload-overlay{position:fixed;inset:0;background:rgba(15,25,45,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:9999;}
@@ -1084,13 +1103,13 @@
 </style>
 <style>
 @page {
-  size: A3 landscape;
-  margin: 8mm;
+  size: 13.333in 7.5in;
+  margin: 0;
 }
 @media print {
   /* Force colors/backgrounds to print */
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  html, body { width:13.333in !important; min-height:7.5in !important; background: #fff !important; margin: 0 !important; padding: 0 !important; }
   body { font-size: 10px; }
 
   /* Dashboard layout */
@@ -1106,7 +1125,8 @@
   button.btn,
   button { display: none !important; }
   .project-icon,
-  .project-badge.type { display: inline-flex !important; box-shadow: none !important; transform: none !important; }
+  .project-badge.type,
+  .project-badge.image-export-trigger { display: inline-flex !important; box-shadow: none !important; transform: none !important; }
 
   /* Ensure SVG renders */
   svg { break-inside: avoid; }
@@ -1140,7 +1160,7 @@
           <div class="project-title-line">
             <span class="project-name" id="sh-projeto">—</span>
             <button class="project-badge type" id="sh-tipo" type="button" onclick="openPPTXExport()" title="Exportar relatório em PowerPoint" aria-label="Exportar relatório em PowerPoint">—</button>
-            <span class="project-badge" id="sh-bp-tipo">-</span>
+            <button class="project-badge image-export-trigger" id="sh-bp-tipo" type="button" onclick="openImageExport()" title="Exportar imagem em alta resolução" aria-label="Exportar imagem em alta resolução">-</button>
           </div>
           <div class="project-subtitle" id="proj-subtitle">Visão geral e acompanhamento de indicadores</div>
         </div>
@@ -1258,6 +1278,52 @@
     </div>
   </div>
 
+  <div id="image-export-modal" class="pptx-modal" data-html2canvas-ignore="true" onclick="if(event.target===this) closeImageExport()">
+    <div class="pptx-dialog image-export-dialog" role="dialog" aria-modal="true" aria-labelledby="image-export-dialog-title">
+      <div class="pptx-dialog-head">
+        <div>
+          <div class="pptx-dialog-title" id="image-export-dialog-title">Exportar imagem em alta resolução</div>
+          <div class="pptx-dialog-sub">Arraste e redimensione o retângulo para definir a área da imagem.</div>
+        </div>
+        <button class="pptx-close" type="button" onclick="closeImageExport()" aria-label="Fechar">×</button>
+      </div>
+      <div class="pptx-dialog-body">
+        <div class="pptx-controls">
+          <div class="pptx-field">
+            <label for="image-export-scale">Resolução</label>
+            <select id="image-export-scale" onchange="updateImageExportInfo()">
+              <option value="2">Alta · 2×</option>
+              <option value="3" selected>Recomendada · 3×</option>
+              <option value="4">Máxima · 4×</option>
+            </select>
+          </div>
+          <div class="image-export-info">
+            <strong>Área selecionada</strong><br>
+            <span id="image-export-size">—</span>
+          </div>
+          <button class="image-export-reset" type="button" onclick="resetImageCrop()">Selecionar dashboard completo</button>
+        </div>
+        <div class="pptx-preview-area">
+          <div class="pptx-preview-label">Prévia e área de exportação</div>
+          <div class="image-export-preview-frame" id="image-export-preview-frame">
+            <img id="image-export-preview-image" alt="Prévia da imagem" style="display:none">
+            <div class="image-crop-selection" id="image-crop-selection" onpointerdown="startImageCropDrag(event,'move')">
+              <span class="image-crop-handle nw" onpointerdown="startImageCropDrag(event,'nw')"></span>
+              <span class="image-crop-handle ne" onpointerdown="startImageCropDrag(event,'ne')"></span>
+              <span class="image-crop-handle sw" onpointerdown="startImageCropDrag(event,'sw')"></span>
+              <span class="image-crop-handle se" onpointerdown="startImageCropDrag(event,'se')"></span>
+            </div>
+            <div class="pptx-preview-empty" id="image-export-preview-empty">Gerando prévia...</div>
+          </div>
+        </div>
+      </div>
+      <div class="pptx-dialog-actions">
+        <button class="pptx-action secondary" type="button" onclick="closeImageExport()">Cancelar</button>
+        <button class="pptx-action primary" id="image-export-confirm" type="button" onclick="exportImageFromDialog()">Exportar PNG</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ MAIN ============ -->
   <div class="main">
     <div class="content" style="display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.5fr) minmax(0,1.5fr);grid-template-rows:auto auto auto auto;gap:12px;grid-template-areas:'obj conc rag' 'tl tl tl' 'fy chart chart' 'ytd chart chart';">
@@ -1290,7 +1356,17 @@
           <span id="prog-plan" class="prog-meta">Meta: —%</span>
           <div class="prog-track">
             <div id="prog-fill" style="position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#00B8B0,#78BE00);border-radius:6px;transition:width .3s;"></div>
-            <div id="prog-gap" class="prog-gap"></div>
+            <div id="prog-gap" class="prog-gap" aria-hidden="true">
+              <svg viewBox="0 0 100 12" preserveAspectRatio="none" focusable="false">
+                <defs>
+                  <pattern id="prog-gap-pattern" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                    <rect width="8" height="8" fill="#FFF4E5"></rect>
+                    <path d="M0 0V8" stroke="#FFB84D" stroke-width="2"></path>
+                  </pattern>
+                </defs>
+                <rect width="100" height="12" fill="url(#prog-gap-pattern)"></rect>
+              </svg>
+            </div>
             <div id="prog-marker" style="position:absolute;top:-8px;left:0%;width:3px;height:20px;background:#0f172a;border-radius:1px;transition:left .3s;" title="Planejado"></div>
           </div>
         </div>
@@ -1831,17 +1907,93 @@ function fitListToCard(listId) {
   });
 }
 
-function exportPDF() {
+function buildExportFileBaseName() {
+  const projectName = String(document.getElementById('sh-projeto')?.textContent || 'Sem Nome').trim() || 'Sem Nome';
+  const today = new Date();
+  const exportDate = String(today.getDate()).padStart(2, '0') + '-' +
+    String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
+  return ('Projeto ' + projectName + ' Status Report ' + exportDate)
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g, '-')
+    .replace(/\s+/g, ' ').trim().slice(0, 160);
+}
+
+async function captureDashboardCurrentLayout(scale) {
+  const page = document.querySelector('.page');
+  const main = document.querySelector('.main');
+  if (!page || !main) throw new Error('Estrutura do dashboard não encontrada.');
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
   syncSidebarHeights();
-  requestAnimationFrame(() => {
-    syncSidebarHeights();
-    setTimeout(() => window.print(), 50);
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  const pageRect = page.getBoundingClientRect();
+  const mainRect = main.getBoundingClientRect();
+  const captureWidth = Math.ceil(Math.max(pageRect.width, page.scrollWidth));
+  const captureHeight = Math.ceil(Math.max(pageRect.height, page.scrollHeight, mainRect.bottom - pageRect.top + 2));
+  return await html2canvas(page, {
+    backgroundColor:'#ffffff',
+    scale:Math.max(.3, Number(scale) || 2),
+    useCORS:true,
+    logging:false,
+    scrollX:0,
+    scrollY:0,
+    width:captureWidth,
+    height:captureHeight,
+    windowWidth:document.documentElement.clientWidth,
+    windowHeight:document.documentElement.clientHeight,
+    onclone:applyPPTXCloneFixes
   });
+}
+
+function composeDashboardPDFCanvas(sourceCanvas) {
+  const output = document.createElement('canvas');
+  output.width = 3840;
+  output.height = 2160;
+  const ctx = output.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, output.width, output.height);
+  const scale = Math.min(output.width / sourceCanvas.width, output.height / sourceCanvas.height);
+  const drawW = sourceCanvas.width * scale;
+  const drawH = sourceCanvas.height * scale;
+  ctx.drawImage(sourceCanvas, (output.width - drawW) / 2, (output.height - drawH) / 2, drawW, drawH);
+  return output;
+}
+
+let _exportingPDF = false;
+async function exportPDF() {
+  const trigger = document.querySelector('.project-icon');
+  if (_exportingPDF) return;
+  if (typeof html2canvas !== 'function' || !window.jspdf?.jsPDF) {
+    alert('Não foi possível carregar os recursos necessários para exportar o PDF.');
+    return;
+  }
+  _exportingPDF = true;
+  try {
+    if (trigger) {
+      trigger.setAttribute('aria-busy', 'true');
+      trigger.blur();
+    }
+    const sourceCanvas = await captureDashboardCurrentLayout(2);
+    const slideCanvas = composeDashboardPDFCanvas(sourceCanvas);
+    const pdf = new window.jspdf.jsPDF({
+      orientation:'landscape',
+      unit:'in',
+      format:[13.333, 7.5],
+      compress:false
+    });
+    pdf.addImage(slideCanvas.toDataURL('image/png'), 'PNG', 0, 0, 13.333, 7.5, undefined, 'NONE');
+    pdf.save(buildExportFileBaseName() + '.pdf');
+  } catch (error) {
+    console.error('Falha ao exportar PDF:', error);
+    alert('Não foi possível exportar o PDF. Verifique a conexão e tente novamente.');
+  } finally {
+    _exportingPDF = false;
+    if (trigger) trigger.removeAttribute('aria-busy');
+    requestAnimationFrame(() => requestAnimationFrame(syncSidebarHeights));
+  }
 }
 
 function applyPPTXCloneFixes(clonedDocument) {
   const exportStyle = clonedDocument.createElement('style');
-  exportStyle.textContent = '.pill-g{color:#166534!important}.pill-a{color:#92400e!important}.pill-r{background:#fff1f2!important;color:#991b1b!important}.project-badge.type:disabled{opacity:1!important}';
+  exportStyle.textContent = '.pill-g{color:#166534!important}.pill-a{color:#92400e!important}.pill-r{background:#fff1f2!important;color:#991b1b!important}.project-badge.type:disabled,.project-badge.image-export-trigger:disabled{opacity:1!important}';
   clonedDocument.head.appendChild(exportStyle);
 }
 
@@ -1941,7 +2093,7 @@ async function openPPTXExport() {
   empty.textContent = 'Gerando prévia...';
   updatePPTXPreview();
   try {
-    _pptxPreviewSourceCanvas = await captureDashboardForPPTX(.3);
+    _pptxPreviewSourceCanvas = await captureDashboardCurrentLayout(.3);
     updatePPTXPreview();
     empty.style.display = 'none';
   } catch (error) {
@@ -2016,7 +2168,7 @@ async function exportPPTX(options = {}) {
       trigger.blur();
     }
     document.body.classList.add('exporting-pptx');
-    const canvas = await captureDashboardForPPTX(Math.max(1, Number(options.quality) || 2));
+    const canvas = await captureDashboardCurrentLayout(Math.max(1, Number(options.quality) || 2));
 
     const pptx = new PptxGenJS();
     const standard = options.format === 'standard';
@@ -2044,18 +2196,197 @@ async function exportPPTX(options = {}) {
       h:slideH
     });
 
-    const projectName = String(document.getElementById('sh-projeto')?.textContent || 'Dashboard do Projeto').trim();
-    const period = String(document.getElementById('filter-label')?.textContent || '').trim();
-    const safeName = (projectName + (period ? ' - ' + period : ''))
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[<>:"/\\|?*\x00-\x1F]/g, '-')
-      .replace(/\s+/g, ' ').trim().slice(0, 120) || 'Dashboard do Projeto';
-    await pptx.writeFile({ fileName:safeName + '.pptx', compression:true });
+    await pptx.writeFile({ fileName:buildExportFileBaseName() + '.pptx', compression:true });
   } catch (error) {
     console.error('Falha ao exportar PPTX:', error);
     alert('Não foi possível exportar o PowerPoint. Verifique a conexão e tente novamente.');
   } finally {
     document.body.classList.remove('exporting-pptx');
+    if (trigger) {
+      trigger.disabled = false;
+      trigger.removeAttribute('aria-busy');
+    }
+    requestAnimationFrame(() => requestAnimationFrame(syncSidebarHeights));
+  }
+}
+
+const IMAGE_PREVIEW_CAPTURE_SCALE = .3;
+let _imagePreviewSourceCanvas = null;
+let _imageCrop = { x:0, y:0, w:1, h:1 };
+let _imageCropDrag = null;
+
+async function openImageExport() {
+  const modal = document.getElementById('image-export-modal');
+  const image = document.getElementById('image-export-preview-image');
+  const empty = document.getElementById('image-export-preview-empty');
+  const selection = document.getElementById('image-crop-selection');
+  if (!modal || !image || !empty || typeof html2canvas !== 'function') {
+    alert('Não foi possível carregar o recurso de exportação de imagem.');
+    return;
+  }
+  modal.style.display = 'flex';
+  _imagePreviewSourceCanvas = null;
+  _imageCrop = { x:0, y:0, w:1, h:1 };
+  image.style.display = 'none';
+  selection.style.display = 'none';
+  empty.style.display = 'flex';
+  empty.textContent = 'Gerando prévia...';
+  try {
+    _imagePreviewSourceCanvas = await captureDashboardCurrentLayout(IMAGE_PREVIEW_CAPTURE_SCALE);
+    const frame = document.getElementById('image-export-preview-frame');
+    if (frame) frame.style.aspectRatio = _imagePreviewSourceCanvas.width + ' / ' + _imagePreviewSourceCanvas.height;
+    image.src = _imagePreviewSourceCanvas.toDataURL('image/jpeg', .88);
+    image.style.display = 'block';
+    selection.style.display = 'block';
+    empty.style.display = 'none';
+    resetImageCrop();
+  } catch (error) {
+    console.error('Falha ao gerar prévia da imagem:', error);
+    empty.textContent = 'Prévia indisponível.';
+  }
+}
+
+function closeImageExport() {
+  finishImageCropDrag();
+  const modal = document.getElementById('image-export-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function resetImageCrop() {
+  _imageCrop = { x:0, y:0, w:1, h:1 };
+  updateImageCropUI();
+}
+
+function updateImageCropUI() {
+  const selection = document.getElementById('image-crop-selection');
+  if (selection) {
+    selection.style.left = (_imageCrop.x * 100) + '%';
+    selection.style.top = (_imageCrop.y * 100) + '%';
+    selection.style.width = (_imageCrop.w * 100) + '%';
+    selection.style.height = (_imageCrop.h * 100) + '%';
+  }
+  updateImageExportInfo();
+}
+
+function updateImageExportInfo() {
+  const size = document.getElementById('image-export-size');
+  if (!size || !_imagePreviewSourceCanvas) {
+    if (size) size.textContent = '—';
+    return;
+  }
+  const scale = Math.max(2, Math.min(4, Number(document.getElementById('image-export-scale')?.value || 3)));
+  const logicalW = _imagePreviewSourceCanvas.width / IMAGE_PREVIEW_CAPTURE_SCALE;
+  const logicalH = _imagePreviewSourceCanvas.height / IMAGE_PREVIEW_CAPTURE_SCALE;
+  const outputW = Math.max(1, Math.round(logicalW * scale * _imageCrop.w));
+  const outputH = Math.max(1, Math.round(logicalH * scale * _imageCrop.h));
+  size.textContent = outputW.toLocaleString('pt-BR') + ' × ' + outputH.toLocaleString('pt-BR') + ' px';
+}
+
+function startImageCropDrag(event, mode) {
+  const frame = document.getElementById('image-export-preview-frame');
+  if (!frame || !_imagePreviewSourceCanvas) return;
+  event.preventDefault();
+  event.stopPropagation();
+  finishImageCropDrag();
+  const rect = frame.getBoundingClientRect();
+  _imageCropDrag = {
+    mode,
+    pointerId:event.pointerId,
+    startX:event.clientX,
+    startY:event.clientY,
+    frameW:Math.max(1, rect.width),
+    frameH:Math.max(1, rect.height),
+    crop:{ ..._imageCrop }
+  };
+  document.addEventListener('pointermove', moveImageCrop, { passive:false });
+  document.addEventListener('pointerup', finishImageCropDrag);
+  document.addEventListener('pointercancel', finishImageCropDrag);
+}
+
+function moveImageCrop(event) {
+  if (!_imageCropDrag || event.pointerId !== _imageCropDrag.pointerId) return;
+  event.preventDefault();
+  const drag = _imageCropDrag;
+  const dx = (event.clientX - drag.startX) / drag.frameW;
+  const dy = (event.clientY - drag.startY) / drag.frameH;
+  const start = drag.crop;
+  const minSize = .06;
+  const right = start.x + start.w;
+  const bottom = start.y + start.h;
+  let next = { ...start };
+
+  if (drag.mode === 'move') {
+    next.x = Math.max(0, Math.min(1 - start.w, start.x + dx));
+    next.y = Math.max(0, Math.min(1 - start.h, start.y + dy));
+  } else {
+    if (drag.mode.includes('w')) {
+      next.x = Math.max(0, Math.min(right - minSize, start.x + dx));
+      next.w = right - next.x;
+    }
+    if (drag.mode.includes('e')) next.w = Math.max(minSize, Math.min(1 - start.x, start.w + dx));
+    if (drag.mode.includes('n')) {
+      next.y = Math.max(0, Math.min(bottom - minSize, start.y + dy));
+      next.h = bottom - next.y;
+    }
+    if (drag.mode.includes('s')) next.h = Math.max(minSize, Math.min(1 - start.y, start.h + dy));
+  }
+  _imageCrop = next;
+  updateImageCropUI();
+}
+
+function finishImageCropDrag() {
+  document.removeEventListener('pointermove', moveImageCrop);
+  document.removeEventListener('pointerup', finishImageCropDrag);
+  document.removeEventListener('pointercancel', finishImageCropDrag);
+  _imageCropDrag = null;
+}
+
+async function exportImageFromDialog() {
+  const confirmButton = document.getElementById('image-export-confirm');
+  const options = {
+    scale:Math.max(2, Math.min(4, Number(document.getElementById('image-export-scale')?.value || 3))),
+    crop:{ ..._imageCrop }
+  };
+  if (confirmButton) confirmButton.disabled = true;
+  closeImageExport();
+  try {
+    await exportDashboardPNG(options);
+  } finally {
+    if (confirmButton) confirmButton.disabled = false;
+  }
+}
+
+async function exportDashboardPNG(options) {
+  const trigger = document.getElementById('sh-bp-tipo');
+  try {
+    if (trigger) {
+      trigger.disabled = true;
+      trigger.setAttribute('aria-busy', 'true');
+      trigger.blur();
+    }
+    const canvas = await captureDashboardCurrentLayout(options.scale);
+    const crop = options.crop || { x:0, y:0, w:1, h:1 };
+    const sx = Math.max(0, Math.min(canvas.width - 1, Math.round(crop.x * canvas.width)));
+    const sy = Math.max(0, Math.min(canvas.height - 1, Math.round(crop.y * canvas.height)));
+    const sw = Math.max(1, Math.min(canvas.width - sx, Math.round(crop.w * canvas.width)));
+    const sh = Math.max(1, Math.min(canvas.height - sy, Math.round(crop.h * canvas.height)));
+    const output = document.createElement('canvas');
+    output.width = sw;
+    output.height = sh;
+    output.getContext('2d').drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+    const blob = await new Promise((resolve, reject) => output.toBlob(value => value ? resolve(value) : reject(new Error('Falha ao gerar PNG.')), 'image/png'));
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = buildExportFileBaseName() + '.png';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (error) {
+    console.error('Falha ao exportar PNG:', error);
+    alert('Não foi possível exportar a imagem. Reduza a resolução e tente novamente.');
+  } finally {
     if (trigger) {
       trigger.disabled = false;
       trigger.removeAttribute('aria-busy');
@@ -2893,7 +3224,7 @@ function updateCronograma(cron) {
 
   const atrasoEl = document.getElementById('prog-atraso');
   if (atrasoEl) {
-    if (atrasoDias > 0) atrasoEl.innerHTML = '<span class="prog-status-pill late"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 14 13H2L8 2Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 5.4v3.7m0 1.8v.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' + atrasoDias + ' dias de atraso</span>';
+    if (atrasoDias > 0) atrasoEl.innerHTML = '<span class="prog-status-pill late"><span class="prog-status-alert-icon" aria-hidden="true">&#9888;&#65038;</span>' + atrasoDias + ' dias de atraso</span>';
     else if (progPct > pvProgClamped) atrasoEl.innerHTML = '<span class="prog-status-pill ahead">▲ Adiantado</span>';
     else atrasoEl.innerHTML = '<span class="prog-status-pill ontime">No prazo</span>';
   }
