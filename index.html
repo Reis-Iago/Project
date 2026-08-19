@@ -665,11 +665,16 @@
   .card-sub{font-size:10px;color:var(--ink-400);font-weight:500}
 
   .side-section-card{padding:0!important;overflow:hidden}
-  .side-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0!important;padding:12px 14px;border-bottom:1px solid #e7edf3;background:#fff;flex-wrap:wrap}
+  .side-section-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px;margin:0!important;padding:12px 14px;border-bottom:1px solid #e7edf3;background:#fff}
+  .side-section-head > .indicator-title-row{min-width:0;gap:6px}
+  .side-section-head .indicator-title-icon{width:22px;height:22px;flex-basis:22px}
+  .side-section-head .indicator-title-icon svg{width:13px;height:13px}
+  .side-section-head .card-title{font-size:9px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .side-section-head .card-sub{font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .side-section-body{padding:7px 14px 9px;background:#fff;color:var(--ink-400);font-size:12px}
-  .mini-legend{display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:8px;font-weight:700;white-space:nowrap;flex:1 1 210px;flex-wrap:wrap;margin-left:auto}
-  .legend-badge{display:inline-flex!important;align-items:center;gap:4px;padding:3px 7px;border:1px solid currentColor;border-radius:12px;background:#fff;line-height:1;text-transform:uppercase;letter-spacing:.03em}
-  .legend-badge i{position:relative;width:10px;height:10px;border:1px solid currentColor;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 10px;background:transparent!important}
+  .mini-legend{display:flex;align-items:center;justify-content:flex-end;gap:3px;font-size:7px;font-weight:700;white-space:nowrap;flex-wrap:nowrap;margin-left:auto;min-width:max-content}
+  .legend-badge{display:inline-flex!important;align-items:center;gap:2px;padding:2px 4px;border:1px solid currentColor;border-radius:12px;background:#fff;line-height:1;text-transform:uppercase;letter-spacing:0;white-space:nowrap;flex:0 0 auto}
+  .legend-badge i{position:relative;width:8px;height:8px;border:1px solid currentColor;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 8px;background:transparent!important}
   .legend-badge i::after{content:"";width:3px;height:3px;border-radius:50%;background:currentColor}
   .legend-badge.green{color:#079669;background:#effcf6;border-color:#b8efd9}
   .legend-badge.amber{color:#c97900;background:#fff9e9;border-color:#f5dfa4}
@@ -888,6 +893,7 @@
   .tl-quarter-scale{display:none}
   body.view-quinzenal .tl-quarter-scale{display:block;margin:0 16px 14px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#fff}
   body:not(.view-quinzenal) .tl-quarter-scale{display:block;margin:0 8px 12px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#fff}
+  body:not(.view-quinzenal) .tl{padding-bottom:10px}
   body:not(.view-quinzenal) .tl-axis{margin:12px 8px 8px}
   body:not(.view-quinzenal) .tl-months-bar{display:none}
   .tl-quarter-row{display:grid;background:#fff;border-bottom:1px solid var(--line)}
@@ -3868,7 +3874,7 @@ function updateTimelineV2(cron) {
   const lastLane = usedLaneCount - 1;
   const axisHeight = viewIsQuinzenal
     ? Math.max(210, laneLineTops[lastLane] + 30)
-    : Math.max(300, laneLineTops[lastLane] + 36);
+    : Math.max(120, laneLineTops[lastLane] + 36);
   tl.style.height = axisHeight + 'px';
   let html = '<div class="tl-month-grid">';
   for (let monthIndex = 1; monthIndex < timelineMonths.length; monthIndex++) {
@@ -4244,11 +4250,15 @@ function updateNextp(passos) {
 // ================================================
 //  CHART: BP vs Realizado + EAC
 // ================================================
+let _finChartState = null;
+let _finChartResizeFrame = 0;
 function drawFinChart(months, planArr, realArr, forecastArr, filterIdx) {
   const svg = document.getElementById('lineChart');
   if (!svg) return;
 
-  const W = Math.max(900, Math.round(svg.clientWidth || 1100)), H = Math.max(300, Math.round(svg.clientHeight || 340)), PL = 22, PR = 22, PT = 34, PB = 44;
+  _finChartState = { months, planArr, realArr, forecastArr, filterIdx };
+
+  const W = Math.max(320, Math.round(svg.clientWidth || 1100)), H = Math.max(300, Math.round(svg.clientHeight || 340)), PL = 22, PR = 22, PT = 34, PB = 44;
   const chartW = W - PL - PR;
   const chartH = H - PT - PB;
   const fmtY = v => v >= 1e6 ? (v/1e6).toFixed(1).replace('.',',') + 'M' : v >= 1e3 ? (v/1e3).toFixed(1).replace('.',',') + 'k' : v.toFixed(0);
@@ -4550,7 +4560,16 @@ function drawDonut() {}
 
 // Init empty chart on load
 drawFinChart(['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], new Array(12).fill(0), new Array(12).fill(null), new Array(12).fill(null), 11);
-window.addEventListener('resize', () => requestAnimationFrame(syncSidebarHeights));
+window.addEventListener('resize', () => {
+  cancelAnimationFrame(_finChartResizeFrame);
+  _finChartResizeFrame = requestAnimationFrame(() => {
+    syncSidebarHeights();
+    if (_finChartState) {
+      const { months, planArr, realArr, forecastArr, filterIdx } = _finChartState;
+      drawFinChart(months, planArr, realArr, forecastArr, filterIdx);
+    }
+  });
+});
 </script>
 
 
