@@ -617,7 +617,7 @@
   .moment-card{display:none;min-width:0}
   body.view-quinzenal .moment-card{display:block}
   .moment-card .card{min-height:96px;height:auto;padding:13px 16px;overflow:visible}
-  .moment-text{font-size:11px;line-height:1.45;color:var(--ink-700);white-space:pre-wrap;overflow-wrap:anywhere;overflow:visible}
+  .moment-text{font-size:11px;line-height:1.45;color:var(--ink-700);text-align:justify;text-justify:inter-word;white-space:pre-wrap;overflow-wrap:anywhere;overflow:visible}
   .monthly-moment-text{line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical}
   body.view-quinzenal .rsidebar{padding-top:0;display:flex;flex-direction:column;align-items:stretch}
   .health-strip-anchor{display:none;min-width:520px;flex:1}
@@ -1877,14 +1877,12 @@ function syncSidebarHeights() {
     chart.style.height = chartTargetH + 'px';
     chart.style.minHeight = chartTargetH + 'px';
     const extra = Math.max(0, targetSideH - naturalSideH);
-    const rowCounts = sideCards.map(el => el.querySelectorAll('.list-row').length);
-    const weights = rowCounts.map(count => Math.max(0, count - 1));
-    const totalWeight = weights.reduce((sum, value) => sum + value, 0);
+    const totalNatural = natural.reduce((sum, value) => sum + value, 0) || 1;
     let distributed = 0;
     sideCards.forEach((el, idx) => {
       const share = idx === sideCards.length - 1
         ? Math.max(0, extra - distributed)
-        : Math.floor(extra * (totalWeight ? weights[idx] / totalWeight : 1 / sideCards.length));
+        : Math.floor(extra * (natural[idx] / totalNatural));
       distributed += share;
       const height = natural[idx] + share;
       el.style.height = height + 'px';
@@ -1892,7 +1890,7 @@ function syncSidebarHeights() {
       const card = el.querySelector('.card');
       if (card) card.style.height = '100%';
       const body = el.querySelector('.side-section-body');
-      if (body) body.style.justifyContent = share > 0 && rowCounts[idx] > 1 ? 'space-between' : 'flex-start';
+      if (body) body.style.justifyContent = 'flex-start';
     });
     const stackH = sideCards.slice(1).reduce((sum, el) => sum + el.offsetHeight, 0) + gap * Math.max(0, sideCards.length - 2);
     stack.style.height = stackH + 'px';
@@ -4134,12 +4132,12 @@ function updateRiscos(risco) {
   if (!el) return;
   setSideLegend('risk', { high:0, medium:0, low:0 });
   if (!risco || !risco.length) {
-    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum risco cadastrado.</div>';
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum ponto crítico nesta janela</div>';
     return;
   }
   const rows = filterRowsByMonthField(filterRowsByReport(risco), ['Data de Atualização', 'Data de Atualizacao']).filter(r => (r['Risco'] && String(r['Risco']).trim()) || (r['Detalhamento do Risco'] && String(r['Detalhamento do Risco']).trim()));
   if (!rows.length) {
-    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum risco cadastrado.</div>';
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum ponto crítico nesta janela</div>';
     return;
   }
   rows.sort((a, b) => (Number(b['Score']) || 0) - (Number(a['Score']) || 0));
@@ -4162,7 +4160,7 @@ function updateSupport(risco) {
   if (!el) return;
   setSideLegend('support', { high:0, medium:0, low:0 });
   if (!risco || !risco.length) {
-    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum apoio cadastrado.</div>';
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum apoio necessário nesta janela</div>';
     return;
   }
   const rows = filterRowsByMonthField(filterRowsByReport(risco), ['Data de Atualização', 'Data de Atualizacao']).filter(r => {
@@ -4170,7 +4168,7 @@ function updateSupport(risco) {
     return plano && String(plano).trim();
   });
   if (!rows.length) {
-    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum apoio cadastrado.</div>';
+    el.innerHTML = '<div style="font-size:11px;color:var(--ink-400);padding:8px 0;">Nenhum apoio necessário nesta janela</div>';
     return;
   }
   rows.sort((a, b) => (Number(b['Score']) || 0) - (Number(a['Score']) || 0));
